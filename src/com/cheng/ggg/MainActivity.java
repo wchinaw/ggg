@@ -60,7 +60,7 @@ public class MainActivity extends Activity implements OnClickListener{
     	SQLiteDatabase db = mSQLiteHelper.getReadableDatabase();
     	int monthGong = mSQLiteHelper.getUserGongCount(db);
     	int monthGuo = mSQLiteHelper.getUserGuoCount(db);
-    	int monthTotal = monthGong-monthGuo;
+    	int monthTotal = monthGong+monthGuo;
     	
     	setTextViewColorAndCount(textGong,monthGong);
     	setTextViewColorAndCount(textGuo,monthGuo);

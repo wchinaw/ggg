@@ -15,7 +15,7 @@
     <!-- 功 过 格 -->
     <string name="gong">功</string>
     <string name="guo">过</string>
-    <string name="total">总</string>
+    <string name="total">合计</string>
     <string name="title_activity_gong">GongActivity</string>
 
     <string-array name="GONG_STR">
@@ -63,13 +63,13 @@
         <item>准一过</item>
     </string-array>
     <string-array name="GUO_VALUES">
-        <item>100</item>
-        <item>50</item>
-        <item>30</item>
-        <item>10</item>
-        <item>5</item>
-        <item>3</item>
-        <item>1</item>
+        <item>-100</item>
+        <item>-50</item>
+        <item>-30</item>
+        <item>-10</item>
+        <item>-5</item>
+        <item>-3</item>
+        <item>-1</item>
     </string-array>
     <string-array name="GUO_DETAIL">
 
@@ -98,4 +98,7 @@
 	<string name="hour">时</string>
 	<string name="minute">分</string>
 	<string name="second">秒</string>
+	
+	<string name="deleteok">删除成功</string>
+	<string name="deletefail">删除失败</string>
 </resources>

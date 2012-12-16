@@ -353,8 +353,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	
 	public int getUserGuoCount(SQLiteDatabase db){
 		int guoCount =  getUserGongGuoCount(db,user_guo_table);
-		if(guoCount < 0)
-			guoCount = 0;
+//		if(guoCount > 0)
+//			guoCount = 0;
 		return guoCount;
 	}
 	
@@ -413,6 +413,31 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	
 	public ArrayList<UserGongGuo> getUserGuoList(SQLiteDatabase db){
 		return getUserGongGuoListByTableName(db,user_guo_table);
+	}
+	
+	/**删除数据库表中的数据*/
+	public boolean deleteItemById(SQLiteDatabase db, String tableName, int id){
+		boolean rc = true;
+		String sql="delete from "+tableName+" where id="+id+"";
+    	try{
+    		db.execSQL(sql);
+    	}catch(SQLException e){
+    		e.printStackTrace();
+    		rc = false;
+    	}
+		return rc;
+	}
+	
+	public boolean deleteUserGongItemById(SQLiteDatabase db, int id){
+		boolean rc = true;
+		rc = deleteItemById(db, user_gong_table, id);
+		return rc;
+	}
+	
+	public boolean deleteUserGuoItemById(SQLiteDatabase db, int id){
+		boolean rc = true;
+		rc = deleteItemById(db, user_guo_table, id);
+		return rc;
 	}
 	
 	/**进行数据库版本升级时需要做的工作*/

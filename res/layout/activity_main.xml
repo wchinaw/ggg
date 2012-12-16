@@ -19,7 +19,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginRight="28dp"
             android:layout_marginTop="16dp"
-            android:text="@string/month_gong"
+            android:text="@string/gong"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -40,7 +40,7 @@
         android:layout_alignParentRight="false"
         android:layout_alignParentTop="false"
         android:layout_below="@+id/textMonthGong"
-        android:text="@string/month_guo"
+        android:text="@string/guo"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -58,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView1"
         android:layout_below="@+id/textMonthGuo"
-        android:text="@string/month_total"
+        android:text="@string/total"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
