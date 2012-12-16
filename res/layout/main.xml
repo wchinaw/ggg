@@ -1,0 +1,61 @@
+<TabHost android:id="@android:id/tabhost"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.0"
+            android:visibility="gone" />
+
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1" >
+
+        </FrameLayout>
+
+        <RadioGroup
+            android:id="@+id/main_radio"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <RadioButton
+                android:id="@+id/radio_button0"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="33"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center_horizontal|center"
+                android:text="@string/gong" />
+
+            <RadioButton
+                android:id="@+id/radio_button1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="33"
+                android:button="@null"
+                android:gravity="center_horizontal|center"
+                android:text="@string/guo" />
+
+            <RadioButton
+                android:id="@+id/radio_button2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="33"
+                android:button="@null"
+                android:gravity="center_horizontal|center"
+                android:text="@string/total" />
+
+        </RadioGroup>
+    </LinearLayout>
+</TabHost>
