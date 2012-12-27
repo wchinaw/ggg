@@ -7,6 +7,7 @@ import android.app.ExpandableListActivity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,6 +16,7 @@ import android.widget.AbsListView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,8 +40,10 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 
         mThis = this;
         mListView = getExpandableListView();
-        mListView.setBackgroundResource(R.drawable.c);
-        mListView.setCacheColorHint(0x00000000);
+//        mListView.setOnItemClickListener(mOnItemClickListener);
+        mListView.setOnChildClickListener(mOnChildClickListener);
+//        mListView.setBackgroundResource(R.drawable.c);
+//        mListView.setCacheColorHint(0xFFFFFFFF);
         // Set up our adapter
         mAdapter = new MyExpandableListAdapter();
         setListAdapter(mAdapter);
@@ -71,6 +75,49 @@ public class GongGuoListActivity  extends ExpandableListActivity {
     		mbGong = intent.getBooleanExtra(COM.INTENT_GONG, false);
     	}
     }
+    
+    public OnChildClickListener mOnChildClickListener = new OnChildClickListener(){
+
+		public boolean onChildClick(ExpandableListView parent, View v,
+				int groupPosition, int childPosition, long id) {
+			GroupChild g = (GroupChild) v.getTag();
+			
+			if(g != null){
+				SQLiteDatabase db = mSQLiteHelper.getWritableDatabase();
+				
+				int time = (int) (System.currentTimeMillis()/1000);
+				
+				GongGuoBase base = (GongGuoBase)mAdapter.getGroup(g.groupPosition);
+				
+				GongGuoDetail detail = (GongGuoDetail) mAdapter.getChild(g.groupPosition,g.childPosition);
+				
+				if(mbGong){
+					mSQLiteHelper.insertUserGONGTable(db, detail.id,base.name, detail.name, detail.count,time);
+				}
+				else{
+					mSQLiteHelper.insertUserGUOTable(db, detail.id, base.name,detail.name, detail.count,time);
+				}
+//				mThis.finish();
+				
+				Toast.makeText(mThis, base.name+" "+detail.name+" "+mThis.getString(R.string.addok), Toast.LENGTH_SHORT).show();
+					
+			}
+			
+			
+//			mListView.setSelectedChild(groupPosition, childPosition, shouldExpandGroup)
+//			Toast.makeText(mContext, "mChildClick "+g.groupPosition+" "+g.childPosition, Toast.LENGTH_SHORT).show();
+		
+//			Log.i("mOnItemClickListener","id:"+id+" groupPosition:"+groupPosition+" childPosition:"+childPosition);
+			return false;
+		}
+
+//		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+//				long arg3) {
+//			
+//			
+//		}
+		
+	};
 	
 	public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 
@@ -94,7 +141,7 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 			TextView textView = getGenericChildView();
 			GongGuoDetail detail = (GongGuoDetail) getChild(groupPosition, childPosition);
             textView.setText(detail.name);
-            textView.setOnClickListener(mChildClick);
+//            textView.setOnClickListener(mChildClick);
             textView.setTag(new GroupChild(groupPosition, childPosition));
             return textView;
 		}
@@ -140,7 +187,7 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 		public TextView getGenericViewByStyle(int styleId) {
             // Layout parameters for the ExpandableListView
             AbsListView.LayoutParams lp = new AbsListView.LayoutParams(
-                    ViewGroup.LayoutParams.FILL_PARENT, 64);
+                    ViewGroup.LayoutParams.MATCH_PARENT, 64);
 
             TextView textView = new TextView(GongGuoListActivity.this);
             textView.setLayoutParams(lp);
@@ -183,6 +230,8 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 			
 		};
 		
+		
+		
 		OnClickListener mChildClick = new OnClickListener(){
 
 			public void onClick(View v) {
@@ -203,7 +252,9 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 					else{
 						mSQLiteHelper.insertUserGUOTable(db, detail.id, base.name,detail.name, detail.count,time);
 					}
-					mThis.finish();
+//					mThis.finish();
+					
+					Toast.makeText(mThis, base.name+" "+detail.name+" "+mThis.getString(R.string.addok), Toast.LENGTH_SHORT).show();
 						
 				}
 				

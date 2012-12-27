@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">功过格</string>
-    <string name="title_activity_main">功过格</string>
+    <string name="app_name">功过格(了凡四训)</string>
+    <string name="title_activity_main">功过格(了凡四训)</string>
 
     <!-- MainActivity -->
     <string name="month_gong">本月功</string>
@@ -91,14 +91,18 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
-    <string name="title_activity_detail">DetailActivity</string>
-	<string name="year">年</string>
-	<string name="month">月</string>
-	<string name="day">日</string>
-	<string name="hour">时</string>
-	<string name="minute">分</string>
-	<string name="second">秒</string>
-	
-	<string name="deleteok">删除成功</string>
-	<string name="deletefail">删除失败</string>
+    <string name="title_activity_detail">明细</string>
+    <string name="year">年</string>
+    <string name="month">月</string>
+    <string name="day">日</string>
+    <string name="hour">时</string>
+    <string name="minute">分</string>
+    <string name="second">秒</string>
+    <string name="deleteok">删除成功</string>
+    <string name="deletefail">删除失败</string>
+    <string name="addok">添加成功</string>
+    <string name="title_activity_about">AboutActivity</string>
+    
+    <string name="about">关于功过格（了凡四训）V0.0.1\n这是我第一个以个人名义发布的应用程序，此程序的第一个版本功能较为简单，后续会不断完善，关于功能上的需求，请大家多多反馈，好的功能我会尽量加入。谢谢大家。email:gongguoge@126.com</string>
+
 </resources>

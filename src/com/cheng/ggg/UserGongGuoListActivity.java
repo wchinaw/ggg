@@ -5,14 +5,15 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -92,7 +93,10 @@ public class UserGongGuoListActivity extends Activity {
 
 	AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item  
 	    .getMenuInfo();  
-	int id = (int) info.id;// 这里的info.id对应的就是数据库中_id的值  
+		
+//	int id = (int) info.id;// 这里的info.id对应的就是数据库中_id的值  
+	int id = (int) info.position;
+	Log.i(""," info.id:"+ info.id+" info.position:"+info.position);
 	
 	switch(item.getItemId()) {  
 		case 0:  //删除
@@ -112,10 +116,10 @@ public class UserGongGuoListActivity extends Activity {
 				db.close();
 				
 				if(rc == true){
-					Toast.makeText(mActivity, R.string.deleteok, Toast.LENGTH_LONG).show();
+					Toast.makeText(mActivity, gongguo.parent_name+" "+gongguo.name+" "+getString(R.string.deleteok), Toast.LENGTH_LONG).show();
 				}
 				else{
-					Toast.makeText(mActivity, R.string.deletefail, Toast.LENGTH_LONG).show();
+					Toast.makeText(mActivity, gongguo.parent_name+" "+gongguo.name+" "+getString(R.string.deletefail), Toast.LENGTH_LONG).show();
 				}
 			}
 	
@@ -177,6 +181,14 @@ public class UserGongGuoListActivity extends Activity {
 			holder.name.setText(gongguo.parent_name+" "+gongguo.name);
 			holder.date.setText(COM.intTime2Date(mActivity, gongguo.time));
 			holder.position = position;
+			
+			if(gongguo.count > 0){
+				holder.name.setTextColor(Color.RED);
+			}
+			else{
+				holder.name.setTextColor(Color.GREEN);
+			}
+			
 			return view;
 		}
 		

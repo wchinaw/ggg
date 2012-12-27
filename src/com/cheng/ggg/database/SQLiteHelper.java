@@ -334,14 +334,17 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	}
 	
 	public int getUserGongGuoCount(SQLiteDatabase db, String tableName){
+		int count = 0;
 		String sql = "select SUM(count) from "+tableName;
+		String[] strArray = new String[1];
 		Cursor cursor = db.rawQuery( sql, null);
 		
-        if(cursor.moveToFirst()) {
-    	   return cursor.getInt(0);
+        if(cursor!=null && cursor.moveToFirst()) {
+        	count = cursor.getInt(0);
+        	cursor.close();
         }
 
-		return 0;
+		return count;
 	}
 	
 	public int getUserGongCount(SQLiteDatabase db){

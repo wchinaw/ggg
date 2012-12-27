@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
+
 public class settings {
 	
 	public static final int CHINESE_SIMPLE = 0;  //¼òÌåÖĞÎÄ
