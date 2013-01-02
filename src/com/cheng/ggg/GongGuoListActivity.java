@@ -42,6 +42,8 @@ public class GongGuoListActivity  extends ExpandableListActivity {
         mListView = getExpandableListView();
 //        mListView.setOnItemClickListener(mOnItemClickListener);
         mListView.setOnChildClickListener(mOnChildClickListener);
+        
+        mListView.setGroupIndicator(getResources().getDrawable(R.drawable.list_expand_btn));
 //        mListView.setBackgroundResource(R.drawable.c);
 //        mListView.setCacheColorHint(0xFFFFFFFF);
         // Set up our adapter

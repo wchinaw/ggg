@@ -5,10 +5,45 @@
     tools:context=".AboutActivity" >
 
     <TextView
+        android:id="@+id/TextView01"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:autoLink="all"
+        android:gravity="center_horizontal"
+        android:text="@string/about_author"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/TextView02"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/TextView01"
+        android:autoLink="all"
+        android:gravity="center_horizontal"
+        android:text="@string/about_version"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/TextView02"
+        android:layout_marginTop="60dp"
+        android:autoLink="all"
+        android:text="@string/about"
+        android:textSize="20dp" />
+
+    <Button
+        android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/textView1"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/about" />
+        android:layout_marginTop="68dp"
+        android:background="@drawable/gray_btn"
+        android:gravity="center_horizontal"
+        android:text="@string/feedback"
+        android:textSize="20dp" />
 
 </RelativeLayout>

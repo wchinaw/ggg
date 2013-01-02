@@ -1,5 +1,4 @@
 package com.cheng.ggg;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,6 +11,10 @@ import android.widget.TextView;
 
 import com.cheng.ggg.database.SQLiteHelper;
 import com.cheng.ggg.utils.COM;
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.fb.NotificationType;
+import com.umeng.fb.UMFeedbackService;
+import com.umeng.update.UmengUpdateAgent;
 
 public class MainActivity extends Activity implements OnClickListener{
 	
@@ -28,6 +31,7 @@ public class MainActivity extends Activity implements OnClickListener{
         ((Button)findViewById(R.id.buttonGong)).setOnClickListener(this);
         ((Button)findViewById(R.id.buttonGuo)).setOnClickListener(this);
         ((Button)findViewById(R.id.buttonDetail)).setOnClickListener(this);
+        ((Button)findViewById(R.id.buttonAbout)).setOnClickListener(this);
         
         textGong = (TextView) findViewById(R.id.textMonthGong);
         textGuo = (TextView) findViewById(R.id.textMonthGuo);
@@ -44,6 +48,19 @@ public class MainActivity extends Activity implements OnClickListener{
 //        }
 //        
 //        db.close();
+        //升级检测 
+        UmengUpdateAgent.setUpdateOnlyWifi(false);
+        UmengUpdateAgent.update(this);
+        //自动捕获异常退出（FC）
+        MobclickAgent.onError(this);
+        
+        //用户反馈
+        //代码中启用Feedback模块，调用下面函数进入反馈界面：
+        //UMFeedbackService.openUmengFeedbackSDK(this);
+        //当开发者回复用户反馈后，如果需要提醒用户，请在应用程序的入口Activity的OnCreate()方法中下添加以下代码
+        UMFeedbackService.enableNewReplyNotification(this, NotificationType.NotificationBar);
+        //方法第一个参数类型为：Context，第二个参数为枚举类型，可选值为NotificationType.AlertDialog 或NotificationType.NotificationBar，分别对应两种不同的提示方式：
+
     }
     
     
@@ -52,6 +69,16 @@ public class MainActivity extends Activity implements OnClickListener{
 	protected void onResume() {
     	refreshGongGuoInfo();
 		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+
+    
+
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 
 
@@ -97,6 +124,11 @@ public class MainActivity extends Activity implements OnClickListener{
     	startActivity(intent);
     }
 
+    private void gotoAboutActivity(){
+    	Intent intent = new Intent(this,AboutActivity.class);
+    	startActivity(intent);
+    }
+    
 	public void onClick(View v) {
 		switch(v.getId()){
 		case R.id.buttonGong: 
@@ -107,6 +139,9 @@ public class MainActivity extends Activity implements OnClickListener{
 			break;
 		case R.id.buttonDetail:
 			gotoUserGongGuoListActivity(UserGongGuoListActivity.TYPE_ALL);
+			break;
+		case R.id.buttonAbout:
+			gotoAboutActivity();
 			break;
 		}
 	}

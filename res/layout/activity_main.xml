@@ -84,22 +84,39 @@
             android:id="@+id/buttonGong"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
             android:layout_weight="1"
+            android:background="@drawable/gray_btn"
             android:text="@string/record_gong" />
 
         <Button
             android:id="@+id/buttonGuo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="3dp"
             android:layout_weight="1"
+            android:background="@drawable/gray_btn"
             android:text="@string/record_guo" />
 
         <Button
             android:id="@+id/buttonDetail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="3dp"
             android:layout_weight="1"
+            android:background="@drawable/gray_btn"
             android:text="@string/record_detail" />
+
+        <Button
+            android:id="@+id/buttonAbout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/gray_btn"
+            android:text="@string/abount_str" />
+
     </LinearLayout>
 
     

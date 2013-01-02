@@ -103,6 +103,11 @@
     <string name="addok">添加成功</string>
     <string name="title_activity_about">AboutActivity</string>
     
-    <string name="about">关于功过格（了凡四训）V0.0.1\n这是我第一个以个人名义发布的应用程序，此程序的第一个版本功能较为简单，后续会不断完善，关于功能上的需求，请大家多多反馈，好的功能我会尽量加入。谢谢大家。email:gongguoge@126.com</string>
-
+    <string name="about_title">关于功过格（了凡四训）</string>
+    <string name="about">  功过格应用在不断完善中，请点击下方的 我要提建议 按钮提出您宝贵的建议，以帮助提高程序的可用性。\n\n    Email: gongguoge@126.com</string>
+    <string name="about_author"> 作者：陈刚</string>
+    <string name="about_version"> 版本：V0.1</string>
+    
+	<string name="abount_str">关于</string>
+	<string name="feedback">我要提建议</string>
 </resources>

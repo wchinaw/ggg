@@ -10,7 +10,9 @@ import android.app.Activity;
 import android.util.Log;
 
 public class COM {
-	public static final String DBNAME = "/sdcard/ggg";
+	
+	public static final String UMENG_APP_KEY = "50dc4a665270151896000017";
+	public static final String DBNAME = "ggg";//"/sdcard/ggg";
 	public static final String INTENT_GONG = "INTENT_GONG";
 	public static final String INTENT_TYPE = "INTENT_TYPE";
 	
