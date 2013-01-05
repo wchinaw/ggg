@@ -1,13 +1,16 @@
 package com.cheng.ggg.utils;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.TimeZone;
 
-import com.cheng.ggg.R;
-
 import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
+
+import com.cheng.ggg.R;
 
 public class COM {
 	
@@ -42,5 +45,22 @@ public class COM {
 				+twoZeroPre(calendar1.get(Calendar.SECOND))+activity.getString(R.string.second);
 		
 		return date;
+	}
+	
+	public static String getVersionName(Context context){
+		String versionName = "";
+		if(context == null)
+			return "";
+		try {
+			
+			 PackageManager pm = context.getPackageManager();
+			
+			 PackageInfo pinfo = pm.getPackageInfo(context.getPackageName(),PackageManager.GET_CONFIGURATIONS);
+			 versionName = pinfo.versionName;
+			 } catch(NameNotFoundException e){
+			 }
+		return versionName;
+
+
 	}
 }

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">功過格(了凡四訓)</string>
+    <string name="title_activity_main">功過格(了凡四訓)</string>
+
+    <!-- MainActivity -->
+    <string name="month_gong">本月功</string>
+    <string name="month_guo">本月過</string>
+    <string name="month_total">本月合計</string>
+    <string name="record_gong">記功</string>
+    <string name="record_guo">記過</string>
+    <string name="record_detail">明細</string>
+
+    <!-- 功 過 格 -->
+    <string name="gong">功</string>
+    <string name="guo">過</string>
+    <string name="total">合計</string>
+    <string name="title_activity_gong">GongActivity</string>
+
+    <string-array name="GONG_STR">
+        <item>准百功</item>
+        <item>准五十功</item>
+        <item>准三十功</item>
+        <item>准十功</item>
+        <item>准五功</item>
+        <item>准三功</item>
+        <item>准一功</item>
+    </string-array>
+    <string-array name="GONG_VALUES">
+        <item>100</item>
+        <item>50</item>
+        <item>30</item>
+        <item>10</item>
+        <item>5</item>
+        <item>3</item>
+        <item>1</item>
+    </string-array>
+    <string-array name="GONG_DETAIL">
+
+        <!-- 100 -->
+        <item>救免一人死,完一婦女節,阻人不溺一子女,為人延一嗣</item>
+        <!-- 50 -->
+        <item>免墮一胎,當欲染境,守正不染,收養一無倚,葬一無主骸骨,救免一人流離,救免一人軍徒重罪,白一人冤,發一言利及百姓</item>
+        <!-- 30 -->
+        <item>施一葬地與無土之家,化一為非者改行,度一受戒弟子,完聚一人夫婦,收養一無主遺棄門孩,成就一人德業</item>
+        <!-- 10 -->
+        <item>薦引一有德人,除一人害,編纂一切眾經法,以方術治一人重病,發至德之言,有財勢可使而不使,善遺妾婢,救一有力報人之畜命</item>
+        <!-- 5 -->
+        <item>勸息一人訟,傳人一保益性命事,編纂一保益性命經法,以方術救一人輕疾,勸止傳播人惡,供養一賢善人,祈福禳災等 但許善願不殺生,救一無力報人之畜命</item>
+        <!-- 3 -->
+        <item>受一橫不嗔,任一謗不辯,受一逆耳言,免一應責人,勸養蠶、漁人、獵人、屠人等改業,葬一自死畜類</item>
+        <!-- 1 -->
+        <item>贊一人善,掩一人惡,勸息一人爭,阻人一非為事,濟一人饑,留無歸人一宿,救一人寒,施藥一服,施行勸濟人書文,誦經一卷,禮懺百拜,誦佛號千聲,講演善法 諭及十人,興事利及十人,拾得遺字一千,飯一僧,護持僧眾一人,不拒乞人,接濟人畜一時疲頓,見人有憂 善為解慰,肉食人持齋一日,見殺不食 聞殺不食 為己殺不食,葬一自死禽類,放一生,救一細微濕化之屬命,作功果薦沉魂,散錢粟衣帛濟人,饒人債負,還人遺物,不義之財不取,代人完納債負,讓地讓產,勸人出財作種種功德,不負寄托財物,建倉平糶、修造路橋、疏河掘井,修置三寶寺院、造三寶尊像及施香燭燈油等物,施茶水、舍棺木一切方便等事,捐百錢</item>
+    </string-array>
+    <string-array name="GUO_STR">
+        <item>准百過</item>
+        <item>准五十過</item>
+        <item>准三十過</item>
+        <item>准十過</item>
+        <item>准五過</item>
+        <item>准三過</item>
+        <item>准一過</item>
+    </string-array>
+    <string-array name="GUO_VALUES">
+        <item>-100</item>
+        <item>-50</item>
+        <item>-30</item>
+        <item>-10</item>
+        <item>-5</item>
+        <item>-3</item>
+        <item>-1</item>
+    </string-array>
+    <string-array name="GUO_DETAIL">
+
+        <!-- 100 -->
+        <item>致一人死,失一婦女節,贊人溺一子女,絕一人嗣</item>
+        <!-- 50 -->
+        <item>墮一胎,破一人婚,拋一人骸,謀人妻女,致一人流離,致一人軍徒重罪,教人不忠不孝大惡等事,發一言害及百姓</item>
+        <!-- 30 -->
+        <item>造謗汙陷一人,摘發一人陰私與行止事,唆一人訟,毀一人戒行,反背師長,抵觸父兄,離間人骨肉,荒年積囤五穀不糶生索</item>
+        <!-- 10 -->
+        <item>排擯一有德人,薦用一匪人,平人一塚,淩孤逼寡,受畜一失節婦,畜一殺眾生具,惡語向尊親、師長、良儒,修合害人毒藥,非法用刑,毀壞一切正法經典,誦經時，心中雜想惡事,以外道邪法授人,發損德之言,殺一有力報人之畜命 </item>
+        <!-- 5 -->
+        <item>訕謗一切正法經典,見一冤可白不白,遇一病求救不救,阻絕一道路橋梁,編纂一傷化詞傳,造一渾名歌謠,惡口犯平交,殺一無力報人之畜命,非法烹炮生物 使受極苦</item>
+        <!-- 3 -->
+        <item>嗔一逆耳言,乖一尊卑次,責一不應責人 播一人惡,兩舌離間一人,欺誑一無識,毀人成功,見人有憂 心生暢快,見人失利 失名 心生歡喜,見人富貴 願他貧賤,失意輒怨天尤人,分外營求</item>
+        <!-- 1 -->
+        <item>沒一人善,唆一人鬥,心中暗舉惡意害人,助人為非一事,見人盜細物不阻,見人憂驚不慰,役人畜 不憐疲頓,不告人取人一針一草,遺棄字紙,暴棄五穀天物,負一約,醉犯一人,見一人饑寒不救濟,誦經差漏一字句,僧人乞食不與,拒一乞人,食酒肉五辛，誦經登三寶地,服一非法服,食一報人之畜等肉,殺一細微濕化屬命以及履巢破卵等事,背眾受利 傷用他錢,負貸,負遺,負寄托財物,因公恃勢乞索 巧索 取人一切財物,廢壞三寶尊像以及殿宇 器用等物,鬥秤等小出大入,販賣屠刀 漁網等物</item>
+    </string-array>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_detail">明細</string>
+    <string name="year">年</string>
+    <string name="month">月</string>
+    <string name="day">日</string>
+    <string name="hour">時</string>
+    <string name="minute">分</string>
+    <string name="second">秒</string>
+    <string name="deleteok">刪除成功</string>
+    <string name="deletefail">刪除失敗</string>
+    <string name="addok">添加成功</string>
+    <string name="title_activity_about">關於</string>
+    
+    <string name="about_title">關於功過格（了凡四訓）</string>
+    <string name="about">  功過格應用在不斷完善中，請點擊下方的 我要提建議 按鈕提出您寶貴的建議，以幫助提高程序的可用性。\n\n    Email: gongguoge@126.com</string>
+    <string name="about_author"> 作者：陳剛</string>
+    <string name="about_version"> 版本：</string>
+    
+	<string name="abount_str">關於</string>
+	<string name="feedback">我要提建議</string>
+	<string name="empty_user_detaillist">您還沒有相關明細記錄，請先添加。</string>
+</resources>

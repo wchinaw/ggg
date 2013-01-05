@@ -68,6 +68,10 @@ public class UserGongGuoListActivity extends Activity {
         mAdapter = new UserGongGuoAdapter(this);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemLongClickListener(mOnItemLongClickListener);
+        
+        if(mUserGongGuoList!=null && mUserGongGuoList.size()==0){
+        	Toast.makeText(this, R.string.empty_user_detaillist, Toast.LENGTH_LONG).show();
+        }
     }
     
     OnItemLongClickListener mOnItemLongClickListener = new OnItemLongClickListener(){
