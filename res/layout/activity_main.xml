@@ -11,14 +11,18 @@
         android:layout_alignParentLeft="false"
         android:layout_marginBottom="10dp" >
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="6dp"
+            android:layout_marginTop="10dp" >
+
         <TextView
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginRight="28dp"
-            android:layout_marginTop="16dp"
+            android:layout_centerHorizontal="true"
             android:text="@string/gong"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -26,9 +30,9 @@
         android:id="@+id/textMonthGong"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView1"
         android:layout_below="@+id/textView1"
-        android:layout_marginLeft="10dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="right"
         android:text="0"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -40,6 +44,7 @@
         android:layout_alignParentRight="false"
         android:layout_alignParentTop="false"
         android:layout_below="@+id/textMonthGong"
+        android:layout_centerHorizontal="true"
         android:text="@string/guo"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -47,8 +52,9 @@
         android:id="@+id/textMonthGuo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textMonthGong"
         android:layout_below="@+id/TextView01"
+        android:layout_centerHorizontal="true"
+        android:gravity="right"
         android:text="0"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -56,8 +62,8 @@
         android:id="@+id/TextView02"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView1"
         android:layout_below="@+id/textMonthGuo"
+        android:layout_centerHorizontal="true"
         android:text="@string/total"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -65,10 +71,13 @@
         android:id="@+id/textMonthTotal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textMonthGong"
         android:layout_below="@+id/TextView02"
+        android:layout_centerHorizontal="true"
+        android:gravity="right"
         android:text="0"
         android:textAppearance="?android:attr/textAppearanceMedium" />
+
+</RelativeLayout>
     </RelativeLayout>
 
     <LinearLayout

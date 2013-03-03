@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.cheng.ggg.utils.COM;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.UMFeedbackService;
 
 public class AboutActivity extends Activity implements OnClickListener {
@@ -28,6 +29,21 @@ public class AboutActivity extends Activity implements OnClickListener {
 			break;
 		}
 		
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+
+    
+
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
 	}
 
 }

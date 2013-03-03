@@ -275,7 +275,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	public ArrayList<GongGuoBase> getGongGuoBase(SQLiteDatabase db, String baseTableName, String detailTableName){
 		ArrayList<GongGuoBase> baseList = new ArrayList<GongGuoBase>();
     	
-		String sql="select * from "+baseTableName+";";
+		String sql="select * from "+baseTableName;
     	Cursor cursor=null;
     	try{
     		cursor=db.rawQuery(sql, null);
@@ -313,7 +313,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	public ArrayList<GongGuoDetail> getGongGuoDetail(SQLiteDatabase db, String detailTableName, int count){
 		ArrayList<GongGuoDetail> detailList = new ArrayList<GongGuoDetail>();
 		
-		String sql="select * from "+detailTableName+" where count="+count+";";
+		String sql="select * from "+detailTableName+" where count="+count;
     	Cursor cursor=null;
     	try{
     		cursor=db.rawQuery(sql, null);
@@ -366,7 +366,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	public ArrayList<UserGongGuo> getUserGongGuoListAll(SQLiteDatabase db){
 		ArrayList<UserGongGuo> detailList = new ArrayList<UserGongGuo>();
 		
-		String sql="select * from "+user_gong_table+" union all select * from "+user_guo_table+" order by time desc;";
+		String sql="select * from "+user_gong_table+" union all select * from "+user_guo_table+" order by time desc";
     	Cursor cursor=null;
     	try{
     		cursor=db.rawQuery(sql, null);
@@ -390,7 +390,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	public ArrayList<UserGongGuo> getUserGongGuoListByTableName(SQLiteDatabase db, String detailTableName){
 		ArrayList<UserGongGuo> detailList = new ArrayList<UserGongGuo>();
 		
-		String sql="select * from "+detailTableName+" order by time desc;";
+		String sql="select * from "+detailTableName+" order by time desc";
     	Cursor cursor=null;
     	try{
     		cursor=db.rawQuery(sql, null);
@@ -446,82 +446,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	/**进行数据库版本升级时需要做的工作*/
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// TODO Auto-generated method stub
-//		String col="";
-//		String in_col="";
-//		int num=0;
-//		String numstr="select * from test";
-//		try{
-//			Log.w("", "sql:"+numstr);
-//			Cursor cs=db.rawQuery(numstr, null);
-//			cs.moveToNext();
-//			num=cs.getColumnCount();
-//			Log.w("", "num:"+num);
-//			cs.close();
-//			}catch(SQLException e){
-//				e.printStackTrace();
-//			}
-//		if(isAdd){
-//			num++;
-//		}
-//		else 
-//			num--;
-//		if(num<=1||num>8){
-//			return;
-//		}
-//		String sql="ALTER TABLE test RENAME TO _temp_test; ";
-//		try{
-//			Log.w("", "sql:"+sql);
-//			db.execSQL(sql);
-//			}catch(SQLException e){
-//				e.printStackTrace();
-//			}
-//		
-//		for(int i=1;i<num;i++){
-//			if(i<num-1){
-//				col+="c"+i+" NVARCHAR(20)";
-//				in_col+="c"+i+"";
-//				col+=",";
-//				if(i<num-2){
-//					in_col+=",";
-//				}
-//			}
-//			else {
-//				col+="c"+i+" NVARCHAR(20)";
-//				if(!isAdd){
-//					if(num>2){
-//						in_col+=",";
-//					}
-//					in_col+="c"+i+"";
-//				}
-//			}
-//		}
-//		sql="create table test(" +
-//		"cid INTEGER PRIMARY KEY," +
-//		col +
-//		");";
-//		try{
-//			Log.w("", "sql:"+sql);
-//			db.execSQL(sql);
-//			}catch(SQLException e){
-//				e.printStackTrace();
-//			}
-//		if(isAdd)
-//			sql="insert into test select cid,"+in_col+",'0' from _temp_test;";
-//		else 
-//			sql="insert into test select cid,"+in_col+" from _temp_test;";
-//		try{
-//			Log.w("", "sql:"+sql);
-//			db.execSQL(sql);
-//			}catch(SQLException e){
-//				e.printStackTrace();
-//			}
-//		sql="drop table  _temp_test;";
-//		try{
-//			Log.w("", "sql:"+sql);
-//			db.execSQL(sql);
-//			}catch(SQLException e){
-//				e.printStackTrace();
-//			}
+		
 	}
 }

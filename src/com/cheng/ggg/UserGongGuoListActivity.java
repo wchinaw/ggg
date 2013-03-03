@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.cheng.ggg.database.SQLiteHelper;
 import com.cheng.ggg.types.UserGongGuo;
 import com.cheng.ggg.utils.COM;
+import com.umeng.analytics.MobclickAgent;
 
 
 /**用户功过明细*/
@@ -73,6 +74,21 @@ public class UserGongGuoListActivity extends Activity {
         	Toast.makeText(this, R.string.empty_user_detaillist, Toast.LENGTH_LONG).show();
         }
     }
+    
+    @Override
+	protected void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+
+    
+
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
     
     OnItemLongClickListener mOnItemLongClickListener = new OnItemLongClickListener(){
 
