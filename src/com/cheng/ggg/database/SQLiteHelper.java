@@ -17,7 +17,7 @@ import com.cheng.ggg.types.UserGongGuo;
 import com.cheng.ggg.utils.COM;
 
 public class SQLiteHelper extends SQLiteOpenHelper {
-	private static final int VERSION = 1;
+	private static final int VERSION = 2;
 	public boolean isAdd=true;
 	
 	public Context mContext = null;
@@ -78,6 +78,24 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 			")"
 			;
 	
+	/**用户自定义功*/
+	public String userdefine_gong_detail_table = "userdefine_gong_detail";
+	public String CREATE_TABLE_USERDEFINE_GONG_DETAIL = "create table "+userdefine_gong_detail_table+"("+
+			"id integer primary key autoincrement,"+
+			"name text,"+  //名称
+			"count integer"+ //功的数量 百功 十功等
+			")"
+			;
+	
+	/**用户自定义过*/
+	public String userdefine_guo_detail_table = "userdefine_guo_detail";
+	public String CREATE_TABLE_USERDEFINE_GUO_DETAIL = "create table "+userdefine_guo_detail_table+"("+
+			"id integer primary key autoincrement,"+
+			"name text,"+  //名称
+			"count integer"+ //功的数量 百过 十过等
+			")"
+			;
+	
 	public String guo_detail_table = "guo_detail";
 	public String CREATE_TABLE_GUO_DETAIL = "create table "+guo_detail_table+"("+
 			"id integer,"+
@@ -120,13 +138,19 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		initGONGGUOBaseTable(db,false);
 		initGONGGUOTable(db,true);
 		initGONGGUOTable(db,false);
-		
+		createUserDefineTables(db);
 		createUserTables(db);
 	}
 	
 	public void createUserTables(SQLiteDatabase db){
 		db.execSQL(CREATE_TABLE_USER_GONG);
 		db.execSQL(CREATE_TABLE_USER_GUO);
+	}
+	
+	/**创建用户自定义表*/
+	public void createUserDefineTables(SQLiteDatabase db){
+		db.execSQL(CREATE_TABLE_USERDEFINE_GONG_DETAIL);
+		db.execSQL(CREATE_TABLE_USERDEFINE_GUO_DETAIL);
 	}
 	
 	public void initGONGGUOBaseTable(SQLiteDatabase db, boolean bGong){
@@ -230,6 +254,35 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		}
 	}
 	
+	/**插入一条用户自定义功项*/
+	public void insertUserDefineGONGTable(SQLiteDatabase db,String value, int count){
+		insertUserDefineGONGGUOTable(db,userdefine_gong_detail_table,value,count);
+	}
+	
+	/**插入一条用户自定义过项*/
+	public void insertUserDefineGUOTable(SQLiteDatabase db,String value, int count){
+		insertUserDefineGONGGUOTable(db,userdefine_guo_detail_table,value,count);
+	}
+	
+	public void insertUserDefineGONGGUOTable(SQLiteDatabase db,boolean bGong, String value, int count){
+		if(bGong){
+			insertUserDefineGONGTable(db,value,count);
+		}
+		else{
+			insertUserDefineGUOTable(db,value,count);
+		}
+	}
+	/**插入一条用户自定义功过项*/
+	public void insertUserDefineGONGGUOTable(SQLiteDatabase db,String tableName, String value, int count){
+		
+		String str = "insert into "+ tableName +" values(null,'"+value+"','"+count+"')";
+		try{
+			db.execSQL(str);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
 	public void insertGONGGUOTable(SQLiteDatabase db,String tableName,int id, String value, String count){
 //		int intCount = Integer.parseInt(count);
 //		db.insert(table, nullColumnHack, values)
@@ -263,16 +316,18 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		insertUserGONGGUOTable(db,user_guo_table,parent_id,parent_name,name,count,time);
 	}
 	
+	/**获取功列表*/
 	public ArrayList<GongGuoBase> getGongBase(SQLiteDatabase db){
-		return getGongGuoBase(db,gong_base_table, gong_detail_table);
+		return getGongGuoBase(db,gong_base_table, userdefine_gong_detail_table, gong_detail_table);
 	}
 	
+	/**获取过列表*/
 	public ArrayList<GongGuoBase> getGuoBase(SQLiteDatabase db){
-		return getGongGuoBase(db,guo_base_table, guo_detail_table);
+		return getGongGuoBase(db,guo_base_table, userdefine_guo_detail_table, guo_detail_table);
 	}
 		
 
-	public ArrayList<GongGuoBase> getGongGuoBase(SQLiteDatabase db, String baseTableName, String detailTableName){
+	public ArrayList<GongGuoBase> getGongGuoBase(SQLiteDatabase db, String baseTableName,String userDefineDetailTableName, String detailTableName){
 		ArrayList<GongGuoBase> baseList = new ArrayList<GongGuoBase>();
     	
 		String sql="select * from "+baseTableName;
@@ -293,7 +348,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 					base.name = cursor.getString(1);
 					base.count = cursor.getInt(2);
 					
-					base.mList = getGongGuoDetail(db,detailTableName,base.count);
+					base.mList = getGongGuoDetail(db,userDefineDetailTableName,base.count,true);
+					base.addList(getGongGuoDetail(db,detailTableName,base.count,false));
 					
 					baseList.add(base);
     			}
@@ -310,7 +366,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		return baseList;
 	}
 	
-	public ArrayList<GongGuoDetail> getGongGuoDetail(SQLiteDatabase db, String detailTableName, int count){
+	public ArrayList<GongGuoDetail> getGongGuoDetail(SQLiteDatabase db, String detailTableName, int count, boolean bUserDefine){
 		ArrayList<GongGuoDetail> detailList = new ArrayList<GongGuoDetail>();
 		
 		String sql="select * from "+detailTableName+" where count="+count;
@@ -320,6 +376,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     		if(cursor != null){
     			while(cursor.moveToNext()){
     				GongGuoDetail detail = GongGuoDetail.getFromCursor(cursor);
+    				detail.bUserdefine = bUserDefine;
     				detailList.add(detail);
     			}
     			cursor.close();
@@ -331,6 +388,24 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	    	}
     			
 		return detailList;
+	}
+	
+	public int getUserDefineGongGuoId(SQLiteDatabase db,String value, int count){
+		int id = -1;
+		String tableName = "";
+		if(count > 0)
+			tableName = userdefine_gong_detail_table;
+		else
+			tableName = userdefine_guo_detail_table;
+		
+		String sql = "select id from "+tableName+" where name = '"+value+"'";
+		Cursor cursor = db.rawQuery( sql, null);
+		
+        if(cursor!=null && cursor.moveToFirst()) {
+        	id = cursor.getInt(0);
+        	cursor.close();
+        }
+		return id;
 	}
 	
 	public int getUserGongGuoCount(SQLiteDatabase db, String tableName){
@@ -431,12 +506,42 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		return rc;
 	}
 	
+	
+	/**用户自定义表项删除*/
+	public boolean deleteUserDefineGongItemById(SQLiteDatabase db, int id){
+		boolean rc = true;
+		rc = deleteItemById(db, userdefine_gong_detail_table, id);
+		return rc;
+	}
+	
+	/**用户自定义表项删除*/
+	public boolean deleteUserDefineGuoItemById(SQLiteDatabase db, int id){
+		boolean rc = true;
+		rc = deleteItemById(db, userdefine_guo_detail_table, id);
+		return rc;
+	}
+	
+	/**预定义了凡四训表项删除*/
+	public boolean deleteGongDetailById(SQLiteDatabase db, int id){
+		boolean rc = true;
+		rc = deleteItemById(db, gong_detail_table, id);
+		return rc;
+	}
+	
+	/**预定义了凡四训表项删除*/
+	public boolean deleteGuoDetailById(SQLiteDatabase db, int id){
+		boolean rc = true;
+		rc = deleteItemById(db, guo_detail_table, id);
+		return rc;
+	}
+	
+	/**用户功过记录*/
 	public boolean deleteUserGongItemById(SQLiteDatabase db, int id){
 		boolean rc = true;
 		rc = deleteItemById(db, user_gong_table, id);
 		return rc;
 	}
-	
+	/**用户功过记录*/
 	public boolean deleteUserGuoItemById(SQLiteDatabase db, int id){
 		boolean rc = true;
 		rc = deleteItemById(db, user_guo_table, id);
@@ -446,6 +551,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	/**进行数据库版本升级时需要做的工作*/
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		
+		COM.LOGE("onUpgrade", "oldVersion: "+oldVersion+" newVersion: "+newVersion);
+		if(oldVersion == 1)
+			createUserDefineTables(db);
 	}
 }

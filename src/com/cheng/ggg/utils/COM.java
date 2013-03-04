@@ -18,6 +18,7 @@ public class COM {
 	public static final String DBNAME = "ggg";//"/sdcard/ggg";
 	public static final String INTENT_GONG = "INTENT_GONG";
 	public static final String INTENT_TYPE = "INTENT_TYPE";
+	public static final String INTENT_USERDEFINE = "INTENT_USERDEFINE";//用户自定义标志
 	
 	public final static boolean DEBUG = true;
 	public static int LOGE(String TAG, String msg){

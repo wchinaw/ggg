@@ -124,7 +124,7 @@
             android:layout_marginRight="3dp"
             android:layout_weight="1"
             android:background="@drawable/gray_btn"
-            android:text="@string/abount_str" />
+            android:text="@string/more_str" />
 
     </LinearLayout>
 

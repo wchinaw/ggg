@@ -11,6 +11,8 @@ public class GongGuoDetail{
 	public int id;
 	public String name;
 	public int count;
+	/**用户自定义功过*/
+	public boolean bUserdefine = false;
 	
 	public void dump(){
 		COM.LOGE(TAG, "id: "+id);

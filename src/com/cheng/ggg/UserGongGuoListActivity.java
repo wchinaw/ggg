@@ -189,7 +189,7 @@ public class UserGongGuoListActivity extends Activity {
 			ViewHolder holder;
 			if(view == null){
 				holder = new ViewHolder();
-				view = mInflater.inflate(R.layout.listview_detail, null);
+				view = mInflater.inflate(R.layout.listview_user_detail, null);
 				holder.name = (TextView) view.findViewById(R.id.TextItemName);
 				holder.date = (TextView) view.findViewById(R.id.TextItemDate);
 				view.setTag(holder);

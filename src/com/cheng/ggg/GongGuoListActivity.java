@@ -2,14 +2,15 @@ package com.cheng.ggg;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.app.ExpandableListActivity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
 import android.view.View;
-import android.view.View.OnLongClickListener;
+import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseExpandableListAdapter;
@@ -23,6 +24,7 @@ import com.cheng.ggg.database.SQLiteHelper;
 import com.cheng.ggg.types.GongGuoBase;
 import com.cheng.ggg.types.GongGuoDetail;
 import com.cheng.ggg.utils.COM;
+import com.cheng.ggg.utils.DialogAPI;
 import com.umeng.analytics.MobclickAgent;
 
 public class GongGuoListActivity  extends ExpandableListActivity {
@@ -31,25 +33,37 @@ public class GongGuoListActivity  extends ExpandableListActivity {
     ExpandableListAdapter mAdapter;
     SQLiteHelper mSQLiteHelper;
     boolean mbGong = false;
-    ArrayList<GongGuoBase> mGongGuoBaseList;
-    Activity mThis;
-    ExpandableListView mListView;
+    /**用户自定义模式*/
+    boolean mbUserDefine = false;
+    public ArrayList<GongGuoBase> mGongGuoBaseList;
+    GongGuoListActivity mThis;
+    public ExpandableListView mListView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mThis = this;
+        getBundles();
+        
         mListView = getExpandableListView();
+        
 //        mListView.setOnItemClickListener(mOnItemClickListener);
-        mListView.setOnChildClickListener(mOnChildClickListener);
+//        mListView.setOnChildClickListener(mOnChildClickListener);
 //        mListView.setOnLongClickListener(mOnLongClickListener);
         mListView.setGroupIndicator(getResources().getDrawable(R.drawable.list_expand_btn));
+        
+        if(mbUserDefine)
+        	mListView.setOnCreateContextMenuListener(mContextMenuListener);
+        else
+        	mListView.setOnChildClickListener(mOnChildClickListener);
+        
 //        mListView.setBackgroundResource(R.drawable.c);
 //        mListView.setCacheColorHint(0xFFFFFFFF);
         // Set up our adapter
         mAdapter = new MyExpandableListAdapter();
         setListAdapter(mAdapter);
+        
 //        registerForContextMenu(getExpandableListView());
         mSQLiteHelper = SQLiteHelper.getInstance(this);
         
@@ -72,6 +86,47 @@ public class GongGuoListActivity  extends ExpandableListActivity {
         
     }
     
+//    public void removeItem(int groupPos, int childPos){
+//    	if(mGongGuoBaseList != null){
+//    		GongGuoBase base
+//    	}
+//    }
+    
+    OnCreateContextMenuListener mContextMenuListener = new OnCreateContextMenuListener(){
+
+		public void onCreateContextMenu(ContextMenu menu, View v,
+				ContextMenuInfo menuInfo) {
+			ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListView.ExpandableListContextMenuInfo) menuInfo;
+
+			 int type = ExpandableListView.getPackedPositionType(info.packedPosition);
+		        //点击的是子列表
+			 int groupPos = ExpandableListView.getPackedPositionGroup(info.packedPosition); 
+			 GongGuoBase base = (GongGuoBase)mAdapter.getGroup(groupPos);
+			 base.dump();
+			 
+		        if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {            
+		            
+		            int childPos = ExpandableListView.getPackedPositionChild(info.packedPosition); 
+//		            Toast.makeText(mThis, "hahatest for child.", Toast.LENGTH_SHORT).show();
+		            //相应显示dialog吧~
+		            
+		            GongGuoDetail detail = (GongGuoDetail) mAdapter.getChild(groupPos,childPos);
+		            detail.dump();
+		            
+//		            menu.add(0,0,0,"删除"); 
+		            DialogAPI.showDeleteItemDialog(mThis, detail,groupPos, childPos, mbGong);
+		        } 
+		        //点击的是组列表
+		        else if (type == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
+//		            Toast.makeText(mThis, "hahatest for group.", Toast.LENGTH_SHORT).show();
+		            //相应显示dialog吧~
+		            
+		            DialogAPI.showAddItemDialog(mThis, base.name, base,mbGong);
+		        }
+		}
+    	
+    };
+    
     
     
     @Override
@@ -89,21 +144,49 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 
 
 	//用于添加自定义功过。
-	OnLongClickListener mOnLongClickListenerGroup = new OnLongClickListener(){
-
-		public boolean onLongClick(View arg0) {
-			GongGuoBase base = (GongGuoBase) arg0.getTag();
-			COM.LOGE(TAG, "arg0:"+arg0.toString());
-			return false;
-		}
-    	
-    };
+//	OnLongClickListener mOnLongClickListenerGroup = new OnLongClickListener(){
+//
+//		public boolean onLongClick(View arg0) {
+//			GongGuoBase base = (GongGuoBase) arg0.getTag();
+//			COM.LOGE(TAG, "arg0:"+arg0.toString());
+//			return false;
+//		}
+//    	
+//    };
     
     public void getBundles(){
     	Intent intent = getIntent();
     	if(intent != null){
     		mbGong = intent.getBooleanExtra(COM.INTENT_GONG, false);
+    		mbUserDefine = intent.getBooleanExtra(COM.INTENT_USERDEFINE, false);
     	}
+    	
+    	
+    	
+    	String strTitle;
+    	if(mbUserDefine){
+    		String strGongGuo;
+    		if(mbGong){
+    			strGongGuo = getResources().getString(R.string.gong);
+    		}
+    		else{
+    			strGongGuo = getResources().getString(R.string.guo);
+    		}
+    		strTitle = getResources().getString(R.string.user_define);
+    		strTitle = strTitle+strGongGuo;
+    	}
+    	else{
+    		if(mbGong){
+    			strTitle = getResources().getString(R.string.record_gong);
+    		}
+    		else{
+    			strTitle = getResources().getString(R.string.record_guo);
+    		}
+    	}
+    	
+    	setTitle(strTitle);
+    	
+    	
     }
     
     public OnChildClickListener mOnChildClickListener = new OnChildClickListener(){
@@ -154,10 +237,14 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 		public Object getChild(int groupPosition, int childPosition) {
 			GongGuoBase base = (GongGuoBase) getGroup(groupPosition);
 			if(base != null && base.mList != null){
-				return base.mList.get(childPosition);
+				if(childPosition < base.mList.size())
+					return base.mList.get(childPosition);
+				else
+					return null;
 			}
 			return null;
 		}
+		
 
 		public long getChildId(int groupPosition, int childPosition) {
 			// TODO Auto-generated method stub
@@ -189,7 +276,10 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 
 		public Object getGroup(int groupPosition) {
 			if(mGongGuoBaseList != null){
-				return mGongGuoBaseList.get(groupPosition);
+				if(groupPosition < mGongGuoBaseList.size())
+					return mGongGuoBaseList.get(groupPosition);
+				else
+					return null;
 			}
 			return null;
 		}
@@ -217,7 +307,7 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 		public TextView getGenericViewByStyle(int styleId) {
             // Layout parameters for the ExpandableListView
             AbsListView.LayoutParams lp = new AbsListView.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, 64);
+                    ViewGroup.LayoutParams.FILL_PARENT, 64);
 
             TextView textView = new TextView(GongGuoListActivity.this);
             textView.setLayoutParams(lp);
@@ -235,7 +325,8 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 			 TextView textView = getGenericGroupView();
 			 GongGuoBase base = (GongGuoBase)getGroup(groupPosition);
 	         textView.setText(base.name);
-	         textView.setOnLongClickListener(mOnLongClickListenerGroup);
+//	         textView.setOnClickListener(l)
+//	         textView.setOnLongClickListener(mOnLongClickListenerGroup);
 	         textView.setTag(base);
 			return textView;
 		}
@@ -292,7 +383,7 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 ////				mListView.setSelectedChild(groupPosition, childPosition, shouldExpandGroup)
 ////				Toast.makeText(mContext, "mChildClick "+g.groupPosition+" "+g.childPosition, Toast.LENGTH_SHORT).show();
 //			}
-			
+//			
 //		};
 		
 	}

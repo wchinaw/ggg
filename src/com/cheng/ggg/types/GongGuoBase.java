@@ -13,6 +13,18 @@ public class GongGuoBase {
 	public int count;
 	public ArrayList<GongGuoDetail> mList;
 	
+	public void addList(ArrayList<GongGuoDetail> list){
+		if(mList == null)
+			mList = new ArrayList<GongGuoDetail>();
+		
+		if(list != null){
+			int count = list.size();
+			for(int i=0; i<count; i++){
+				mList.add(list.get(i));
+			}
+		}
+	}
+	
 	public void dump(){
 		COM.LOGE(TAG, "id: "+id);
 		COM.LOGE(TAG, "name: "+name);
