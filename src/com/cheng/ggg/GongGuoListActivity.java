@@ -2,18 +2,20 @@ package com.cheng.ggg;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.app.ExpandableListActivity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
@@ -61,7 +63,7 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 //        mListView.setBackgroundResource(R.drawable.c);
 //        mListView.setCacheColorHint(0xFFFFFFFF);
         // Set up our adapter
-        mAdapter = new MyExpandableListAdapter();
+        mAdapter = new MyExpandableListAdapter(this);
         setListAdapter(mAdapter);
         
 //        registerForContextMenu(getExpandableListView());
@@ -193,7 +195,7 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 
 		public boolean onChildClick(ExpandableListView parent, View v,
 				int groupPosition, int childPosition, long id) {
-			GroupChild g = (GroupChild) v.getTag();
+			GroupChildHolder g = (GroupChildHolder) v.getTag();
 			
 			if(g != null){
 				SQLiteDatabase db = mSQLiteHelper.getWritableDatabase();
@@ -210,6 +212,10 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 				else{
 					mSQLiteHelper.insertUserGUOTable(db, detail.id, base.name,detail.name, detail.count,time);
 				}
+				
+				detail.userCount++;
+				base.userCount++;
+				mListView.invalidateViews();
 //				mThis.finish();
 				
 				Toast.makeText(mThis, base.name+" "+detail.name+" "+mThis.getString(R.string.addok), Toast.LENGTH_SHORT).show();
@@ -234,6 +240,14 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 	
 	public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 
+		LayoutInflater mInflater; 
+    	Activity mActivity;
+    	
+    	public MyExpandableListAdapter(Activity activity){
+    		mActivity = activity;
+    		mInflater = LayoutInflater.from(mActivity);
+    	}
+		
 		public Object getChild(int groupPosition, int childPosition) {
 			GongGuoBase base = (GongGuoBase) getGroup(groupPosition);
 			if(base != null && base.mList != null){
@@ -255,11 +269,19 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 		
 		public View getChildView(int groupPosition, int childPosition,
 				boolean isLastChild, View convertView, ViewGroup parent) {
-			TextView textView = getGenericChildView();
+			
 			GongGuoDetail detail = (GongGuoDetail) getChild(groupPosition, childPosition);
-            textView.setText(detail.name);
+			View textView = getGenericChildView(detail,groupPosition,childPosition);
+			
+			GroupChildHolder holder = (GroupChildHolder) textView.getTag();
+			
+			holder.txtName.setText(detail.name);
+			holder.txtCount.setText(detail.userCount+"");
+			
+			holder.childPosition = childPosition;
+			holder.groupPosition = groupPosition;
 //            textView.setOnClickListener(mChildClick);
-            textView.setTag(new GroupChild(groupPosition, childPosition));
+//            textView.setTag(new GroupChild(groupPosition, childPosition));
             return textView;
 		}
 
@@ -296,38 +318,86 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 			return 0;
 		}
 		
-		public TextView getGenericGroupView(){
-			return getGenericViewByStyle(R.style.listItem20dp);
+		public View getGenericGroupView(GongGuoBase base){
+			return getGroupViewByStyle(base, R.style.listItem20dp);
 		}
 		
-		public TextView getGenericChildView(){
-			return getGenericViewByStyle(R.style.listItem18dp);
+		public View getGenericChildView(GongGuoDetail detail,int groupPosition, int childPosition){
+			return getGenericViewByStyle(detail,groupPosition, childPosition,R.style.listItem18dp);
 		}
 		
-		public TextView getGenericViewByStyle(int styleId) {
-            // Layout parameters for the ExpandableListView
-            AbsListView.LayoutParams lp = new AbsListView.LayoutParams(
-                    ViewGroup.LayoutParams.FILL_PARENT, 64);
-
-            TextView textView = new TextView(GongGuoListActivity.this);
-            textView.setLayoutParams(lp);
-            // Center the text vertically
-            textView.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
-            // Set the text starting position
-            textView.setPadding(80, 0, 0, 0);
-            textView.setTextAppearance(mThis, styleId);
-            return textView;
+		public View getGroupViewByStyle(final GongGuoBase base, int styleId){
+			GroupHolder holder = new GroupHolder();
+            View view = mInflater.inflate(R.layout.listview_group, null);
+			holder.txtName = (TextView) view.findViewById(R.id.TextItemName);
+			holder.txtCount = (TextView) view.findViewById(R.id.TextItemCount);	
+			holder.button = (Button) view.findViewById(R.id.button1);
+            holder.txtName.setTextAppearance(mThis, styleId);
+            holder.txtCount.setTextAppearance(mThis, styleId);
+            
+            if(mbUserDefine){
+            	holder.button.setVisibility(View.VISIBLE);
+            	holder.button.setText(R.string.add);
+            	holder.button.setOnClickListener(new OnClickListener(){
+            		
+					public void onClick(View arg0) {
+						DialogAPI.showAddItemDialog(mThis, base.name, base, mbGong);
+					}
+            	});
+            	holder.txtCount.setVisibility(View.GONE);
+            }
+            else{
+            	holder.button.setVisibility(View.GONE);
+            	holder.txtCount.setVisibility(View.VISIBLE);
+            	holder.txtCount.setTextAppearance(mThis, styleId);
+            }
+            
+            view.setTag(holder);
+            return view;
+		}
+		
+		public View getGenericViewByStyle(final GongGuoDetail detail,final int groupPosition, final int childPosition, int styleId) {
+            GroupChildHolder holder = new GroupChildHolder();
+            View view = mInflater.inflate(R.layout.listview_detail, null);
+			holder.txtName = (TextView) view.findViewById(R.id.TextItemName);
+			holder.txtCount = (TextView) view.findViewById(R.id.TextItemCount);
+			holder.button = (Button) view.findViewById(R.id.button1);	
+            holder.txtName.setTextAppearance(mThis, styleId);
+            
+            if(mbUserDefine){
+            	holder.button.setVisibility(View.VISIBLE);
+            	holder.button.setText(R.string.delete);
+            	holder.button.setOnClickListener(new OnClickListener(){
+            		
+					public void onClick(View arg0) {
+						DialogAPI.showDeleteItemDialog(mThis, detail, groupPosition, childPosition, mbGong);
+					}
+            	});
+            	holder.txtCount.setVisibility(View.GONE);
+            }
+            else{
+            	holder.button.setVisibility(View.GONE);
+            	holder.txtCount.setVisibility(View.VISIBLE);
+            	holder.txtCount.setTextAppearance(mThis, styleId);
+            }
+            
+            view.setTag(holder);
+            return view;
         }
 
 		public View getGroupView(int groupPosition, boolean isExpanded,
 				View convertView, ViewGroup parent) {
 			
-			 TextView textView = getGenericGroupView();
 			 GongGuoBase base = (GongGuoBase)getGroup(groupPosition);
-	         textView.setText(base.name);
-//	         textView.setOnClickListener(l)
-//	         textView.setOnLongClickListener(mOnLongClickListenerGroup);
-	         textView.setTag(base);
+			 
+			 View textView = getGenericGroupView(base);
+			 
+			 GroupHolder holder = (GroupHolder) textView.getTag();
+			 
+			 holder.txtName.setText(base.name);
+			 holder.txtCount.setText(base.userCount+"");
+			 holder.groupPosition = groupPosition;
+
 			return textView;
 		}
 
@@ -388,13 +458,35 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 		
 	}
 	
-	class GroupChild{
+	class GroupChildHolder{
 		int groupPosition;
 		int childPosition;
+		TextView txtName;
+		TextView txtCount;
+		Button button;
 		
-		public GroupChild(int groupPos, int childPos){
+		public GroupChildHolder(){
+			
+		}
+		
+		public GroupChildHolder(int groupPos, int childPos){
 			groupPosition = groupPos;
 			childPosition = childPos;
+		}
+	}
+	
+	class GroupHolder{
+		int groupPosition;
+		TextView txtName;
+		TextView txtCount;
+		Button button;
+		
+		public GroupHolder(){
+			
+		}
+		
+		public GroupHolder(int groupPos){
+			groupPosition = groupPos;
 		}
 	}
 

@@ -350,7 +350,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 					
 					base.mList = getGongGuoDetail(db,userDefineDetailTableName,base.count,true);
 					base.addList(getGongGuoDetail(db,detailTableName,base.count,false));
-					
+					base.initUserCount();
 					baseList.add(base);
     			}
     			
@@ -370,13 +370,22 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		ArrayList<GongGuoDetail> detailList = new ArrayList<GongGuoDetail>();
 		
 		String sql="select * from "+detailTableName+" where count="+count;
+		
+		String userGongGuoTableName;
+		if(count > 0)
+			userGongGuoTableName = user_gong_table;
+		else
+			userGongGuoTableName = user_guo_table;
+		
     	Cursor cursor=null;
     	try{
     		cursor=db.rawQuery(sql, null);
     		if(cursor != null){
     			while(cursor.moveToNext()){
     				GongGuoDetail detail = GongGuoDetail.getFromCursor(cursor);
+    				
     				detail.bUserdefine = bUserDefine;
+    				detail.userCount = getUserGongGuoCountByName(db,userGongGuoTableName,detail.name,count);
     				detailList.add(detail);
     			}
     			cursor.close();
@@ -408,10 +417,22 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		return id;
 	}
 	
+	public int getUserGongGuoCountByName(SQLiteDatabase db, String tableName, String name, int count){
+		int total = 0;
+		String sql = "select * from "+tableName +" where name = '"+name+"' and count = '"+count+"'";
+		Cursor cursor = db.rawQuery( sql, null);
+		
+        if(cursor!=null && cursor.moveToFirst()) {
+        	total = cursor.getCount();
+        	cursor.close();
+        }
+
+		return total;
+	}
+	
 	public int getUserGongGuoCount(SQLiteDatabase db, String tableName){
 		int count = 0;
 		String sql = "select SUM(count) from "+tableName;
-		String[] strArray = new String[1];
 		Cursor cursor = db.rawQuery( sql, null);
 		
         if(cursor!=null && cursor.moveToFirst()) {

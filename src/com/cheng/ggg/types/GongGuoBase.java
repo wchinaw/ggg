@@ -13,6 +13,9 @@ public class GongGuoBase {
 	public int count;
 	public ArrayList<GongGuoDetail> mList;
 	
+	//用户功过累计
+	public int userCount;
+	
 	public void addList(ArrayList<GongGuoDetail> list){
 		if(mList == null)
 			mList = new ArrayList<GongGuoDetail>();
@@ -21,6 +24,16 @@ public class GongGuoBase {
 			int count = list.size();
 			for(int i=0; i<count; i++){
 				mList.add(list.get(i));
+			}
+		}
+	}
+	
+	public void initUserCount(){
+		if(mList != null){
+			int len = mList.size();
+			userCount = 0;
+			for(int i=0; i<len; i++){
+				userCount += mList.get(i).userCount;
 			}
 		}
 	}

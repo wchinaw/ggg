@@ -13,6 +13,7 @@ public class GongGuoDetail{
 	public int count;
 	/**用户自定义功过*/
 	public boolean bUserdefine = false;
+	public int userCount;//用户在此功过上的累计个数
 	
 	public void dump(){
 		COM.LOGE(TAG, "id: "+id);
