@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.ExpandableListActivity;
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -32,7 +33,7 @@ import com.umeng.analytics.MobclickAgent;
 public class GongGuoListActivity  extends ExpandableListActivity {
 	
 	final String TAG = "GongGuoListActivity";
-    ExpandableListAdapter mAdapter;
+	public BaseExpandableListAdapter mAdapter;
     SQLiteHelper mSQLiteHelper;
     boolean mbGong = false;
     /**用户自定义模式*/
@@ -65,7 +66,7 @@ public class GongGuoListActivity  extends ExpandableListActivity {
         // Set up our adapter
         mAdapter = new MyExpandableListAdapter(this);
         setListAdapter(mAdapter);
-        
+                
 //        registerForContextMenu(getExpandableListView());
         mSQLiteHelper = SQLiteHelper.getInstance(this);
         
@@ -104,7 +105,7 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 		        //点击的是子列表
 			 int groupPos = ExpandableListView.getPackedPositionGroup(info.packedPosition); 
 			 GongGuoBase base = (GongGuoBase)mAdapter.getGroup(groupPos);
-			 base.dump();
+//			 base.dump();
 			 
 		        if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {            
 		            
@@ -113,7 +114,7 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 		            //相应显示dialog吧~
 		            
 		            GongGuoDetail detail = (GongGuoDetail) mAdapter.getChild(groupPos,childPos);
-		            detail.dump();
+//		            detail.dump();
 		            
 //		            menu.add(0,0,0,"删除"); 
 		            DialogAPI.showDeleteItemDialog(mThis, detail,groupPos, childPos, mbGong);
@@ -271,6 +272,9 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 				boolean isLastChild, View convertView, ViewGroup parent) {
 			
 			GongGuoDetail detail = (GongGuoDetail) getChild(groupPosition, childPosition);
+			if(detail == null)
+				return null;
+			
 			View textView = getGenericChildView(detail,groupPosition,childPosition);
 			
 			GroupChildHolder holder = (GroupChildHolder) textView.getTag();

@@ -53,7 +53,6 @@ public class MainActivity extends Activity implements OnClickListener{
         UmengUpdateAgent.update(this);
         //自动捕获异常退出（FC）
         MobclickAgent.onError(this);
-        
         //用户反馈
         //代码中启用Feedback模块，调用下面函数进入反馈界面：
         //UMFeedbackService.openUmengFeedbackSDK(this);

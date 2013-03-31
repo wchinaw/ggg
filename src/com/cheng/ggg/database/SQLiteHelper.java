@@ -410,8 +410,14 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		String sql = "select id from "+tableName+" where name = '"+value+"'";
 		Cursor cursor = db.rawQuery( sql, null);
 		
-        if(cursor!=null && cursor.moveToFirst()) {
-        	id = cursor.getInt(0);
+//        if(cursor!=null && cursor.moveToFirst()) {
+//        	id = cursor.getInt(0);
+//        	cursor.close();
+//        }
+		if(cursor!=null) {
+			if( cursor.moveToFirst()){
+				id = cursor.getInt(0);
+			}
         	cursor.close();
         }
 		return id;
@@ -422,8 +428,13 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		String sql = "select * from "+tableName +" where name = '"+name+"' and count = '"+count+"'";
 		Cursor cursor = db.rawQuery( sql, null);
 		
-        if(cursor!=null && cursor.moveToFirst()) {
-        	total = cursor.getCount();
+//        if(cursor!=null && cursor.moveToFirst()) {
+//        	total = cursor.getCount();
+//        	cursor.close();
+//        }
+		if(cursor!=null){
+			if(cursor.moveToFirst()) 
+				total = cursor.getCount();
         	cursor.close();
         }
 
@@ -435,8 +446,13 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		String sql = "select SUM(count) from "+tableName;
 		Cursor cursor = db.rawQuery( sql, null);
 		
-        if(cursor!=null && cursor.moveToFirst()) {
-        	count = cursor.getInt(0);
+//        if(cursor!=null && cursor.moveToFirst()) {
+//        	count = cursor.getInt(0);
+//        	cursor.close();
+//        }
+		if(cursor!=null) {
+			if(cursor.moveToFirst())
+				count = cursor.getInt(0);
         	cursor.close();
         }
 

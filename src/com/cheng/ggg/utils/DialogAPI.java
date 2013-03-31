@@ -21,6 +21,7 @@ import com.cheng.ggg.R;
 import com.cheng.ggg.database.SQLiteHelper;
 import com.cheng.ggg.types.GongGuoBase;
 import com.cheng.ggg.types.GongGuoDetail;
+import com.umeng.analytics.MobclickAgent;
 
 public class DialogAPI {
 	
@@ -70,7 +71,8 @@ public class DialogAPI {
 								if(base.mList != null){
 									COM.LOGE("", "childPos:"+childPos);
 									base.mList.remove(childPos);
-									activity.mListView.invalidateViews();
+//									activity.mListView.invalidateViews();
+									activity.mAdapter.notifyDataSetChanged();
 								}
 								
 								Toast.makeText(activity, R.string.delete_ok, Toast.LENGTH_SHORT).show();
@@ -128,7 +130,20 @@ public class DialogAPI {
 						detail.name = txt;
 						detail.id = sqlite.getUserDefineGongGuoId(db, txt, base.count);
 						base.mList.add(0, detail);
-						activity.mListView.invalidateViews();
+//						activity.mListView.invalidateViews();
+						activity.mAdapter.notifyDataSetChanged();
+						
+						String event_id = "usrdefine";
+						if(detail.count > 0){
+							event_id +=detail.count+"gong";
+						}
+						else{
+							event_id +=(-detail.count)+"guo";
+						}
+						
+						COM.LOGE("", "event_id :"+event_id+" name:"+detail.name);
+						
+						MobclickAgent.onEvent(activity, event_id, detail.name);
 					}
 						Toast.makeText(activity, R.string.add_ok, Toast.LENGTH_SHORT).show();
 

@@ -17,6 +17,7 @@
     <string name="guo">過</string>
     <string name="total">合計</string>
     <string name="title_activity_gong">GongActivity</string>
+    <string name="title_activity_more">更多</string>
 
     <string-array name="GONG_STR">
         <item>准百功</item>
@@ -104,11 +105,25 @@
     <string name="title_activity_about">關於</string>
     
     <string name="about_title">關於功過格（了凡四訓）</string>
-    <string name="about">  功過格應用在不斷完善中，請點擊下方的 我要提建議 按鈕提出您寶貴的建議，以幫助提高程序的可用性。\n\n    Email: gongguoge@126.com</string>
-    <string name="about_author"> 作者：陳剛</string>
+    <string name="about">  功過格應用在不斷完善中，請點擊  我要提建議 按鈕提出您寶貴的建議，以幫助提高程序的可用性。\n\n    Email: gongguoge@126.com \n\n    QQ群: 138512516</string>
+    <string name="about_author"> 作者：聖剛</string>
     <string name="about_version"> 版本：</string>
     
+    <string name="more_str">更多</string>
 	<string name="abount_str">關於</string>
+	<string name="userdefine_gong">自定義功</string>
+	<string name="userdefine_guo">自定義過</string>
 	<string name="feedback">我要提建議</string>
+	
+	<string name="ok">確定</string>
+	<string name="cancel">取消</string>
+	<string name="add">添加</string>
+	<string name="delete">刪除</string>
+	<string name="input_empty">請在輸入框中添加自定義功過名稱</string>
+	<string name="add_ok">添加成功</string>
+	<string name="delete_ok">刪除成功</string>
+	<string name="delete_fail">刪除失敗，請稍候重試</string>
+	<string name="user_define">自定義</string>
+	
 	<string name="empty_user_detaillist">您還沒有相關明細記錄，請先添加。</string>
 </resources>
