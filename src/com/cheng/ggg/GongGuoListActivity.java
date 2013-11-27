@@ -3,11 +3,15 @@ package com.cheng.ggg;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ExpandableListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.DataSetObserver;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -17,7 +21,6 @@ import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.TextView;
@@ -28,6 +31,7 @@ import com.cheng.ggg.types.GongGuoBase;
 import com.cheng.ggg.types.GongGuoDetail;
 import com.cheng.ggg.utils.COM;
 import com.cheng.ggg.utils.DialogAPI;
+import com.cheng.ggg.utils.Settings;
 import com.umeng.analytics.MobclickAgent;
 
 public class GongGuoListActivity  extends ExpandableListActivity {
@@ -41,6 +45,9 @@ public class GongGuoListActivity  extends ExpandableListActivity {
     public ArrayList<GongGuoBase> mGongGuoBaseList;
     GongGuoListActivity mThis;
     public ExpandableListView mListView;
+    Resources mRs;
+    boolean mbGongguoconfirm_dialog = false;
+    SharedPreferences sp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,8 +55,9 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 
         mThis = this;
         getBundles();
-        
+        sp = PreferenceManager.getDefaultSharedPreferences(this); 
         mListView = getExpandableListView();
+        mRs = getResources();
         
 //        mListView.setOnItemClickListener(mOnItemClickListener);
 //        mListView.setOnChildClickListener(mOnChildClickListener);
@@ -140,7 +148,7 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 
 	@Override
 	protected void onResume() {
-		
+		mbGongguoconfirm_dialog = sp.getBoolean(Settings.gongguoconfirm_dialog, false);
 		super.onResume();
 		MobclickAgent.onResume(this);
 	}
@@ -163,8 +171,6 @@ public class GongGuoListActivity  extends ExpandableListActivity {
     		mbGong = intent.getBooleanExtra(COM.INTENT_GONG, false);
     		mbUserDefine = intent.getBooleanExtra(COM.INTENT_USERDEFINE, false);
     	}
-    	
-    	
     	
     	String strTitle;
     	if(mbUserDefine){
@@ -192,6 +198,44 @@ public class GongGuoListActivity  extends ExpandableListActivity {
     	
     }
     
+	public void createAddConfirmDialog(final GongGuoBase base,final  GongGuoDetail detail,
+			final  int time){
+		AlertDialog dialog =  new AlertDialog.Builder(this)
+        .setTitle(R.string.gonggongadd_confirm)
+        .setMessage(base.name+" "+detail.name)
+        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+            	insertOneItem(base,detail,time);
+            }
+        })
+        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+            }
+        })
+        .create();
+		
+		dialog.show();
+	}
+    
+    public void insertOneItem(GongGuoBase base,GongGuoDetail detail,int time){
+    	SQLiteDatabase db = mSQLiteHelper.getWritableDatabase();
+		if(mbGong){
+			mSQLiteHelper.insertUserGONGTable(db, detail.id,base.name, detail.name, detail.count,time);
+		}
+		else{
+			mSQLiteHelper.insertUserGUOTable(db, detail.id, base.name,detail.name, detail.count,time);
+		}
+		
+		detail.userCount++;
+		base.userCount++;
+		mListView.invalidateViews();
+//		mThis.finish();
+		
+		Toast.makeText(mThis, base.name+" "+detail.name+" "+mThis.getString(R.string.addok), Toast.LENGTH_SHORT).show();
+		db.close();
+			
+    }
+    
     public OnChildClickListener mOnChildClickListener = new OnChildClickListener(){
 
 		public boolean onChildClick(ExpandableListView parent, View v,
@@ -199,28 +243,17 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 			GroupChildHolder g = (GroupChildHolder) v.getTag();
 			
 			if(g != null){
-				SQLiteDatabase db = mSQLiteHelper.getWritableDatabase();
-				
 				int time = (int) (System.currentTimeMillis()/1000);
-				
 				GongGuoBase base = (GongGuoBase)mAdapter.getGroup(g.groupPosition);
-				
 				GongGuoDetail detail = (GongGuoDetail) mAdapter.getChild(g.groupPosition,g.childPosition);
 				
-				if(mbGong){
-					mSQLiteHelper.insertUserGONGTable(db, detail.id,base.name, detail.name, detail.count,time);
+				//插入一条记录
+				if(mbGongguoconfirm_dialog == true){
+					createAddConfirmDialog(base,detail,time);
 				}
 				else{
-					mSQLiteHelper.insertUserGUOTable(db, detail.id, base.name,detail.name, detail.count,time);
+					insertOneItem(base,detail,time);
 				}
-				
-				detail.userCount++;
-				base.userCount++;
-				mListView.invalidateViews();
-//				mThis.finish();
-				
-				Toast.makeText(mThis, base.name+" "+detail.name+" "+mThis.getString(R.string.addok), Toast.LENGTH_SHORT).show();
-					
 			}
 			
 			

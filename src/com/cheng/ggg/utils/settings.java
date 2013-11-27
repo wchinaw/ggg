@@ -3,15 +3,19 @@ package com.cheng.ggg.utils;
 import java.util.Locale;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 
 
-public class settings {
+public class Settings {
 	
 	public static final int CHINESE_SIMPLE = 0;  //简体中文
 	public static final int CHINESE_TRADITION = 1; //繁体中文
+	
+	public static final String gongguoconfirm_dialog = "gongguoconfirm_dialog";
 	
 	
 	public static void changeLauguage(Context context, int lang){

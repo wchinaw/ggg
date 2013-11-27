@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cheng.ggg"
-    android:versionCode="2"
-    android:versionName="0.2" >
+    android:versionCode="3"
+    android:versionName="0.3" >
 
    
     <!--
@@ -46,6 +46,10 @@
         <activity
             android:name="com.cheng.ggg.AboutActivity"
             android:label="@string/title_activity_more" >
+        </activity>
+        <activity
+            android:name="com.cheng.ggg.SettingsActivity"
+            android:label="@string/settings" >
         </activity>
         
         

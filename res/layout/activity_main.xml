@@ -10,8 +10,22 @@
         android:layout_above="@+id/linearLayout1"
         android:layout_alignParentLeft="false"
         android:layout_marginBottom="10dp" >
+        
+        <TextView
+            android:id="@+id/textViewTips"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="6dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginTop="12dp"
+            android:layout_toLeftOf="@+id/layoutgongguo"
+            android:text="Medium Text"
+            android:textColor="#777777"
+            android:textSize="16dp" />
 
         <RelativeLayout
+            android:id="@+id/layoutgongguo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"

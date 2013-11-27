@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>  
+    <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">  
+    <CheckBoxPreference android:key="gongguoconfirm_dialog"  
+        android:title="记录确认对话框" android:summary="在记录功过时，弹出确认对话框以免误触摸。"></CheckBoxPreference>  
+    </PreferenceScreen>

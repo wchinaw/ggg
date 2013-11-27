@@ -1,5 +1,9 @@
 package com.cheng.ggg.utils;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -8,6 +12,7 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.Environment;
 import android.util.Log;
 
 import com.cheng.ggg.R;
@@ -19,6 +24,10 @@ public class COM {
 	public static final String INTENT_GONG = "INTENT_GONG";
 	public static final String INTENT_TYPE = "INTENT_TYPE";
 	public static final String INTENT_USERDEFINE = "INTENT_USERDEFINE";//用户自定义标志
+	
+	public static final String BACKUP_FILENAME = "ggg.db";
+	//进行恢复时，先对数据库文件进行备份，以便恢复失败时可以使用原来的数据。
+	public static final String BACKUP_FOR_RESTORE_EXT = "_backup";
 	
 	public final static boolean DEBUG = false;
 	public static int LOGE(String TAG, String msg){
@@ -64,4 +73,32 @@ public class COM {
 
 
 	}
+	
+	public static String getBackupFilePath(){
+		return Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+BACKUP_FILENAME;
+	}
+	
+	public static int copyFile(String fromFile, String toFile)
+	{
+
+	try 
+	{
+	InputStream fosfrom = new FileInputStream(fromFile);
+	OutputStream fosto = new FileOutputStream(toFile);
+	byte bt[] = new byte[1024];
+	int c;
+	while ((c = fosfrom.read(bt)) > 0) 
+	{
+	fosto.write(bt, 0, c);
+	}
+	fosfrom.close();
+	fosto.close();
+	return 0;
+
+	} catch (Exception ex) 
+	{
+	return -1;
+	}
+	}
+
 }

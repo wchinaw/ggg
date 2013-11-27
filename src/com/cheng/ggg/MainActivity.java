@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -20,6 +21,9 @@ public class MainActivity extends Activity implements OnClickListener{
 	
 	SQLiteHelper mSQLiteHelper;
 	TextView textGong, textGuo, textTotal;
+	TextView textTips;
+	Animation mAlphaAnimation;
+	String tipsStr[] = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,8 @@ public class MainActivity extends Activity implements OnClickListener{
         textGong = (TextView) findViewById(R.id.textMonthGong);
         textGuo = (TextView) findViewById(R.id.textMonthGuo);
         textTotal = (TextView) findViewById(R.id.textMonthTotal);
+        
+        initTips(true);
 //        SQLiteHelper helper = SQLiteHelper.getInstance(this);
 //        SQLiteDatabase  db = helper.getReadableDatabase();
 //        ArrayList<GongGuoBase> list = helper.getGongBase(db);
@@ -62,6 +68,37 @@ public class MainActivity extends Activity implements OnClickListener{
 
     }
     
+    public void initTips(boolean bAnimation){
+    	if(textTips == null)
+    		textTips = (TextView) findViewById(R.id.textViewTips);
+    	if(tipsStr == null)
+    		tipsStr = getResources().getStringArray(R.array.TIPS_STR);
+    	int len = tipsStr.length;
+    	int index = (int)(Math.random()*(len));
+    	if(index <0 || index >= len){
+    		index = 0;
+    	}
+    	COM.LOGE("", "index:"+index);
+    	COM.LOGE("", "tipsStr["+index+"]:"+tipsStr[index]);
+    	textTips.setText(tipsStr[index]);
+    	textTips.setOnClickListener(this);
+    	
+    	if(bAnimation){
+    		startAlphaAnimation(textTips);
+    	}
+    }
+    
+    public void startAlphaAnimation(View view){
+    	if(view == null)
+    		return;
+    	
+    	if(mAlphaAnimation == null){
+    		mAlphaAnimation = new android.view.animation.AlphaAnimation(0.1f, 1.0f);
+    		mAlphaAnimation.setDuration(1000);
+    	}
+    	
+    	view.startAnimation(mAlphaAnimation);
+    }
     
     
     @Override
@@ -141,6 +178,9 @@ public class MainActivity extends Activity implements OnClickListener{
 			break;
 		case R.id.buttonAbout:
 			gotoAboutActivity();
+			break;
+		case R.id.textViewTips:
+			initTips(true);
 			break;
 		}
 	}

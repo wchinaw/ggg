@@ -167,6 +167,30 @@ public class DialogAPI {
 //			alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 	}
 	
+	//删除功过
+//			public static void showConfirmDialog(){
+//				
+//				AlertDialog dialog = new AlertDialog()
+//					
+//			}
+	
+	public static void creatInfoDialog(Activity activity, int title, String msg){
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+		builder.setTitle(title);
+		if(msg != null){
+			builder.setMessage(msg);
+		}
+
+		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+            	
+            }
+        });
+		AlertDialog dialog = builder.create();
+		dialog.show();
+	}
+	
 	/**
      * 打开软键盘
      */
