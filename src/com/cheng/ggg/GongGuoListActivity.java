@@ -372,6 +372,10 @@ public class GongGuoListActivity  extends ExpandableListActivity {
             holder.txtName.setTextAppearance(mThis, styleId);
             holder.txtCount.setTextAppearance(mThis, styleId);
             
+            holder.txtName.setTextSize(MainActivity.TEXT_SIZE);
+            holder.txtCount.setTextSize(MainActivity.TEXT_SIZE);
+            holder.button.setTextSize(MainActivity.TEXT_SIZE);
+            
             if(mbUserDefine){
             	holder.button.setVisibility(View.VISIBLE);
             	holder.button.setText(R.string.add);
@@ -400,6 +404,10 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 			holder.txtCount = (TextView) view.findViewById(R.id.TextItemCount);
 			holder.button = (Button) view.findViewById(R.id.button1);	
             holder.txtName.setTextAppearance(mThis, styleId);
+            
+            holder.txtName.setTextSize(MainActivity.TEXT_SIZE);
+            holder.txtCount.setTextSize(MainActivity.TEXT_SIZE);
+            holder.button.setTextSize(MainActivity.TEXT_SIZE);
             
             if(mbUserDefine){
             	holder.button.setVisibility(View.VISIBLE);
@@ -434,6 +442,9 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 			 holder.txtName.setText(base.name);
 			 holder.txtCount.setText(base.userCount+"");
 			 holder.groupPosition = groupPosition;
+			 
+	            holder.txtCount.setTextSize(MainActivity.TEXT_SIZE);
+	            holder.button.setTextSize(MainActivity.TEXT_SIZE);
 
 			return textView;
 		}

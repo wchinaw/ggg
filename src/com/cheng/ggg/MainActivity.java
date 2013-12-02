@@ -13,8 +13,7 @@ import android.widget.TextView;
 import com.cheng.ggg.database.SQLiteHelper;
 import com.cheng.ggg.utils.COM;
 import com.umeng.analytics.MobclickAgent;
-import com.umeng.fb.NotificationType;
-import com.umeng.fb.UMFeedbackService;
+import com.umeng.fb.FeedbackAgent;
 import com.umeng.update.UmengUpdateAgent;
 
 public class MainActivity extends Activity implements OnClickListener{
@@ -24,6 +23,8 @@ public class MainActivity extends Activity implements OnClickListener{
 	TextView textTips;
 	Animation mAlphaAnimation;
 	String tipsStr[] = null;
+	
+	public static final int TEXT_SIZE = 20;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,7 +64,9 @@ public class MainActivity extends Activity implements OnClickListener{
         //代码中启用Feedback模块，调用下面函数进入反馈界面：
         //UMFeedbackService.openUmengFeedbackSDK(this);
         //当开发者回复用户反馈后，如果需要提醒用户，请在应用程序的入口Activity的OnCreate()方法中下添加以下代码
-        UMFeedbackService.enableNewReplyNotification(this, NotificationType.NotificationBar);
+//        UMFeedbackService.enableNewReplyNotification(this, NotificationType.NotificationBar);
+//        FeedbackAgent agent = new FeedbackAgent(this);
+//        agent.sync();
         //方法第一个参数类型为：Context，第二个参数为枚举类型，可选值为NotificationType.AlertDialog 或NotificationType.NotificationBar，分别对应两种不同的提示方式：
 
     }
@@ -81,6 +84,7 @@ public class MainActivity extends Activity implements OnClickListener{
     	COM.LOGE("", "index:"+index);
     	COM.LOGE("", "tipsStr["+index+"]:"+tipsStr[index]);
     	textTips.setText(tipsStr[index]);
+    	textTips.setTextSize(TEXT_SIZE);
     	textTips.setOnClickListener(this);
     	
     	if(bAnimation){

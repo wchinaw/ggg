@@ -19,7 +19,7 @@ import com.cheng.ggg.database.SQLiteHelper;
 import com.cheng.ggg.utils.COM;
 import com.cheng.ggg.utils.DialogAPI;
 import com.umeng.analytics.MobclickAgent;
-import com.umeng.fb.UMFeedbackService;
+import com.umeng.fb.FeedbackAgent;
 
 public class AboutActivity extends Activity implements OnClickListener {
 	final String TAG = "AboutActivity";
@@ -53,7 +53,10 @@ public class AboutActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		switch(v.getId()){
 		case R.id.button1:
-			UMFeedbackService.openUmengFeedbackSDK(this);
+			FeedbackAgent agent = new FeedbackAgent(mActivity);
+			agent.sync();
+		    agent.startFeedbackActivity();
+//			UMFeedbackService.openUmengFeedbackSDK(this);
 			break;
 		case R.id.buttonUserDefineGong:
 			gotoUserDefineGongGuoActivity(true);
