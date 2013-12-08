@@ -3,11 +3,14 @@ package com.cheng.ggg.database;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.cheng.ggg.R;
@@ -15,6 +18,7 @@ import com.cheng.ggg.types.GongGuoBase;
 import com.cheng.ggg.types.GongGuoDetail;
 import com.cheng.ggg.types.UserGongGuo;
 import com.cheng.ggg.utils.COM;
+import com.cheng.ggg.utils.Settings;
 
 public class SQLiteHelper extends SQLiteOpenHelper {
 	private static final int VERSION = 2;
@@ -140,6 +144,12 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		initGONGGUOTable(db,false);
 		createUserDefineTables(db);
 		createUserTables(db);
+		
+		//默认弹出确认对话框
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+		Editor editor = sp.edit();
+		editor.putBoolean(Settings.gongguoconfirm_dialog, true);
+		editor.commit();
 	}
 	
 	public void createUserTables(SQLiteDatabase db){
@@ -199,7 +209,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	public void insertGONGGUOBaseTable(SQLiteDatabase db,String table_name,int id, String value, String count){
 //		int intCount = Integer.parseInt(count);
 //		db.insert(table, nullColumnHack, values)
-		String str = "insert into "+ table_name +" values('"+id+"','"+value+"','"+count+"')";
+		String str = "insert into "+ table_name +" values('"+id+"','"+getReplacedString(value)+"','"+count+"')";
 		try{
 			db.execSQL(str);
 		}catch(SQLException e){
@@ -272,10 +282,16 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 			insertUserDefineGUOTable(db,value,count);
 		}
 	}
+	
+	public String getReplacedString(String value){
+		value = value.replace("'", "\"");
+		return value;
+	}
+	
 	/**插入一条用户自定义功过项*/
 	public void insertUserDefineGONGGUOTable(SQLiteDatabase db,String tableName, String value, int count){
 		
-		String str = "insert into "+ tableName +" values(null,'"+value+"','"+count+"')";
+		String str = "insert into "+ tableName +" values(null,'"+getReplacedString(value)+"','"+count+"')";
 		try{
 			db.execSQL(str);
 		}catch(SQLException e){
@@ -286,7 +302,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	public void insertGONGGUOTable(SQLiteDatabase db,String tableName,int id, String value, String count){
 //		int intCount = Integer.parseInt(count);
 //		db.insert(table, nullColumnHack, values)
-		String str = "insert into "+ tableName +" values('"+id+"','"+value+"','"+count+"')";
+		String str = "insert into "+ tableName +" values('"+id+"','"+getReplacedString(value)+"','"+count+"')";
 		try{
 			db.execSQL(str);
 		}catch(SQLException e){
@@ -407,7 +423,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		else
 			tableName = userdefine_guo_detail_table;
 		
-		String sql = "select id from "+tableName+" where name = '"+value+"'";
+		String sql = "select id from "+tableName+" where name = '"+getReplacedString(value)+"'";
 		Cursor cursor = db.rawQuery( sql, null);
 		
 //        if(cursor!=null && cursor.moveToFirst()) {

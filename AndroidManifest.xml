@@ -27,7 +27,7 @@
             android:name="com.cheng.ggg.MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard"
             android:label="@string/title_activity_main"
-            android:screenOrientation="portrait" >
+             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,7 +37,7 @@
         <activity
             android:name="com.cheng.ggg.GongGuoListActivity"
             android:configChanges="orientation|keyboardHidden|keyboard"
-            android:screenOrientation="portrait" >
+            >
         </activity>
         <activity
             android:name="com.cheng.ggg.UserGongGuoListActivity"

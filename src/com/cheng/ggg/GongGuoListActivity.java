@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
@@ -61,13 +62,15 @@ public class GongGuoListActivity  extends ExpandableListActivity {
         
 //        mListView.setOnItemClickListener(mOnItemClickListener);
 //        mListView.setOnChildClickListener(mOnChildClickListener);
-//        mListView.setOnLongClickListener(mOnLongClickListener);
+//        mListView.setOnLongClickListener(mOnLongClickListenerGroup);
         mListView.setGroupIndicator(getResources().getDrawable(R.drawable.list_expand_btn));
         
         if(mbUserDefine)
         	mListView.setOnCreateContextMenuListener(mContextMenuListener);
-        else
+        else{
         	mListView.setOnChildClickListener(mOnChildClickListener);
+        	mListView.setOnCreateContextMenuListener(mContextMenuListener);
+        }
         
 //        mListView.setBackgroundResource(R.drawable.c);
 //        mListView.setCacheColorHint(0xFFFFFFFF);
