@@ -41,14 +41,14 @@ public class DialogAPI {
 				return;//(new Dialog(activity,R.style.CustomDialogStyle));
 			}
 			final GongGuoBase base = activity.mGongGuoBaseList.get(groupPos);
-			String strAdd = activity.getResources().getString(R.string.delete);
+//			String strAdd = activity.getResources().getString(R.string.delete);
 			
 			View loadingDialog = View.inflate(activity,R.layout.dialog_delete_item, null);
 			TextView txt = (TextView)loadingDialog.findViewById(R.id.textView1);
 			txt.setText(detail.name);
 			
 			Dialog alert = new AlertDialog.Builder(activity)
-				.setPositiveButton(R.string.ok , new OnClickListener(){
+				.setPositiveButton(R.string.delete , new OnClickListener(){
 
 					public void onClick(DialogInterface dialog, int which) {
 							SQLiteHelper sqlite = SQLiteHelper.getInstance(activity);
@@ -89,16 +89,109 @@ public class DialogAPI {
 					}
 					
 				})
+					.setNeutralButton(R.string.edit, new OnClickListener(){
+						public void onClick(DialogInterface arg0, int arg1) {
+							showEditItemDialog(activity,base.name,groupPos,childPos);
+						}
+					})
 					.setView(loadingDialog)
-					.setTitle(strAdd+" "+base.name)
+					.setTitle(base.name)
 					.create();
 			
 				alert.show();
 				
 		}
+		
+		public static void showAddItemDialog(final GongGuoListActivity activity,String title,final GongGuoBase base,final boolean bGong){
+			showAddItemDialog(activity,title, base,bGong, "");
+		}
+		
+		//编辑修改自定义功过
+		public static void showEditItemDialog(final GongGuoListActivity activity,final String title,final int groupPos,final int childPos){
+			
+			if(activity == null){
+				COM.LOGE("alertDialog", "ERR activity == null!");
+				return;//(new Dialog(activity,R.style.CustomDialogStyle));
+			}
+			
+			String strAdd = activity.getResources().getString(R.string.edit);
+			final GongGuoBase base = activity.mGongGuoBaseList.get(groupPos);
+			final GongGuoDetail detail = base.mList.get(childPos);
+			
+			View loadingDialog = View.inflate(activity,R.layout.dialog_add_item, null);
+			final EditText edit = (EditText)loadingDialog.findViewById(R.id.editText1);
+			edit.setText(detail.name);
+			
+			Dialog alert = new AlertDialog.Builder(activity)
+				.setPositiveButton(R.string.ok , new OnClickListener(){
+
+					public void onClick(DialogInterface dialog, int which) {
+						String txt = edit.getText().toString();
+						if(txt == null || txt.equals("")){
+							Toast.makeText(activity, R.string.input_empty, Toast.LENGTH_SHORT).show();
+						}
+						else{
+							//先判断数据库中是否有相同名称相同功过count的数据，如果有，则不添加。若无，则添加。
+							
+							SQLiteHelper sqlite = SQLiteHelper.getInstance(activity);
+							SQLiteDatabase db = sqlite.getWritableDatabase();
+							
+							//数据表中无此记录，可插入。
+							if(!sqlite.haveSameGongGuoItem(db,txt,detail.count)){
+//								GongGuoDetail detail = new GongGuoDetail();
+//								detail.bUserdefine = true;
+//								detail.count = base.count;
+//								detail.name = txt;
+////								detail.id = sqlite.getUserDefineGongGuoId(db, txt, base.count);
+//								detail.id = 
+//								base.mList.add(0, detail);
+								String oldValue = detail.name;
+								detail.name = txt;
+								sqlite.updateGongGuoDetail(db, oldValue, detail);
+//								activity.mListView.invalidateViews();
+								activity.mAdapter.notifyDataSetChanged();
+								
+								String event_id = "usrdefine";
+								if(detail.count > 0){
+									event_id +=detail.count+"gong";
+								}
+								else{
+									event_id +=(-detail.count)+"guo";
+								}
+								
+								COM.LOGE("", "event_id :"+event_id+" name:"+detail.name);
+								
+								MobclickAgent.onEvent(activity, event_id, detail.name);
+								Toast.makeText(activity, R.string.edit_ok, Toast.LENGTH_SHORT).show();
+							}
+							else{//已存在，提示用户，已存在此功过项
+								Toast.makeText(activity, R.string.add_exists, Toast.LENGTH_SHORT).show();
+								showEditItemDialog(activity,title,groupPos,childPos);
+							}
+							
+						}
+					}
+					})
+					.setNegativeButton(R.string.cancel, new OnClickListener(){
+
+						public void onClick(DialogInterface arg0, int arg1) {
+							
+						}
+						
+					})
+					.setView(loadingDialog)
+					.setTitle(strAdd+" "+title)
+					.create();
+			
+				alert.show();
+				openKeyboard(activity);
+//				((InputMethodManager)activity.getSystemService(Activity.INPUT_METHOD_SERVICE)).showSoftInput(edit, 0);
+//				edit.requestFocus();
+//				alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+		}
 	
 	//添加自定义功过
-	public static void showAddItemDialog(final GongGuoListActivity activity,String title,final GongGuoBase base,final boolean bGong){
+	public static void showAddItemDialog(final GongGuoListActivity activity,final String title,final GongGuoBase base,final boolean bGong, String edittextStr){
 		
 		if(activity == null){
 			COM.LOGE("alertDialog", "ERR activity == null!");
@@ -109,6 +202,7 @@ public class DialogAPI {
 		
 		View loadingDialog = View.inflate(activity,R.layout.dialog_add_item, null);
 		final EditText edit = (EditText)loadingDialog.findViewById(R.id.editText1);
+		edit.setText(edittextStr);
 		
 		Dialog alert = new AlertDialog.Builder(activity)
 			.setPositiveButton(R.string.ok , new OnClickListener(){
@@ -119,34 +213,43 @@ public class DialogAPI {
 						Toast.makeText(activity, R.string.input_empty, Toast.LENGTH_SHORT).show();
 					}
 					else{
+						//先判断数据库中是否有相同名称相同功过count的数据，如果有，则不添加。若无，则添加。
+						
 						SQLiteHelper sqlite = SQLiteHelper.getInstance(activity);
-						 SQLiteDatabase db = sqlite.getWritableDatabase();
-						sqlite.insertUserDefineGONGGUOTable(db, 
-								bGong, txt, base.count);
+						SQLiteDatabase db = sqlite.getWritableDatabase();
 						
-						GongGuoDetail detail = new GongGuoDetail();
-						detail.bUserdefine = true;
-						detail.count = base.count;
-						detail.name = txt;
-						detail.id = sqlite.getUserDefineGongGuoId(db, txt, base.count);
-						base.mList.add(0, detail);
-//						activity.mListView.invalidateViews();
-						activity.mAdapter.notifyDataSetChanged();
-						
-						String event_id = "usrdefine";
-						if(detail.count > 0){
-							event_id +=detail.count+"gong";
+						//数据表中无此记录，可插入。
+						if(!sqlite.haveSameGongGuoItem(db,txt,base.count)){
+							GongGuoDetail detail = new GongGuoDetail();
+							detail.bUserdefine = true;
+							detail.count = base.count;
+							detail.name = txt;
+//							detail.id = sqlite.getUserDefineGongGuoId(db, txt, base.count);
+							detail.id = sqlite.insertUserDefineGONGGUOTable(db, 
+									bGong, txt, base.count);
+							base.mList.add(0, detail);
+//							activity.mListView.invalidateViews();
+							activity.mAdapter.notifyDataSetChanged();
+							
+							String event_id = "usrdefine";
+							if(detail.count > 0){
+								event_id +=detail.count+"gong";
+							}
+							else{
+								event_id +=(-detail.count)+"guo";
+							}
+							
+							COM.LOGE("", "event_id :"+event_id+" name:"+detail.name);
+							
+							MobclickAgent.onEvent(activity, event_id, detail.name);
+							Toast.makeText(activity, R.string.add_ok, Toast.LENGTH_SHORT).show();
 						}
-						else{
-							event_id +=(-detail.count)+"guo";
+						else{//已存在，提示用户，已存在此功过项
+							Toast.makeText(activity, R.string.add_exists, Toast.LENGTH_SHORT).show();
+							showAddItemDialog(activity,title, base,bGong, txt);
 						}
 						
-						COM.LOGE("", "event_id :"+event_id+" name:"+detail.name);
-						
-						MobclickAgent.onEvent(activity, event_id, detail.name);
 					}
-						Toast.makeText(activity, R.string.add_ok, Toast.LENGTH_SHORT).show();
-
 				}
 				})
 				.setNegativeButton(R.string.cancel, new OnClickListener(){

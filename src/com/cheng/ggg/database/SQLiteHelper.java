@@ -2,6 +2,7 @@ package com.cheng.ggg.database;
 
 import java.util.ArrayList;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -158,12 +159,12 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	}
 	
 	/**创建用户自定义表*/
-	public void createUserDefineTables(SQLiteDatabase db){
+	void createUserDefineTables(SQLiteDatabase db){
 		db.execSQL(CREATE_TABLE_USERDEFINE_GONG_DETAIL);
 		db.execSQL(CREATE_TABLE_USERDEFINE_GUO_DETAIL);
 	}
 	
-	public void initGONGGUOBaseTable(SQLiteDatabase db, boolean bGong){
+	void initGONGGUOBaseTable(SQLiteDatabase db, boolean bGong){
 		String createTable;
 		String tableName;
 		int strID,valueID;
@@ -217,7 +218,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		}
 	}
 	
-	public void initGONGGUOTable(SQLiteDatabase db,boolean bGong){
+	void initGONGGUOTable(SQLiteDatabase db,boolean bGong){
 		
 		String createTable;
 		String tableName;
@@ -265,21 +266,21 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	}
 	
 	/**插入一条用户自定义功项*/
-	public void insertUserDefineGONGTable(SQLiteDatabase db,String value, int count){
-		insertUserDefineGONGGUOTable(db,userdefine_gong_detail_table,value,count);
+	public int insertUserDefineGONGTable(SQLiteDatabase db,String value, int count){
+		return insertUserDefineGONGGUOTable(db,userdefine_gong_detail_table,value,count);
 	}
 	
 	/**插入一条用户自定义过项*/
-	public void insertUserDefineGUOTable(SQLiteDatabase db,String value, int count){
-		insertUserDefineGONGGUOTable(db,userdefine_guo_detail_table,value,count);
+	public int insertUserDefineGUOTable(SQLiteDatabase db,String value, int count){
+		return insertUserDefineGONGGUOTable(db,userdefine_guo_detail_table,value,count);
 	}
 	
-	public void insertUserDefineGONGGUOTable(SQLiteDatabase db,boolean bGong, String value, int count){
+	public int insertUserDefineGONGGUOTable(SQLiteDatabase db,boolean bGong, String value, int count){
 		if(bGong){
-			insertUserDefineGONGTable(db,value,count);
+			return insertUserDefineGONGTable(db,value,count);
 		}
 		else{
-			insertUserDefineGUOTable(db,value,count);
+			return insertUserDefineGUOTable(db,value,count);
 		}
 	}
 	
@@ -289,14 +290,17 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	}
 	
 	/**插入一条用户自定义功过项*/
-	public void insertUserDefineGONGGUOTable(SQLiteDatabase db,String tableName, String value, int count){
-		
-		String str = "insert into "+ tableName +" values(null,'"+getReplacedString(value)+"','"+count+"')";
-		try{
-			db.execSQL(str);
-		}catch(SQLException e){
-			e.printStackTrace();
-		}
+	public int insertUserDefineGONGGUOTable(SQLiteDatabase db,String tableName, String value, int count){
+		ContentValues content = new ContentValues();
+		content.put("name", value);
+		content.put("count", count);
+		return (int) db.insert(tableName, null, content);
+//		String str = "insert into "+ tableName +" values(null,'"+getReplacedString(value)+"','"+count+"')";
+//		try{
+//			db.execSQL(str);
+//		}catch(SQLException e){
+//			e.printStackTrace();
+//		}
 	}
 	
 	public void insertGONGGUOTable(SQLiteDatabase db,String tableName,int id, String value, String count){
@@ -330,6 +334,64 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	/**在用户过表中插入数据*/
 	public void insertUserGUOTable(SQLiteDatabase db,int parent_id, String parent_name, String name, int count, int time){
 		insertUserGONGGUOTable(db,user_guo_table,parent_id,parent_name,name,count,time);
+	}
+	
+	/**插入自定义功过之前，比较是否有相同名称，相同count的功或过*/
+	public boolean haveSameGongGuoItem(SQLiteDatabase db, String name, int count){
+		int total = 0;
+		String tableName;
+		if(count > 0)
+			tableName = userdefine_gong_detail_table;
+		else{
+			tableName = userdefine_guo_detail_table;
+			}
+		String sql = "select * from "+tableName +" where name = '"+name+"' and count = '"+count+"'";
+		Cursor cursor = db.rawQuery( sql, null);
+		
+		if(cursor!=null){
+			if(cursor.moveToFirst()) 
+				total = cursor.getCount();
+        	cursor.close();
+        }
+		
+		if(total > 0){
+			return true;
+		}
+		else 
+			return false;
+
+	}
+	
+	/**更新自定义功过内容需要改变的用户已记录的功过*/
+	public int updateGongGuo(SQLiteDatabase db, String oldValue, GongGuoDetail detail){
+		String tableName;
+		if(detail.count>0)
+			tableName = user_gong_table;
+		else
+			tableName = user_guo_table;
+		
+		ContentValues cv = new ContentValues();
+        cv.put("name", detail.name);
+		
+		return db.update(tableName, cv, "name=?",new String[]{oldValue});
+	}
+	
+	/**更新自定义功过内容*/
+	public int updateGongGuoDetail(SQLiteDatabase db, String oldValue, GongGuoDetail detail){
+		String tableName;
+		int count = 0;
+		if(detail.count>0)
+			tableName = userdefine_gong_detail_table;
+		else
+			tableName = userdefine_guo_detail_table;
+		
+		ContentValues cv = new ContentValues();
+        cv.put("name", detail.name);
+        
+        count = db.update(tableName, cv, "id=?",new String[]{detail.id+""});
+        count += updateGongGuo(db,oldValue,detail);
+		
+		return count;
 	}
 	
 	/**获取功列表*/
@@ -415,29 +477,29 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		return detailList;
 	}
 	
-	public int getUserDefineGongGuoId(SQLiteDatabase db,String value, int count){
-		int id = -1;
-		String tableName = "";
-		if(count > 0)
-			tableName = userdefine_gong_detail_table;
-		else
-			tableName = userdefine_guo_detail_table;
-		
-		String sql = "select id from "+tableName+" where name = '"+getReplacedString(value)+"'";
-		Cursor cursor = db.rawQuery( sql, null);
-		
-//        if(cursor!=null && cursor.moveToFirst()) {
-//        	id = cursor.getInt(0);
+//	public int getUserDefineGongGuoId(SQLiteDatabase db,String value, int count){
+//		int id = -1;
+//		String tableName = "";
+//		if(count > 0)
+//			tableName = userdefine_gong_detail_table;
+//		else
+//			tableName = userdefine_guo_detail_table;
+//		
+//		String sql = "select id from "+tableName+" where name = '"+getReplacedString(value)+"'";
+//		Cursor cursor = db.rawQuery( sql, null);
+//		
+////        if(cursor!=null && cursor.moveToFirst()) {
+////        	id = cursor.getInt(0);
+////        	cursor.close();
+////        }
+//		if(cursor!=null) {
+//			if( cursor.moveToFirst()){
+//				id = cursor.getInt(0);
+//			}
 //        	cursor.close();
 //        }
-		if(cursor!=null) {
-			if( cursor.moveToFirst()){
-				id = cursor.getInt(0);
-			}
-        	cursor.close();
-        }
-		return id;
-	}
+//		return id;
+//	}
 	
 	public int getUserGongGuoCountByName(SQLiteDatabase db, String tableName, String name, int count){
 		int total = 0;
