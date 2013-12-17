@@ -121,10 +121,13 @@
 	
 	<string name="ok">确定</string>
 	<string name="cancel">取消</string>
+	<string name="edit">编辑</string>
 	<string name="add">添加</string>
 	<string name="delete">删除</string>
 	<string name="input_empty">请在输入框中添加自定义功过名称</string>
 	<string name="add_ok">添加成功</string>
+	<string name="edit_ok">修改成功</string>
+	<string name="add_exists">已存在相同功过项，请重新输入，谢谢。</string>
 	<string name="delete_ok">删除成功</string>
 	<string name="delete_fail">删除失败，请稍候重试</string>
 	<string name="user_define">自定义</string>

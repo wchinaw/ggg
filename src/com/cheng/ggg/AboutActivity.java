@@ -1,6 +1,7 @@
 package com.cheng.ggg;
 
 import java.io.File;
+import java.io.IOException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cheng.ggg.database.SQLiteHelper;
+import com.cheng.ggg.types.DialogClickListener;
 import com.cheng.ggg.utils.COM;
 import com.cheng.ggg.utils.DialogAPI;
 import com.umeng.analytics.MobclickAgent;
@@ -41,6 +43,9 @@ public class AboutActivity extends Activity implements OnClickListener {
 		((Button)findViewById(R.id.buttonBackup)).setOnClickListener(this);
 		((Button)findViewById(R.id.buttonRestore)).setOnClickListener(this);
 		((Button)findViewById(R.id.buttonSettings)).setOnClickListener(this);
+		((Button)findViewById(R.id.buttonExport)).setOnClickListener(this);
+		((Button)findViewById(R.id.buttonImport)).setOnClickListener(this);
+		
 		
 		mActivity = this;
 		mSQLiteHelper = SQLiteHelper.getInstance(this);
@@ -70,12 +75,27 @@ public class AboutActivity extends Activity implements OnClickListener {
 		case R.id.buttonRestore:
 			restore();
 			break;
+		case R.id.buttonExport:
+			exportUserDefineGongGuo();
+			break;
+		case R.id.buttonImport:
+			importUserDefineGongGuo();
+			break;
 		case R.id.buttonSettings:
 			gotoSettingsActivity();
 			break;			
 		}
 		
 	}
+	
+	//备份响应事件
+	DialogClickListener backUpLisenter = new DialogClickListener(){
+
+		@Override
+		public void button1Click(String src, String dest) {
+			dobackUp(src,dest);
+		}
+	};
 	
 	public void dobackUp(String srcPath, String destPath){
 		int rc = COM.copyFile(srcPath,destPath);
@@ -97,7 +117,7 @@ public class AboutActivity extends Activity implements OnClickListener {
 		
 		File file = new File(destPath);
 		if(file.exists()){
-			createBackupConfirmDialog(srcPath, destPath);
+			createBackupConfirmDialog(srcPath, destPath,backUpLisenter);
 		}
 		else{
 			dobackUp(srcPath, destPath);
@@ -122,17 +142,26 @@ public class AboutActivity extends Activity implements OnClickListener {
 			}
 		
 	}
-		
-	public void createBackupConfirmDialog(final String srcPath,final String destPath){
+	
+	//导出自定义功过文件对话框
+	public void createExportConfirmDialog(String srcPath,String destPath,DialogClickListener clickLisenter){
+		String msg = mRs.getString(R.string.exportfile_path_info)+destPath;
+		createConfirmDialog(R.string.backupfile_exists,msg,srcPath,destPath,clickLisenter);
+	}
+	
+	public void createBackupConfirmDialog(String srcPath,String destPath,DialogClickListener clickLisenter){
 		String msg = mRs.getString(R.string.backupfile_path_info)+destPath;
+		createConfirmDialog(R.string.backupfile_exists,msg,srcPath,destPath,clickLisenter);
+	}
+		
+	public void createConfirmDialog(int title,String msg,final String srcPath,final String destPath,final DialogClickListener clickLisenter){
+		
 		AlertDialog dialog =  new AlertDialog.Builder(this)
-        .setTitle(R.string.backupfile_exists)
+        .setTitle(title)
         .setMessage(msg)
         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-            	
-            	dobackUp(srcPath,destPath);
-            	
+            	clickLisenter.button1Click(srcPath,destPath);
             }
         })
         .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -225,6 +254,108 @@ public class AboutActivity extends Activity implements OnClickListener {
 	protected void onPause() {
 		super.onPause();
 		MobclickAgent.onPause(this);
+	}
+	
+	//导出自定义功过
+	public void doExportUserDefineGongGuoDetail(String destPath){
+		
+		boolean rc = mSQLiteHelper.exportUserDefineGongGuoDetailTable(destPath);
+		if(rc == true){ //备份成功
+			//Toast.makeText(mActivity,R.string.backupok, Toast.LENGTH_SHORT).show();
+			createExportOKDialog(destPath);
+		}
+		else{//备份失败
+			createExportFailDialog(destPath);
+			Toast.makeText(mActivity,R.string.backupfail, Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	//导出自定义功过项响应事件
+		DialogClickListener exportLisenter = new DialogClickListener(){
+
+			@Override
+			public void button1Click(String src, String dest) {
+				doExportUserDefineGongGuoDetail(dest);
+			}
+		};
+	
+	/**导出用户自定义数据到.csv文件中*/
+	public void exportUserDefineGongGuo(){
+		String  destPath;
+		
+		destPath = COM.getExportUserGoneGuoFilePath();
+		
+		File file = new File(destPath);
+		if(file.exists()){
+			createExportConfirmDialog("", destPath,exportLisenter);
+		}
+		else{
+			doExportUserDefineGongGuoDetail(destPath);
+		}
+		
+	}
+	
+	public void importUserDefineGongGuo(){
+		String srcPath;
+		
+		srcPath = COM.getExportUserGoneGuoFilePath();
+		
+		File file = new File(srcPath);
+		if(file.exists()){
+			createImportConfirmDialog(srcPath);
+		}
+		else{
+			//createNoBackupFileDialog(srcPath, destPath);
+			String msg = mRs.getString(R.string.importfile_not_exist)+srcPath;
+			DialogAPI.creatInfoDialog(mActivity,R.string.importfail,msg);
+			}
+		
+	}
+		
+	public void createExportOKDialog(final String destPath){
+		String msg = mRs.getString(R.string.exportfile_path_info)+destPath;
+		DialogAPI.creatInfoDialog(mActivity,R.string.exportok,msg);
+	}
+	
+	public void createExportFailDialog(final String destPath){
+		String msg = mRs.getString(R.string.backupfail_info)+destPath;
+		DialogAPI.creatInfoDialog(mActivity,R.string.exportfail,msg);
+	}
+	
+	/**导入自定义功过确认对话框*/
+	public void createImportConfirmDialog(final String srcPath){
+		String msg = mRs.getString(R.string.importfile_path_info)+srcPath;
+		AlertDialog dialog =  new AlertDialog.Builder(this)
+        .setTitle(R.string.importconfirm)
+        .setMessage(msg)
+        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+            	//恢复之前 对原文件进行备份
+            	boolean rc = false;
+				try {
+					SQLiteDatabase  db = mSQLiteHelper.getWritableDatabase();
+					rc = mSQLiteHelper.importUserDefineGongGuoDetail(db, srcPath);
+					db.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+            	if(rc == true){
+            		DialogAPI.creatInfoDialog(mActivity,R.string.importok,null);
+            	}
+            	else{
+            		//无法进行导入，提醒导入失败
+            		Toast.makeText(mActivity,R.string.importfail, Toast.LENGTH_SHORT).show();
+            	}
+            	
+            }
+        })
+        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+            }
+        })
+        .create();
+		
+		dialog.show();
 	}
 
 }

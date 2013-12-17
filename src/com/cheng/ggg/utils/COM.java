@@ -26,6 +26,7 @@ public class COM {
 	public static final String INTENT_USERDEFINE = "INTENT_USERDEFINE";//用户自定义标志
 	
 	public static final String BACKUP_FILENAME = "ggg.db";
+	public static final String EXPORT_USERDEFINE_GONGGUO_FILENAME = "ggg.csv";
 	//进行恢复时，先对数据库文件进行备份，以便恢复失败时可以使用原来的数据。
 	public static final String BACKUP_FOR_RESTORE_EXT = "_backup";
 	
@@ -78,27 +79,49 @@ public class COM {
 		return Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+BACKUP_FILENAME;
 	}
 	
+	public static String getExportUserGoneGuoFilePath(){
+		return Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+EXPORT_USERDEFINE_GONGGUO_FILENAME;
+	}
+	
+	
+	
 	public static int copyFile(String fromFile, String toFile)
 	{
-
-	try 
-	{
-	InputStream fosfrom = new FileInputStream(fromFile);
-	OutputStream fosto = new FileOutputStream(toFile);
-	byte bt[] = new byte[1024];
-	int c;
-	while ((c = fosfrom.read(bt)) > 0) 
-	{
-	fosto.write(bt, 0, c);
+		try 
+		{
+			InputStream fosfrom = new FileInputStream(fromFile);
+			OutputStream fosto = new FileOutputStream(toFile);
+			byte bt[] = new byte[1024];
+			int c;
+			while ((c = fosfrom.read(bt)) > 0) 
+			{
+				fosto.write(bt, 0, c);
+			}
+			fosfrom.close();
+			fosto.close();
+			return 0;
+	
+		} 
+		catch (Exception ex) 
+		{
+			return -1;
+		}
 	}
-	fosfrom.close();
-	fosto.close();
-	return 0;
-
-	} catch (Exception ex) 
-	{
-	return -1;
-	}
+	
+	public static int parseInt(String str){
+		int value = 0;
+		if(str == null)
+			return 0;
+		
+		try{
+			value = Integer.parseInt(str);
+		}
+		catch(NumberFormatException e){
+			e.printStackTrace();
+		}
+		
+		
+		return value;
 	}
 
 }

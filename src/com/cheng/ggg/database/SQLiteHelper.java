@@ -1,5 +1,13 @@
 package com.cheng.ggg.database;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import android.content.ContentValues;
@@ -345,7 +353,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		else{
 			tableName = userdefine_guo_detail_table;
 			}
-		String sql = "select * from "+tableName +" where name = '"+name+"' and count = '"+count+"'";
+		String sql = "select * from "+tableName +" where name = '"+getReplacedString(name)+"' and count = '"+count+"'";
 		Cursor cursor = db.rawQuery( sql, null);
 		
 		if(cursor!=null){
@@ -380,10 +388,19 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	public int updateGongGuoDetail(SQLiteDatabase db, String oldValue, GongGuoDetail detail){
 		String tableName;
 		int count = 0;
-		if(detail.count>0)
-			tableName = userdefine_gong_detail_table;
-		else
-			tableName = userdefine_guo_detail_table;
+		if(detail.bUserdefine){
+			if(detail.count>0)
+				tableName = userdefine_gong_detail_table;
+			else
+				tableName = userdefine_guo_detail_table;
+		}
+		else{
+			if(detail.count>0)
+				tableName = gong_detail_table;
+			else
+				tableName = guo_detail_table;
+		}
+		
 		
 		ContentValues cv = new ContentValues();
         cv.put("name", detail.name);
@@ -574,6 +591,89 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	    	}
     			
 		return detailList;
+	}
+	
+	/**导出用户自定义功过表内容*/
+	public boolean exportUserDefineGongGuoDetailTable(String fileName){
+		boolean rc = true;
+		try {
+			File file = new File(fileName);
+			if(file.exists())
+				file.delete();
+			FileOutputStream os = new FileOutputStream(fileName);
+			SQLiteDatabase  db = getReadableDatabase();
+			rc &= exportUserDefineGongGuoDetailTable(db,userdefine_gong_detail_table,os);
+			rc &= exportUserDefineGongGuoDetailTable(db,userdefine_guo_detail_table,os);
+			db.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			rc = false;
+		} catch (IOException e) {
+			e.printStackTrace();
+			rc = false;
+		}
+		
+		
+		return rc;
+	}
+	/**导出用户自定义功过表内容
+	 * @throws IOException */
+	boolean exportUserDefineGongGuoDetailTable(SQLiteDatabase  db,String detailTableName,FileOutputStream os) throws IOException{
+		String sql="select * from "+detailTableName;
+    	Cursor cursor=null;
+    	try{
+    		cursor=db.rawQuery(sql, null);
+    		if(cursor != null){
+    			String strLine = "";
+    			while(cursor.moveToNext()){
+    				strLine = cursor.getString(2);
+    				strLine = strLine + "," + cursor.getString(1)+"\n";
+    				os.write(strLine.getBytes());
+    			}
+    			cursor.close();
+    		}
+			}catch(SQLException e){
+	    		e.printStackTrace();
+	    		cursor=null;
+	    		return false;
+	    	}
+    			
+		return true;
+	}
+	
+	/**导入用户自定义功过项*/
+	public boolean importUserDefineGongGuoDetail(SQLiteDatabase  db,String fileName) throws IOException{
+		if(fileName == null || db == null)
+			return false;
+		InputStreamReader isr = new InputStreamReader(new FileInputStream(fileName),"GBK");
+		String lineStr="";
+		int count = 0;			
+		String strCount;
+		
+		int index = 0;
+		BufferedReader br = new BufferedReader(isr);
+		//解析输入文件每一行
+		while((lineStr=br.readLine())!=null){
+			index = lineStr.indexOf(",");
+			if(index != -1){
+				strCount = lineStr.substring(0, index);
+				lineStr = lineStr.substring(index+1);
+				count = COM.parseInt(strCount);
+				
+				if(!haveSameGongGuoItem(db, getReplacedString(lineStr), count)){
+					if(count < 0){//过
+						insertUserDefineGUOTable(db, lineStr, count);
+					}
+					else{//功
+						insertUserDefineGONGTable(db, lineStr, count);
+					}
+				}
+				
+			}
+		}
+		br.close();
+		isr.close();
+		return true;
 	}
 	
 	/**获取用户功过表中列表*/
