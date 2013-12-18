@@ -30,7 +30,8 @@ import com.cheng.ggg.utils.COM;
 import com.cheng.ggg.utils.Settings;
 
 public class SQLiteHelper extends SQLiteOpenHelper {
-	private static final int VERSION = 2;
+//	private static final int VERSION = 2;
+	private static final int VERSION = 3;//相对version 2 增加一个，功过次数的字段（适用于放生n个之类的）。
 	public boolean isAdd=true;
 	
 	public Context mContext = null;
@@ -117,27 +118,24 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 			")"
 			;
 	
-	public String user_gong_table = "user_gong";
-	public String CREATE_TABLE_USER_GONG = "create table "+user_gong_table+"("+
+	String user_gong_guo_common = "("+
 			"id integer primary key autoincrement,"+
 			"parent_id integer,"+
 			"parent_name text,"+  //父名称
 			"name text,"+  //名称
 			"count integer,"+ //功的数量 百功 十功等
-			"time  integer"+
+			"time  integer,"+
+			"times integer,"+ //次数  从Version =2 到 VERSION = 3 增加 字段
+			"comment text"+ //对本次记录功过的说明   从Version =2 到 VERSION = 3 增加 字段
 			")"
 			;
 	
+	public String user_gong_table = "user_gong";
+	public String CREATE_TABLE_USER_GONG = "create table "+user_gong_table+user_gong_guo_common;
+			
+	
 	public String user_guo_table = "user_guo";
-	public String CREATE_TABLE_USER_GUO = "create table "+user_guo_table+"("+
-			"id integer primary key autoincrement,"+
-			"parent_id integer,"+
-			"parent_name text,"+  //父名称
-			"name text,"+  //名称
-			"count integer,"+ //功的数量 百功 十功等
-			"time  integer"+
-			")"
-			;
+	public String CREATE_TABLE_USER_GUO = "create table "+user_guo_table+user_gong_guo_common;
 	
 	public void onCreate(SQLiteDatabase db) {
 //		String sql="create table test(" +
@@ -323,10 +321,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	}
 	
 	/**在用户功过表中插入数据*/
-	public void insertUserGONGGUOTable(SQLiteDatabase db,String table_name,int parent_id,String parent_name, String name, int count, int time){
+	public void insertUserGONGGUOTable(SQLiteDatabase db,String table_name,int parent_id,String parent_name, String name, int count, int time, int times,String comment){
 //		int intCount = Integer.parseInt(count);
 //		db.insert(table, nullColumnHack, values)
-		String str = "insert into "+ table_name +" values(null,'"+parent_id+"','"+parent_name+"','"+name+"','"+count+"','"+time+"')";
+		String str = "insert into "+ table_name +" values(null,'"+parent_id+"','"+parent_name+"','"+name+"','"+count+"','"+time+"','"+times+"','"+getReplacedString(comment)+"')";
 		try{
 			db.execSQL(str);
 		}catch(SQLException e){
@@ -334,14 +332,24 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		}
 	}
 	
+//	/**在用户功表中插入数据*/
+//	public void insertUserGONGTable(SQLiteDatabase db,int parent_id,String parent_name, String name, int count, int time){
+//		insertUserGONGGUOTable(db,user_gong_table,parent_id,parent_name,name,count,time,1);
+//	}
+//	
+//	/**在用户过表中插入数据*/
+//	public void insertUserGUOTable(SQLiteDatabase db,int parent_id, String parent_name, String name, int count, int time){
+//		insertUserGONGGUOTable(db,user_guo_table,parent_id,parent_name,name,count,time,1);
+//	}
+	
 	/**在用户功表中插入数据*/
-	public void insertUserGONGTable(SQLiteDatabase db,int parent_id,String parent_name, String name, int count, int time){
-		insertUserGONGGUOTable(db,user_gong_table,parent_id,parent_name,name,count,time);
+	public void insertUserGONGTable(SQLiteDatabase db,int parent_id,String parent_name, String name, int count, int time, int times,String comment){
+		insertUserGONGGUOTable(db,user_gong_table,parent_id,parent_name,name,count,time,times,comment);
 	}
 	
 	/**在用户过表中插入数据*/
-	public void insertUserGUOTable(SQLiteDatabase db,int parent_id, String parent_name, String name, int count, int time){
-		insertUserGONGGUOTable(db,user_guo_table,parent_id,parent_name,name,count,time);
+	public void insertUserGUOTable(SQLiteDatabase db,int parent_id, String parent_name, String name, int count, int time, int times,String comment){
+		insertUserGONGGUOTable(db,user_guo_table,parent_id,parent_name,name,count,time,times,comment);
 	}
 	
 	/**插入自定义功过之前，比较是否有相同名称，相同count的功或过*/
@@ -421,7 +429,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		return getGongGuoBase(db,guo_base_table, userdefine_guo_detail_table, guo_detail_table);
 	}
 		
-
+	//功过列表 包含功能基础 即 百功，十功 然后包括下面的子类别。
 	public ArrayList<GongGuoBase> getGongGuoBase(SQLiteDatabase db, String baseTableName,String userDefineDetailTableName, String detailTableName){
 		ArrayList<GongGuoBase> baseList = new ArrayList<GongGuoBase>();
     	
@@ -520,7 +528,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	
 	public int getUserGongGuoCountByName(SQLiteDatabase db, String tableName, String name, int count){
 		int total = 0;
-		String sql = "select * from "+tableName +" where name = '"+name+"' and count = '"+count+"'";
+		String sql = "select SUM(times) from "+tableName +" where name = '"+name+"' and count = '"+count+"'";
 		Cursor cursor = db.rawQuery( sql, null);
 		
 //        if(cursor!=null && cursor.moveToFirst()) {
@@ -528,8 +536,11 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 //        	cursor.close();
 //        }
 		if(cursor!=null){
-			if(cursor.moveToFirst()) 
-				total = cursor.getCount();
+			if(cursor.moveToFirst()) {
+				total = cursor.getInt(0);//cursor.getCount();
+//				if(total < 0)
+//					total = -total;
+			}
         	cursor.close();
         }
 
@@ -538,7 +549,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	
 	public int getUserGongGuoCount(SQLiteDatabase db, String tableName){
 		int count = 0;
-		String sql = "select SUM(count) from "+tableName;
+		String sql = "select SUM(count*times) from "+tableName;
 		Cursor cursor = db.rawQuery( sql, null);
 		
 //        if(cursor!=null && cursor.moveToFirst()) {
@@ -763,11 +774,22 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		return rc;
 	}
 	
+	void addColumn(SQLiteDatabase db,String tableName,String columnName,String type){
+		db.execSQL("ALTER TABLE "+tableName+" ADD new TEXT");
+	}
+	
 	/**进行数据库版本升级时需要做的工作*/
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		COM.LOGE("onUpgrade", "oldVersion: "+oldVersion+" newVersion: "+newVersion);
 		if(oldVersion == 1)
 			createUserDefineTables(db);
+		else if(oldVersion == 2){
+			//功过表中增加一个功过次数的字段
+			db.execSQL("ALTER TABLE "+user_gong_table+" ADD times integer");
+			db.execSQL("ALTER TABLE "+user_guo_table+" ADD times integer");
+			db.execSQL("ALTER TABLE "+user_gong_table+" ADD comment TEXT");
+			db.execSQL("ALTER TABLE "+user_guo_table+" ADD comment TEXT");
+		}
 	}
 }

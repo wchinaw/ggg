@@ -270,6 +270,52 @@ public class DialogAPI {
 //			alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 	}
 	
+	//添加自定义功过
+		public static void showAddConfirmDialog(final GongGuoListActivity activity,final String title,final GongGuoBase base,final boolean bGong, String edittextStr){
+			
+			if(activity == null){
+				COM.LOGE("alertDialog", "ERR activity == null!");
+				return;//(new Dialog(activity,R.style.CustomDialogStyle));
+			}
+			
+			String strAdd = activity.getResources().getString(R.string.add);
+			
+			View loadingDialog = View.inflate(activity,R.layout.dialog_add_item, null);
+			final EditText edit = (EditText)loadingDialog.findViewById(R.id.editText1);
+			edit.setText(edittextStr);
+			
+			Dialog alert = new AlertDialog.Builder(activity)
+				.setPositiveButton(R.string.ok , new OnClickListener(){
+
+					public void onClick(DialogInterface dialog, int which) {
+						String txt = edit.getText().toString();
+						if(txt == null || txt.equals("")){
+							Toast.makeText(activity, R.string.input_empty, Toast.LENGTH_SHORT).show();
+						}
+						else{
+							//先判断数据库中是否有相同名称相同功过count的数据，如果有，则不添加。若无，则添加。
+
+						}
+					}
+					})
+					.setNegativeButton(R.string.cancel, new OnClickListener(){
+
+						public void onClick(DialogInterface arg0, int arg1) {
+							
+						}
+						
+					})
+					.setView(loadingDialog)
+					.setTitle(strAdd+" "+title)
+					.create();
+			
+				alert.show();
+				openKeyboard(activity);
+//				((InputMethodManager)activity.getSystemService(Activity.INPUT_METHOD_SERVICE)).showSoftInput(edit, 0);
+//				edit.requestFocus();
+//				alert.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+		}
+	
 	//删除功过
 //			public static void showConfirmDialog(){
 //				

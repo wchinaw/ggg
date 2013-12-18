@@ -12,6 +12,7 @@ import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.InputType;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.TextView;
@@ -201,36 +203,50 @@ public class GongGuoListActivity  extends ExpandableListActivity {
     	
     }
     
+    
+    
 	public void createAddConfirmDialog(final GongGuoBase base,final  GongGuoDetail detail,
 			final  int time){
+		
+		View loadingDialog = View.inflate(this,R.layout.dialog_add_confirm, null);
+		final EditText editTimes = (EditText)loadingDialog.findViewById(R.id.editText1);
+		editTimes.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+		final EditText editTextComment = (EditText)loadingDialog.findViewById(R.id.editTextComment);
+		
+		TextView textView = (TextView)loadingDialog.findViewById(R.id.textView1);
+		textView.setText(base.name+" "+detail.name);
+		
 		AlertDialog dialog =  new AlertDialog.Builder(this)
         .setTitle(R.string.gonggongadd_confirm)
-        .setMessage(base.name+" "+detail.name)
+//        .setMessage(base.name+" "+detail.name)
         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-            	insertOneItem(base,detail,time);
+            	
+            	int times = COM.parseInt(editTimes.getText().toString());
+            	insertOneItem(base,detail,time,times,editTextComment.getText().toString());
             }
         })
         .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
             }
         })
+        .setView(loadingDialog)
         .create();
 		
 		dialog.show();
 	}
     
-    public void insertOneItem(GongGuoBase base,GongGuoDetail detail,int time){
+    public void insertOneItem(GongGuoBase base,GongGuoDetail detail,int time, int times,String comment){
     	SQLiteDatabase db = mSQLiteHelper.getWritableDatabase();
 		if(mbGong){
-			mSQLiteHelper.insertUserGONGTable(db, detail.id,base.name, detail.name, detail.count,time);
+			mSQLiteHelper.insertUserGONGTable(db, detail.id,base.name, detail.name, detail.count,time,times,comment);
 		}
 		else{
-			mSQLiteHelper.insertUserGUOTable(db, detail.id, base.name,detail.name, detail.count,time);
+			mSQLiteHelper.insertUserGUOTable(db, detail.id, base.name,detail.name, detail.count,time,times,comment);
 		}
 		
-		detail.userCount++;
-		base.userCount++;
+		detail.userCount+=times;
+		base.userCount+=times;
 		mListView.invalidateViews();
 //		mThis.finish();
 		
@@ -255,7 +271,7 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 					createAddConfirmDialog(base,detail,time);
 				}
 				else{
-					insertOneItem(base,detail,time);
+					insertOneItem(base,detail,time,1,"");
 				}
 			}
 			

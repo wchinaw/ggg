@@ -40,6 +40,7 @@ public class UserGongGuoListActivity extends Activity {
 	SQLiteHelper mSQLiteHelper;
 	ArrayList<UserGongGuo> mUserGongGuoList;
 	int mType = TYPE_ALL;
+	String strTimes = "";
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,7 @@ public class UserGongGuoListActivity extends Activity {
         setContentView(R.layout.activity_detail);
         
         mActivity = this;
+        strTimes = getString(R.string.times);
         
         getBundles();
         
@@ -192,6 +194,8 @@ public class UserGongGuoListActivity extends Activity {
 				view = mInflater.inflate(R.layout.listview_user_detail, null);
 				holder.name = (TextView) view.findViewById(R.id.TextItemName);
 				holder.date = (TextView) view.findViewById(R.id.TextItemDate);
+				holder.times = (TextView) view.findViewById(R.id.TextViewTimes);
+				holder.comment = (TextView) view.findViewById(R.id.TextViewComments);
 				view.setTag(holder);
 			}
 			else{
@@ -200,6 +204,15 @@ public class UserGongGuoListActivity extends Activity {
 			UserGongGuo gongguo = mUserGongGuoList.get(position);
 			holder.name.setText(gongguo.parent_name+" "+gongguo.name);
 			holder.date.setText(COM.intTime2Date(mActivity, gongguo.time));
+			holder.times.setText(gongguo.times+strTimes);
+			if(gongguo.comment == null || gongguo.comment.equals("")){
+				holder.comment.setVisibility(View.GONE);
+			}
+			else{
+				holder.comment.setText("  "+gongguo.comment);//strComment+
+				holder.comment.setVisibility(View.VISIBLE);
+			}
+			
 			holder.position = position;
 			
 			if(gongguo.count > 0){
@@ -215,6 +228,8 @@ public class UserGongGuoListActivity extends Activity {
 		public class ViewHolder{
 			TextView name;
 			TextView date;
+			TextView times;
+			TextView comment;
 			int position;
 		}
     	

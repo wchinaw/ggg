@@ -9,6 +9,8 @@ public class UserGongGuo{
 	public String name;
 	public int count;
 	public int time;
+	public int times;
+	public String comment;
 	
 	public static UserGongGuo getFromCursor(Cursor cursor){
 		UserGongGuo detail = new UserGongGuo();
@@ -19,6 +21,8 @@ public class UserGongGuo{
 		detail.name = cursor.getString(i++);
 		detail.count = cursor.getInt(i++);
 		detail.time = cursor.getInt(i++);
+		detail.times = cursor.getInt(i++);
+		detail.comment = cursor.getString(i++);
 		return detail;
 	}
 }

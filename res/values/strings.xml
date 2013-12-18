@@ -4,6 +4,8 @@
     <string name="app_name">功过格(了凡四训)</string>
     <string name="title_activity_main">功过格(了凡四训)</string>
 
+    <string name="times">次</string>
+    
     <!-- MainActivity -->
     <string name="month_gong">本月功</string>
     <string name="month_guo">本月过</string>
