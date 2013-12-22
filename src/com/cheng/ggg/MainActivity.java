@@ -12,8 +12,9 @@ import android.widget.TextView;
 
 import com.cheng.ggg.database.SQLiteHelper;
 import com.cheng.ggg.utils.COM;
+import com.cheng.ggg.utils.DialogAPI;
+import com.cheng.ggg.utils.Settings;
 import com.umeng.analytics.MobclickAgent;
-import com.umeng.fb.FeedbackAgent;
 import com.umeng.update.UmengUpdateAgent;
 
 public class MainActivity extends Activity implements OnClickListener{
@@ -25,6 +26,7 @@ public class MainActivity extends Activity implements OnClickListener{
 	String tipsStr[] = null;
 	
 	public static final int TEXT_SIZE = 20;
+	public boolean bCheckPasswordOK = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -107,7 +109,19 @@ public class MainActivity extends Activity implements OnClickListener{
     
     @Override
 	protected void onResume() {
-    	refreshGongGuoInfo();
+    	boolean isEnablePassword = Settings.getIsEnablePassword(this);
+    	if(!bCheckPasswordOK && isEnablePassword){
+    		String password = Settings.getPassword(this);
+        	if("".equals(password)){
+        		DialogAPI.showSetPasswordDialog(this);
+        	}
+        	else{
+        		DialogAPI.showCheckPasswordDialog(this);
+        	}
+    	}
+    	else{
+    		refreshGongGuoInfo();
+    	}
 		super.onResume();
 		MobclickAgent.onResume(this);
 	}
@@ -120,8 +134,21 @@ public class MainActivity extends Activity implements OnClickListener{
 		super.onPause();
 		MobclickAgent.onPause(this);
 	}
-
-
+	
+	@Override
+	protected void onDestroy() {
+		logout();
+		super.onDestroy();
+	}
+	
+	public void login(){
+		bCheckPasswordOK = true;
+		refreshGongGuoInfo();
+	}
+	
+	public void logout(){
+		bCheckPasswordOK = false;
+	}
 
 	public void refreshGongGuoInfo(){
     	SQLiteDatabase db = mSQLiteHelper.getReadableDatabase();

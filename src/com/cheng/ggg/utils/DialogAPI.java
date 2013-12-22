@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.database.sqlite.SQLiteDatabase;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cheng.ggg.GongGuoListActivity;
+import com.cheng.ggg.MainActivity;
 import com.cheng.ggg.R;
 import com.cheng.ggg.database.SQLiteHelper;
 import com.cheng.ggg.types.GongGuoBase;
@@ -338,6 +340,96 @@ public class DialogAPI {
         });
 		AlertDialog dialog = builder.create();
 		dialog.show();
+	}
+	
+	public static void showSetPasswordDialog(final MainActivity activity){
+		
+		if(activity == null){
+			COM.LOGE("showSetPasswordDialog", "ERR activity == null!");
+			return;//(new Dialog(activity,R.style.CustomDialogStyle));
+		}
+		
+		View loadingDialog = View.inflate(activity,R.layout.dialog_enter_password_item, null);
+		final EditText edit = (EditText)loadingDialog.findViewById(R.id.editPassword);
+		final EditText edit2 = (EditText)loadingDialog.findViewById(R.id.editPassword2);
+		
+		Dialog alert = new AlertDialog.Builder(activity)
+			.setPositiveButton(R.string.ok , new OnClickListener(){
+
+				public void onClick(DialogInterface dialog, int which) {
+					String txt = edit.getText().toString();
+					String txt2 = edit2.getText().toString();
+					if(txt == null || txt.equals("") || txt2 == null || txt2.equals("") || !txt.equals(txt2)){
+						Toast.makeText(activity, R.string.input_password_empty, Toast.LENGTH_SHORT).show();
+					}
+					else{
+						Settings.setPassword(activity, txt);
+						Toast.makeText(activity, R.string.set_password_ok, Toast.LENGTH_SHORT).show();
+						activity.login();
+					}
+				}
+				})
+				.setNegativeButton(R.string.cancel, new OnClickListener(){
+
+					public void onClick(DialogInterface arg0, int arg1) {
+						
+					}
+					
+				})
+				.setView(loadingDialog)
+				.setTitle(R.string.set_password)
+				.create();
+		
+			alert.show();
+			openKeyboard(activity);
+	}
+	
+public static void showCheckPasswordDialog(final MainActivity activity){
+		
+		if(activity == null){
+			COM.LOGE("showSetPasswordDialog", "ERR activity == null!");
+			return;//(new Dialog(activity,R.style.CustomDialogStyle));
+		}
+		
+		View loadingDialog = View.inflate(activity,R.layout.dialog_enter_password_item, null);
+		final EditText edit = (EditText)loadingDialog.findViewById(R.id.editPassword);
+		final EditText edit2 = (EditText)loadingDialog.findViewById(R.id.editPassword2);
+		edit2.setVisibility(View.GONE);
+		Dialog alert = new AlertDialog.Builder(activity)
+			.setPositiveButton(R.string.ok , new OnClickListener(){
+
+				public void onClick(DialogInterface dialog, int which) {
+					String txt = edit.getText().toString();
+					String password = Settings.getPassword(activity);
+					if(txt == null || txt.equals("") || !txt.equals(password)){
+						Toast.makeText(activity, R.string.login_password_error, Toast.LENGTH_SHORT).show();
+						showCheckPasswordDialog(activity);
+					}
+					else{
+						activity.login();
+					}
+				}
+				})
+				.setNegativeButton(R.string.cancel, new OnClickListener(){
+
+					public void onClick(DialogInterface arg0, int arg1) {
+						activity.finish();
+					}
+					
+				})
+				.setOnCancelListener(new OnCancelListener(){
+
+					public void onCancel(DialogInterface arg0) {
+						activity.finish();
+					}
+					
+				})
+				.setView(loadingDialog)
+				.setTitle(R.string.login_password)
+				.create();
+		
+			alert.show();
+			openKeyboard(activity);
 	}
 	
 	/**

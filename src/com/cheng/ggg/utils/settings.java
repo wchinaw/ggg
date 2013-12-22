@@ -17,8 +17,9 @@ public class Settings {
 	public static final int CHINESE_TRADITION = 1; //繁体中文
 	
 	public static final String gongguoconfirm_dialog = "gongguoconfirm_dialog";
+	public static final String is_enable_password = "is_enable_password";
+	public static final String password = "password";
 	
-	public static final String SCROLLY = "SCROLLY";
 	
 	public static void changeLauguage(Context context, int lang){
 //		  在代码中切换语言：
@@ -34,16 +35,20 @@ public class Settings {
      resources.updateConfiguration(config, dm);
 	}
 	
-	public static int getScrollY(Context context){
+	public static boolean getIsEnablePassword(Context context){
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
-		
-		return sp.getInt(SCROLLY, 0);
+		return sp.getBoolean(is_enable_password, false);
 	}
 	
-	public static void setScrollY(Context context, int y){
+	public static String getPassword(Context context){
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
+		return sp.getString(password,"");
+	}
+	
+	public static void setPassword(Context context, String pwd){
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
 		Editor editor = sp.edit();
-		editor.putInt(SCROLLY, y);
+		editor.putString(password, pwd);
 		editor.commit();
 	}
 }

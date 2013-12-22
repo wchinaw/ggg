@@ -6,6 +6,14 @@
     
     <string name="read_lfsx">阅读了凡四训(推荐用云中书城或QQ阅读)</string>
     <string name="read_lfsxbhw">阅读了凡四训白话文</string>
+    
+    <string name="set_password">设置密码</string>
+    <string name="login_password">请输入登录密码</string>
+    <string name="input_password">请输入密码</string>
+    <string name="input_passwordtwo">请再次输入密码</string>
+    <string name="input_password_empty">请输入完整且相同的两个密码！</string>
+    <string name="login_password_error">请输入正确的登录密码！</string>
+    <string name="set_password_ok">设置密码成功！</string>
 
     <string name="times">次</string>
     
