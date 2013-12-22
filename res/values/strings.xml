@@ -3,6 +3,9 @@
 
     <string name="app_name">功过格(了凡四训)</string>
     <string name="title_activity_main">功过格(了凡四训)</string>
+    
+    <string name="read_lfsx">阅读了凡四训(推荐用云中书城或QQ阅读)</string>
+    <string name="read_lfsxbhw">阅读了凡四训白话文</string>
 
     <string name="times">次</string>
     

@@ -27,6 +27,10 @@ public class COM {
 	
 	public static final String BACKUP_FILENAME = "ggg.db";
 	public static final String EXPORT_USERDEFINE_GONGGUO_FILENAME = "ggg.csv";
+	/**了凡四训*/
+	public static final String LFSX_TXT = "lfsx.txt";
+	/**了凡四训白话文*/
+	public static final String LFSXBHW_TXT = "lfsxbhw.txt";
 	//进行恢复时，先对数据库文件进行备份，以便恢复失败时可以使用原来的数据。
 	public static final String BACKUP_FOR_RESTORE_EXT = "_backup";
 	

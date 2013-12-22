@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
@@ -17,6 +18,7 @@ public class Settings {
 	
 	public static final String gongguoconfirm_dialog = "gongguoconfirm_dialog";
 	
+	public static final String SCROLLY = "SCROLLY";
 	
 	public static void changeLauguage(Context context, int lang){
 //		  在代码中切换语言：
@@ -30,5 +32,18 @@ public class Settings {
     	 config.locale = Locale.TRADITIONAL_CHINESE; //繁体中文
      
      resources.updateConfiguration(config, dm);
+	}
+	
+	public static int getScrollY(Context context){
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
+		
+		return sp.getInt(SCROLLY, 0);
+	}
+	
+	public static void setScrollY(Context context, int y){
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
+		Editor editor = sp.edit();
+		editor.putInt(SCROLLY, y);
+		editor.commit();
 	}
 }

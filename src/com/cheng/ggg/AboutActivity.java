@@ -1,15 +1,21 @@
 package com.cheng.ggg;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -37,7 +43,9 @@ public class AboutActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_about);
-		((Button)findViewById(R.id.button1)).setOnClickListener(this);
+		((Button)findViewById(R.id.buttonReadLFSX)).setOnClickListener(this);
+		((Button)findViewById(R.id.buttonReadLFSXBHW)).setOnClickListener(this);
+		((Button)findViewById(R.id.buttonfeedback)).setOnClickListener(this);
 		((Button)findViewById(R.id.buttonUserDefineGong)).setOnClickListener(this);
 		((Button)findViewById(R.id.buttonUserDefineGuo)).setOnClickListener(this);
 		((Button)findViewById(R.id.buttonBackup)).setOnClickListener(this);
@@ -57,7 +65,13 @@ public class AboutActivity extends Activity implements OnClickListener {
 
 	public void onClick(View v) {
 		switch(v.getId()){
-		case R.id.button1:
+		case R.id.buttonReadLFSXBHW:
+			readLFSX(COM.LFSXBHW_TXT);
+			break;
+		case R.id.buttonReadLFSX:
+			readLFSX(COM.LFSX_TXT);
+			break;
+		case R.id.buttonfeedback:
 			FeedbackAgent agent = new FeedbackAgent(mActivity);
 			agent.sync();
 		    agent.startFeedbackActivity();
@@ -358,4 +372,47 @@ public class AboutActivity extends Activity implements OnClickListener {
 		dialog.show();
 	}
 
+	
+	public void readLFSX(String fileName){
+		File file = new File ("/sdcard/"+fileName);
+		if(!file.exists()){
+			Log.e("","!file.exists()");
+			try{
+				InputStream is = getAssets().open(fileName);
+				inputstreamtofile(is,file);
+				
+				file = new File ("/sdcard/"+fileName);
+				if(file.exists())
+					viewTextFile(this,file);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else{
+			viewTextFile(this,file);
+		}
+	}
+
+public void inputstreamtofile(InputStream ins,File file) throws IOException{
+	OutputStream os = new FileOutputStream(file);
+	int bytesRead = 0;
+	byte[] buffer = new byte[8192];
+	while ((bytesRead = ins.read(buffer, 0, 8192)) != -1) {
+	os.write(buffer, 0, bytesRead);
+	}
+	os.close();
+	ins.close();
+	}
+
+//android获取一个用于打开文本文件的intent
+public static void viewTextFile(Context context,File file)
+{   
+  Intent intent = new Intent("android.intent.action.VIEW");
+  intent.addCategory("android.intent.category.DEFAULT");
+  intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+  Uri uri = Uri.fromFile(file);
+  intent.setDataAndType(uri, "text/plain");
+  context.startActivity(intent);
+}
 }
