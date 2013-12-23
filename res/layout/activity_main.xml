@@ -1,10 +1,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutBackground"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/b" >
 
     <RelativeLayout
+        android:id="@+id/layoutContent"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@+id/linearLayout1"
@@ -14,7 +16,7 @@
         <TextView
             android:id="@+id/textViewTips"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="6dp"
             android:layout_marginLeft="6dp"
             android:layout_marginRight="6dp"

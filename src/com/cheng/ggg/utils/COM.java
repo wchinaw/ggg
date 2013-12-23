@@ -31,6 +31,8 @@ public class COM {
 	public static final String LFSX_TXT = "lfsx.txt";
 	/**了凡四训白话文*/
 	public static final String LFSXBHW_TXT = "lfsxbhw.txt";
+	/**首页图片*/
+	public static final String HOMG_IMG = "home.jpg";
 	//进行恢复时，先对数据库文件进行备份，以便恢复失败时可以使用原来的数据。
 	public static final String BACKUP_FOR_RESTORE_EXT = "_backup";
 	

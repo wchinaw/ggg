@@ -1,13 +1,29 @@
 package com.cheng.ggg;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cheng.ggg.database.SQLiteHelper;
@@ -22,12 +38,19 @@ public class MainActivity extends Activity implements OnClickListener{
 	SQLiteHelper mSQLiteHelper;
 	TextView textGong, textGuo, textTotal;
 	TextView textTips;
+	RelativeLayout mLayoutBackground;
 	Animation mAlphaAnimation;
 	String tipsStr[] = null;
 	
 	public static final int TEXT_SIZE = 20;
 	public boolean bCheckPasswordOK = false;
-
+	final int REQUEST_SELECT_PIC = 1;
+	
+    private static final int PHOTO_REQUEST_TAKEPHOTO = 1;// 拍照
+    private static final int PHOTO_REQUEST_GALLERY = 2;// 从相册中选择
+    private static final int PHOTO_REQUEST_CUT = 3;// 结果
+    File tempFile = new File(Environment.getExternalStorageDirectory(),getPhotoFileName());
+    String mHomeImagePath;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +58,7 @@ public class MainActivity extends Activity implements OnClickListener{
         
         mSQLiteHelper = SQLiteHelper.getInstance(this);
         
+        ((RelativeLayout)findViewById(R.id.layoutContent)).setOnClickListener(this);
         ((Button)findViewById(R.id.buttonGong)).setOnClickListener(this);
         ((Button)findViewById(R.id.buttonGuo)).setOnClickListener(this);
         ((Button)findViewById(R.id.buttonDetail)).setOnClickListener(this);
@@ -43,7 +67,16 @@ public class MainActivity extends Activity implements OnClickListener{
         textGong = (TextView) findViewById(R.id.textMonthGong);
         textGuo = (TextView) findViewById(R.id.textMonthGuo);
         textTotal = (TextView) findViewById(R.id.textMonthTotal);
-        
+        mHomeImagePath = Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+COM.HOMG_IMG;
+        mLayoutBackground = (RelativeLayout)findViewById(R.id.layoutBackground);
+//        String uriStr = Settings.getPic(this);
+//        Uri uri = Uri.parse(uriStr);
+//        if(!uri.equals("")){
+//        	setPicUri(uri,false);
+//        }
+        Drawable drawable = Drawable.createFromPath(mHomeImagePath);
+        if(drawable != null)
+        	mLayoutBackground.setBackgroundDrawable(drawable);
         initTips(true);
 //        SQLiteHelper helper = SQLiteHelper.getInstance(this);
 //        SQLiteDatabase  db = helper.getReadableDatabase();
@@ -213,8 +246,133 @@ public class MainActivity extends Activity implements OnClickListener{
 		case R.id.textViewTips:
 			initTips(true);
 			break;
+		case R.id.layoutContent:
+//			selectPic();
+			showDialog();
+			break;
 		}
 	}
+	
+	public void selectPic(){
+		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);  
+		intent.setType("image/*");  
+//	  	intent.putExtra("crop", true);  
+		intent.putExtra("noFaceDetection", true);
+	  	intent.putExtra("crop", "circle");
+	   intent.putExtra("return-data", true);  
+	  startActivityForResult(intent, REQUEST_SELECT_PIC);
+	}
 
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//		if(requestCode == REQUEST_SELECT_PIC && data != null){
+//			Uri uri = data.getData(); 
+//			if(uri != null)
+//				setPicUri(uri,true);
+//		}
+		switch (requestCode) {
+        case PHOTO_REQUEST_TAKEPHOTO:
+            startPhotoZoom(Uri.fromFile(tempFile), 200);
+            break;
+
+        case PHOTO_REQUEST_GALLERY:
+            if (data != null)
+                startPhotoZoom(data.getData(), 200);
+            break;
+
+        case PHOTO_REQUEST_CUT:
+            if (data != null) 
+                setPicToView(data);
+            break;
+        }
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+	
+//	public void setPicUri(Uri uri, boolean saveUri){
+//		Drawable yourDrawable;
+//		try {
+//		    InputStream inputStream = getContentResolver().openInputStream(uri);
+//		    yourDrawable = Drawable.createFromStream(inputStream, uri.toString() );
+//		    if(saveUri)
+//		    	Settings.setPic(this, uri.toString());
+//		} catch (FileNotFoundException e) {
+//		    yourDrawable = getResources().getDrawable(R.drawable.b);
+//		}
+//		mLayoutBackground.setBackgroundDrawable(yourDrawable);
+//	}
+	
+	 //提示对话框方法
+    private void showDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.homepage_background_setting)
+                .setPositiveButton(R.string.takephoto, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO Auto-generated method stub
+                        dialog.dismiss();
+                        // 调用系统的拍照功能
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        // 指定调用相机拍照后照片的储存路径
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile(tempFile));
+                        startActivityForResult(intent, PHOTO_REQUEST_TAKEPHOTO);
+                    }
+                })
+                .setNegativeButton(R.string.camera, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO Auto-generated method stub
+                        dialog.dismiss();
+                        Intent intent = new Intent(Intent.ACTION_PICK, null);
+//                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,"image/*");
+                        startActivityForResult(intent, PHOTO_REQUEST_GALLERY);
+                    }
+                }).show();
+    }
+    
+    private void startPhotoZoom(Uri uri, int size) {
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(uri, "image/*");
+        // crop为true是设置在开启的intent中设置显示的view可以剪裁
+        intent.putExtra("crop", "true");
+
+        // aspectX aspectY 是宽高的比例
+//        intent.putExtra("aspectX", 1);
+//        intent.putExtra("aspectY", 1.5);
+//
+//        // outputX,outputY 是剪裁图片的宽高
+        intent.putExtra("outputX", 320);
+        intent.putExtra("outputY", 480);
+        intent.putExtra("noFaceDetection", true); 
+        intent.putExtra("return-data", true);
+
+        startActivityForResult(intent, PHOTO_REQUEST_CUT);
+    }
+
+    //将进行剪裁后的图片显示到UI界面上
+    private void setPicToView(Intent picdata) {
+        Bundle bundle = picdata.getExtras();
+        if (bundle != null) {
+            Bitmap photo = bundle.getParcelable("data");
+            Drawable drawable = new BitmapDrawable(photo);
+            mLayoutBackground.setBackgroundDrawable(drawable);
+            
+            try {
+                FileOutputStream out = new FileOutputStream(mHomeImagePath);
+                photo.compress(Bitmap.CompressFormat.PNG, 90, out);
+                out.close();
+         } catch (Exception e) {
+                e.printStackTrace();
+         }
+        }
+    }
+
+    // 使用系统当前日期加以调整作为照片的名称
+    private String getPhotoFileName() {
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("'IMG'_yyyyMMdd_HHmmss");
+        return dateFormat.format(date) + ".jpg";
+    }
+ 
 
 }

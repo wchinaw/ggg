@@ -19,6 +19,7 @@ public class Settings {
 	public static final String gongguoconfirm_dialog = "gongguoconfirm_dialog";
 	public static final String is_enable_password = "is_enable_password";
 	public static final String password = "password";
+	public static final String defaultpic = "defaultpic";
 	
 	
 	public static void changeLauguage(Context context, int lang){
@@ -49,6 +50,18 @@ public class Settings {
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
 		Editor editor = sp.edit();
 		editor.putString(password, pwd);
+		editor.commit();
+	}
+	
+	public static String getPic(Context context){
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
+		return sp.getString(defaultpic,"");
+	}
+	
+	public static void setPic(Context context, String pwd){
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
+		Editor editor = sp.edit();
+		editor.putString(defaultpic, pwd);
 		editor.commit();
 	}
 }
