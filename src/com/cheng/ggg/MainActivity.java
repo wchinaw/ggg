@@ -109,8 +109,18 @@ public class MainActivity extends Activity implements OnClickListener{
     public void initTips(boolean bAnimation){
     	if(textTips == null)
     		textTips = (TextView) findViewById(R.id.textViewTips);
-    	if(tipsStr == null)
-    		tipsStr = getResources().getStringArray(R.array.TIPS_STR);
+    	if(tipsStr == null){
+    		String userDefineTips = Settings.getUserdefineTips(this);
+    		if("".equals(userDefineTips)){
+    			tipsStr = getResources().getStringArray(R.array.TIPS_STR);
+    		}
+    		else{
+    			tipsStr = userDefineTips.split("\n");
+    		}
+    	}
+    	
+    	
+    	
     	int len = tipsStr.length;
     	int index = (int)(Math.random()*(len));
     	if(index <0 || index >= len){

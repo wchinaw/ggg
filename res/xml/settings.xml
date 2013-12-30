@@ -3,6 +3,9 @@
     <CheckBoxPreference android:key="gongguoconfirm_dialog"  
         android:title="记录确认对话框" android:summary="在记录功过时，弹出确认对话框以免误操作。"></CheckBoxPreference>
     <CheckBoxPreference android:key="is_enable_password"  
-       android:title="登录时输入密码" android:summary="打开程序时，需要输入密码才能进入。"></CheckBoxPreference> 
-     
+       android:title="登录时输入密码" android:summary="打开程序时，需要输入密码才能进入。"></CheckBoxPreference>
+    <EditTextPreference android:key="tips" 
+        android:title="自定义轮播文字"
+        android:summary="请输入自定义轮播文字以回车分段"
+        /> 
     </PreferenceScreen>

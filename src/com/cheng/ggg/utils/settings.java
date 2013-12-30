@@ -20,6 +20,7 @@ public class Settings {
 	public static final String is_enable_password = "is_enable_password";
 	public static final String password = "password";
 	public static final String defaultpic = "defaultpic";
+	public static final String tips = "tips";
 	
 	
 	public static void changeLauguage(Context context, int lang){
@@ -56,6 +57,11 @@ public class Settings {
 	public static String getPic(Context context){
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
 		return sp.getString(defaultpic,"");
+	}
+	
+	public static String getUserdefineTips(Context context){
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
+		return sp.getString(tips,"");
 	}
 	
 	public static void setPic(Context context, String pwd){
