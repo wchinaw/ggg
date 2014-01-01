@@ -60,7 +60,7 @@ public class AboutActivity extends Activity implements OnClickListener {
 		mRs = getResources();
 		
 		String version = getResources().getString(R.string.about_version) + COM.getVersionName(this);
-		((TextView)findViewById(R.id.TextView02)).setText(version);
+		((TextView)findViewById(R.id.TextViewTotalTitle)).setText(version);
 	}
 
 	public void onClick(View v) {

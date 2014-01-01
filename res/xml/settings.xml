@@ -8,4 +8,13 @@
         android:title="自定义轮播文字"
         android:summary="请输入自定义轮播文字以回车分段"
         /> 
+    <ListPreference android:key="fontSize"
+        android:title="设置字体大小"
+        android:entries="@array/list_entries"
+		android:entryValues="@array/list_entries_value"
+		android:dialogTitle="设置字体大小"
+		
+        ></ListPreference>
     </PreferenceScreen>
+    
+    <!-- android:defaultValue="@array/list_entries_value2" -->

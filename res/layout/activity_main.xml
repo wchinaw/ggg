@@ -35,7 +35,7 @@
             android:layout_marginTop="10dp" >
 
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/textViewGongTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -46,17 +46,17 @@
         android:id="@+id/textMonthGong"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView1"
+        android:layout_below="@+id/textViewGongTitle"
         android:layout_centerHorizontal="true"
         android:gravity="right"
         android:text="0"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/TextViewTimes"
+        android:id="@+id/TextViewGuoTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView1"
+        android:layout_alignLeft="@+id/textViewGongTitle"
         android:layout_alignParentRight="false"
         android:layout_alignParentTop="false"
         android:layout_below="@+id/textMonthGong"
@@ -68,14 +68,14 @@
         android:id="@+id/textMonthGuo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/TextViewTimes"
+        android:layout_below="@+id/TextViewGuoTitle"
         android:layout_centerHorizontal="true"
         android:gravity="right"
         android:text="0"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/TextView02"
+        android:id="@+id/TextViewTotalTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textMonthGuo"
@@ -87,7 +87,7 @@
         android:id="@+id/textMonthTotal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/TextView02"
+        android:layout_below="@+id/TextViewTotalTitle"
         android:layout_centerHorizontal="true"
         android:gravity="right"
         android:text="0"

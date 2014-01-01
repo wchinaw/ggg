@@ -21,6 +21,7 @@ public class Settings {
 	public static final String password = "password";
 	public static final String defaultpic = "defaultpic";
 	public static final String tips = "tips";
+	public static final String fontSize = "fontSize";
 	
 	
 	public static void changeLauguage(Context context, int lang){
@@ -62,6 +63,12 @@ public class Settings {
 	public static String getUserdefineTips(Context context){
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
 		return sp.getString(tips,"");
+	}
+	
+	public static int getFontSize(Context context){
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+		String fontValue = sp.getString(fontSize, "26");
+		return COM.parseInt(fontValue);
 	}
 	
 	public static void setPic(Context context, String pwd){

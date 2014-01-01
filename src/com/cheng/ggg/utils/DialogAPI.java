@@ -50,7 +50,7 @@ public class DialogAPI {
 //			String strAdd = activity.getResources().getString(R.string.delete);
 			
 			View loadingDialog = View.inflate(activity,R.layout.dialog_delete_item, null);
-			TextView txt = (TextView)loadingDialog.findViewById(R.id.textView1);
+			TextView txt = (TextView)loadingDialog.findViewById(R.id.textViewGongTitle);
 			txt.setText(detail.name);
 			
 			Dialog alert = new AlertDialog.Builder(activity)

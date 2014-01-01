@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string-array name="list_entries">
+	<item>特大</item>
+	<item>大</item>
+	<item>中</item>
+	<item>小</item>
+</string-array>
+
+<string-array name="list_entries_value">
+    <item>36</item>
+	<item>26</item>
+	<item>20</item>
+	<item>16</item>
+</string-array>
+
+<!-- <string-array name="list_entries_value2">
+<item>shandong2</item>
+<item>fujian2</item>
+<item>beijing2</item>
+<item>hebei2</item>
+</string-array> -->
+</resources>

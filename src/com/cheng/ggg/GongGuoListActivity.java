@@ -213,7 +213,7 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 		editTimes.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
 		final EditText editTextComment = (EditText)loadingDialog.findViewById(R.id.editTextComment);
 		
-		TextView textView = (TextView)loadingDialog.findViewById(R.id.textView1);
+		TextView textView = (TextView)loadingDialog.findViewById(R.id.textViewGongTitle);
 		textView.setText(base.name+" "+detail.name);
 		
 		AlertDialog dialog =  new AlertDialog.Builder(this)
@@ -276,18 +276,8 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 			}
 			
 			
-//			mListView.setSelectedChild(groupPosition, childPosition, shouldExpandGroup)
-//			Toast.makeText(mContext, "mChildClick "+g.groupPosition+" "+g.childPosition, Toast.LENGTH_SHORT).show();
-		
-//			Log.i("mOnItemClickListener","id:"+id+" groupPosition:"+groupPosition+" childPosition:"+childPosition);
 			return false;
 		}
-
-//		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-//				long arg3) {
-//			
-//			
-//		}
 		
 	};
 	
@@ -333,6 +323,9 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 			
 			holder.txtName.setText(detail.name);
 			holder.txtCount.setText(detail.userCount+"");
+			
+			holder.txtName.setTextSize(MainActivity.TEXT_SIZE);
+			holder.txtCount.setTextSize(MainActivity.TEXT_SIZE);
 			
 			holder.childPosition = childPosition;
 			holder.groupPosition = groupPosition;
@@ -477,51 +470,6 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 			// TODO Auto-generated method stub
 			return true;
 		}
-		
-//		OnClickListener mGroupClick = new OnClickListener(){
-//
-//			public void onClick(View v) {
-//				int pos = (Integer) v.getTag();
-////				mListView.setSelectedGroup(pos);
-//				Toast.makeText(mThis, "mGroupClick "+pos, Toast.LENGTH_SHORT).show();
-//			}
-//			
-//		};
-		
-		
-		
-//		OnClickListener mChildClick = new OnClickListener(){
-//
-//			public void onClick(View v) {
-//				GroupChild g = (GroupChild) v.getTag();
-//				
-//				if(g != null){
-//					SQLiteDatabase db = mSQLiteHelper.getWritableDatabase();
-//					
-//					int time = (int) (System.currentTimeMillis()/1000);
-//					
-//					GongGuoBase base = (GongGuoBase)getGroup(g.groupPosition);
-//					
-//					GongGuoDetail detail = (GongGuoDetail) getChild(g.groupPosition,g.childPosition);
-//					
-//					if(mbGong){
-//						mSQLiteHelper.insertUserGONGTable(db, detail.id,base.name, detail.name, detail.count,time);
-//					}
-//					else{
-//						mSQLiteHelper.insertUserGUOTable(db, detail.id, base.name,detail.name, detail.count,time);
-//					}
-////					mThis.finish();
-//					
-//					Toast.makeText(mThis, base.name+" "+detail.name+" "+mThis.getString(R.string.addok), Toast.LENGTH_SHORT).show();
-//						
-//				}
-//				
-//				
-////				mListView.setSelectedChild(groupPosition, childPosition, shouldExpandGroup)
-////				Toast.makeText(mContext, "mChildClick "+g.groupPosition+" "+g.childPosition, Toast.LENGTH_SHORT).show();
-//			}
-//			
-//		};
 		
 	}
 	

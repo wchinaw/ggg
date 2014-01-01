@@ -142,7 +142,7 @@
         
 
       <TextView
-          android:id="@+id/TextViewTimes"
+          android:id="@+id/TextViewGuoTitle"
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
           android:layout_below="@+id/layoutbuttons"
@@ -151,21 +151,21 @@
           android:textSize="20sp" />
 
       <TextView
-          android:id="@+id/TextView02"
+          android:id="@+id/TextViewTotalTitle"
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
           android:layout_alignParentLeft="true"
-          android:layout_below="@+id/TextViewTimes"
+          android:layout_below="@+id/TextViewGuoTitle"
           android:layout_marginBottom="5dp"
           android:gravity="center_horizontal"
           android:text="@string/about_version"
           android:textSize="20sp" />
 
       <TextView
-          android:id="@+id/textView1"
+          android:id="@+id/textViewGongTitle"
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
-          android:layout_below="@+id/TextView02"
+          android:layout_below="@+id/TextViewTotalTitle"
           android:autoLink="all"
           android:text="@string/about"
           android:textSize="20sp" />

@@ -42,7 +42,7 @@ public class MainActivity extends Activity implements OnClickListener{
 	Animation mAlphaAnimation;
 	String tipsStr[] = null;
 	
-	public static final int TEXT_SIZE = 20;
+	public static int TEXT_SIZE = 20;
 	public boolean bCheckPasswordOK = false;
 	final int REQUEST_SELECT_PIC = 1;
 	
@@ -54,18 +54,30 @@ public class MainActivity extends Activity implements OnClickListener{
     
     public static MainActivity mActivity;
     
+    final int BUTTON_COUNTS = 4;
+    Button mButtons[] = new Button[BUTTON_COUNTS];
+    int buttonIds[] = {R.id.buttonGong, R.id.buttonGuo ,R.id.buttonDetail,R.id.buttonAbout};
+    //µ÷ÕûfontSize
+    TextView textViewGongTitle,TextViewGuoTitle,TextViewTotalTitle;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mActivity = this;
         mSQLiteHelper = SQLiteHelper.getInstance(this);
+        TEXT_SIZE = Settings.getFontSize(this);
         
         ((RelativeLayout)findViewById(R.id.layoutContent)).setOnClickListener(this);
-        ((Button)findViewById(R.id.buttonGong)).setOnClickListener(this);
-        ((Button)findViewById(R.id.buttonGuo)).setOnClickListener(this);
-        ((Button)findViewById(R.id.buttonDetail)).setOnClickListener(this);
-        ((Button)findViewById(R.id.buttonAbout)).setOnClickListener(this);
+        
+        for(int i=0; i<BUTTON_COUNTS; i++){
+        	mButtons[i] = ((Button)findViewById(buttonIds[i]));
+        	mButtons[i].setOnClickListener(this);
+        }
+        
+        textViewGongTitle = (TextView) findViewById(R.id.textViewGongTitle);
+        TextViewGuoTitle = (TextView) findViewById(R.id.TextViewGuoTitle);
+        TextViewTotalTitle = (TextView) findViewById(R.id.TextViewTotalTitle);
         
         textGong = (TextView) findViewById(R.id.textMonthGong);
         textGuo = (TextView) findViewById(R.id.textMonthGuo);
@@ -109,6 +121,20 @@ public class MainActivity extends Activity implements OnClickListener{
 
     }
     
+    public void setFontSize(){
+    	for(int i=0; i< BUTTON_COUNTS; i++){
+    		mButtons[i].setTextSize(TEXT_SIZE);
+    	}
+    	textTips.setTextSize(TEXT_SIZE);
+    	textGong.setTextSize(TEXT_SIZE);
+    	textGuo.setTextSize(TEXT_SIZE);
+        textTotal.setTextSize(TEXT_SIZE);
+        
+        textViewGongTitle.setTextSize(TEXT_SIZE);
+        TextViewGuoTitle.setTextSize(TEXT_SIZE);
+        TextViewTotalTitle.setTextSize(TEXT_SIZE);
+    }
+    
     public void initTips(boolean bAnimation){
     	if(textTips == null)
     		textTips = (TextView) findViewById(R.id.textViewTips);
@@ -132,7 +158,6 @@ public class MainActivity extends Activity implements OnClickListener{
     	COM.LOGE("", "index:"+index);
     	COM.LOGE("", "tipsStr["+index+"]:"+tipsStr[index]);
     	textTips.setText(tipsStr[index]);
-    	textTips.setTextSize(TEXT_SIZE);
     	textTips.setOnClickListener(this);
     	
     	if(bAnimation){
@@ -155,6 +180,10 @@ public class MainActivity extends Activity implements OnClickListener{
     
     @Override
 	protected void onResume() {
+    	
+    	TEXT_SIZE = Settings.getFontSize(this);
+    	setFontSize();
+    	
     	boolean isEnablePassword = Settings.getIsEnablePassword(this);
     	if(!bCheckPasswordOK && isEnablePassword){
     		String password = Settings.getPassword(this);

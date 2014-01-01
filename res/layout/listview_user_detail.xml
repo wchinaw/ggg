@@ -16,12 +16,12 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="false"
         android:layout_marginTop="6dp"
-        android:layout_toLeftOf="@+id/TextViewTimes"
+        android:layout_toLeftOf="@+id/TextViewGuoTitle"
         android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/TextViewTimes"
+        android:id="@+id/TextViewGuoTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

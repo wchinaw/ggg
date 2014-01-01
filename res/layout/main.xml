@@ -26,8 +26,7 @@
             android:id="@+id/main_radio"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-
+            android:orientation="horizontal">
             <RadioButton
                 android:id="@+id/radio_button0"
                 android:layout_width="fill_parent"
@@ -37,7 +36,6 @@
                 android:checked="true"
                 android:gravity="center_horizontal|center"
                 android:text="@string/gong" />
-
             <RadioButton
                 android:id="@+id/radio_button1"
                 android:layout_width="fill_parent"
@@ -46,7 +44,6 @@
                 android:button="@null"
                 android:gravity="center_horizontal|center"
                 android:text="@string/guo" />
-
             <RadioButton
                 android:id="@+id/radio_button2"
                 android:layout_width="fill_parent"
@@ -55,7 +52,6 @@
                 android:button="@null"
                 android:gravity="center_horizontal|center"
                 android:text="@string/total" />
-
         </RadioGroup>
     </LinearLayout>
 </TabHost>

@@ -194,8 +194,14 @@ public class UserGongGuoListActivity extends Activity {
 				view = mInflater.inflate(R.layout.listview_user_detail, null);
 				holder.name = (TextView) view.findViewById(R.id.TextItemName);
 				holder.date = (TextView) view.findViewById(R.id.TextItemDate);
-				holder.times = (TextView) view.findViewById(R.id.TextViewTimes);
+				holder.times = (TextView) view.findViewById(R.id.TextViewGuoTitle);
 				holder.comment = (TextView) view.findViewById(R.id.TextViewComments);
+				
+				holder.name.setTextSize(MainActivity.TEXT_SIZE);
+				holder.date.setTextSize(MainActivity.TEXT_SIZE);
+				holder.times.setTextSize(MainActivity.TEXT_SIZE);
+				holder.comment.setTextSize(MainActivity.TEXT_SIZE);
+				
 				view.setTag(holder);
 			}
 			else{
