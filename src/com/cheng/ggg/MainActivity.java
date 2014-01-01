@@ -51,11 +51,14 @@ public class MainActivity extends Activity implements OnClickListener{
     private static final int PHOTO_REQUEST_CUT = 3;// ½á¹û
     File tempFile = new File(Environment.getExternalStorageDirectory(),getPhotoFileName());
     String mHomeImagePath;
+    
+    public static MainActivity mActivity;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+        mActivity = this;
         mSQLiteHelper = SQLiteHelper.getInstance(this);
         
         ((RelativeLayout)findViewById(R.id.layoutContent)).setOnClickListener(this);

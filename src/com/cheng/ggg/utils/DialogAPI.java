@@ -11,8 +11,12 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.InputType;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -139,21 +143,14 @@ public class DialogAPI {
 							SQLiteDatabase db = sqlite.getWritableDatabase();
 							
 							//数据表中无此记录，可插入。
-							if(!sqlite.haveSameGongGuoItem(db,txt,detail.count)){
-//								GongGuoDetail detail = new GongGuoDetail();
-//								detail.bUserdefine = true;
-//								detail.count = base.count;
-//								detail.name = txt;
-////								detail.id = sqlite.getUserDefineGongGuoId(db, txt, base.count);
-//								detail.id = 
-//								base.mList.add(0, detail);
+							if(!sqlite.haveSameGongGuoItem(db,txt,detail.count,detail.bUserdefine)){
 								String oldValue = detail.name;
 								detail.name = txt;
 								sqlite.updateGongGuoDetail(db, oldValue, detail);
 //								activity.mListView.invalidateViews();
 								activity.mAdapter.notifyDataSetChanged();
 								
-								String event_id = "usrdefine";
+								String event_id = "userdefine";
 								if(detail.count > 0){
 									event_id +=detail.count+"gong";
 								}
@@ -342,16 +339,33 @@ public class DialogAPI {
 		dialog.show();
 	}
 	
-	public static void showSetPasswordDialog(final MainActivity activity){
+	public static void showSetPasswordDialog(final Activity activity){
 		
 		if(activity == null){
-			COM.LOGE("showSetPasswordDialog", "ERR activity == null!");
+			COM.LOGE("showSetPasswordDialog", "ERR activity == null!");//
 			return;//(new Dialog(activity,R.style.CustomDialogStyle));
 		}
 		
 		View loadingDialog = View.inflate(activity,R.layout.dialog_enter_password_item, null);
 		final EditText edit = (EditText)loadingDialog.findViewById(R.id.editPassword);
 		final EditText edit2 = (EditText)loadingDialog.findViewById(R.id.editPassword2);
+		final CheckBox checkbox1 = (CheckBox)loadingDialog.findViewById(R.id.checkBox1);
+		checkbox1.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+
+			public void onCheckedChanged(CompoundButton arg0, boolean bNewChecked) {
+				if (bNewChecked) {    
+				    // 显示密码    
+					edit.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);   
+					edit2.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);  
+				    }   
+				else {    
+				    // 隐藏密码    
+					edit.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);   
+					edit2.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD); 
+				}   
+			}
+			
+		});
 		
 		Dialog alert = new AlertDialog.Builder(activity)
 			.setPositiveButton(R.string.ok , new OnClickListener(){
@@ -365,7 +379,7 @@ public class DialogAPI {
 					else{
 						Settings.setPassword(activity, txt);
 						Toast.makeText(activity, R.string.set_password_ok, Toast.LENGTH_SHORT).show();
-						activity.login();
+						MainActivity.mActivity.login();
 					}
 				}
 				})
@@ -384,7 +398,7 @@ public class DialogAPI {
 			openKeyboard(activity);
 	}
 	
-public static void showCheckPasswordDialog(final MainActivity activity){
+	public static void showCheckPasswordDialog(final MainActivity activity){
 		
 		if(activity == null){
 			COM.LOGE("showSetPasswordDialog", "ERR activity == null!");
@@ -394,7 +408,24 @@ public static void showCheckPasswordDialog(final MainActivity activity){
 		View loadingDialog = View.inflate(activity,R.layout.dialog_enter_password_item, null);
 		final EditText edit = (EditText)loadingDialog.findViewById(R.id.editPassword);
 		final EditText edit2 = (EditText)loadingDialog.findViewById(R.id.editPassword2);
+		final CheckBox checkbox1 = (CheckBox)loadingDialog.findViewById(R.id.checkBox1);
 		edit2.setVisibility(View.GONE);
+		
+		checkbox1.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+
+			public void onCheckedChanged(CompoundButton arg0, boolean bNewChecked) {
+				if (bNewChecked) {    
+				    // 显示密码    
+					edit.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);     
+				    }   
+				else {    
+				    // 隐藏密码    
+					edit.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);    
+				}   
+			}
+			
+		});
+		
 		Dialog alert = new AlertDialog.Builder(activity)
 			.setPositiveButton(R.string.ok , new OnClickListener(){
 

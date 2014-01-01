@@ -352,15 +352,33 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		insertUserGONGGUOTable(db,user_guo_table,parent_id,parent_name,name,count,time,times,comment);
 	}
 	
-	/**插入自定义功过之前，比较是否有相同名称，相同count的功或过*/
-	public boolean haveSameGongGuoItem(SQLiteDatabase db, String name, int count){
+	/**插入自定义功过之前，比较是否有相同名称，相同count的功或过   在预定义功过和自定义功过中查询*/
+	public boolean haveSameGongGuoItem(SQLiteDatabase db, String name, int count) {
+		boolean rc = haveSameGongGuoItem(db, name, count, true);
+		rc &= haveSameGongGuoItem(db, name, count, false);
+		return rc;
+	}
+	
+	/**插入自定义功过之前，比较是否有相同名称，相同count的功或过   在预定义功过或者自定义功过中查询*/
+	public boolean haveSameGongGuoItem(SQLiteDatabase db, String name, int count, boolean bUserDefineTable){
+		
 		int total = 0;
 		String tableName;
 		if(count > 0)
-			tableName = userdefine_gong_detail_table;
-		else{
-			tableName = userdefine_guo_detail_table;
-			}
+		{
+			if(bUserDefineTable)
+				tableName = userdefine_gong_detail_table;
+			else
+				tableName = gong_detail_table;
+		}
+		else
+		{
+			if(bUserDefineTable)
+				tableName = userdefine_guo_detail_table;
+			else
+				tableName = guo_detail_table;
+		}
+		
 		String sql = "select * from "+tableName +" where name = '"+getReplacedString(name)+"' and count = '"+count+"'";
 		Cursor cursor = db.rawQuery( sql, null);
 		
