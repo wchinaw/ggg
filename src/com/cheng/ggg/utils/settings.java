@@ -72,7 +72,12 @@ public class Settings {
 	
 	public static int getFontSize(Context context){
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-		String fontValue = sp.getString(fontSize, "26");
+//		String fontValue = sp.getString(fontSize, "20");
+		String fontValue = sp.getString(fontSize, "");
+		if(fontValue.equals("")){
+			setString(context,fontSize,COM.DEFAULT_FONT_SIZE);
+			fontValue = COM.DEFAULT_FONT_SIZE;
+		}
 		return COM.parseInt(fontValue);
 	}
 	
@@ -80,6 +85,13 @@ public class Settings {
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
 		Editor editor = sp.edit();
 		editor.putString(defaultpic, pwd);
+		editor.commit();
+	}
+	
+	public static void setString(Context context,String key, String strValue){
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
+		Editor editor = sp.edit();
+		editor.putString(key, strValue);
 		editor.commit();
 	}
 }

@@ -40,6 +40,8 @@ public class COM {
 	public static final int COLOR_GONG = Color.RED;
 	public static final int COLOR_GUO = Color.GREEN;
 	
+	public static final String DEFAULT_FONT_SIZE = "20";
+	
 	public final static boolean DEBUG = false;
 	public static int LOGE(String TAG, String msg){
 		if(DEBUG)
