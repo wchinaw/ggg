@@ -431,7 +431,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		ContentValues cv = new ContentValues();
         cv.put("name", detail.name);
         
-        count = db.update(tableName, cv, "id=?",new String[]{detail.id+""});
+        count = db.update(tableName, cv, "id=? and name=?",new String[]{detail.id+"",oldValue});
         count += updateGongGuo(db,oldValue,detail);
 		
 		return count;
