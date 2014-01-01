@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Color;
 import android.os.Environment;
 import android.util.Log;
 
@@ -35,6 +36,9 @@ public class COM {
 	public static final String HOMG_IMG = "home.jpg";
 	//进行恢复时，先对数据库文件进行备份，以便恢复失败时可以使用原来的数据。
 	public static final String BACKUP_FOR_RESTORE_EXT = "_backup";
+	
+	public static final int COLOR_GONG = Color.RED;
+	public static final int COLOR_GUO = Color.GREEN;
 	
 	public final static boolean DEBUG = false;
 	public static int LOGE(String TAG, String msg){

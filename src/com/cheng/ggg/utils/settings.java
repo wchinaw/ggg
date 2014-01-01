@@ -22,7 +22,7 @@ public class Settings {
 	public static final String defaultpic = "defaultpic";
 	public static final String tips = "tips";
 	public static final String fontSize = "fontSize";
-	
+	public static final String colorSwap = "colorSwap";//功过颜色互换
 	
 	public static void changeLauguage(Context context, int lang){
 //		  在代码中切换语言：
@@ -41,6 +41,11 @@ public class Settings {
 	public static boolean getIsEnablePassword(Context context){
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
 		return sp.getBoolean(is_enable_password, false);
+	}
+	
+	public static boolean getIsColorSwap(Context context){
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
+		return sp.getBoolean(colorSwap, false);
 	}
 	
 	public static String getPassword(Context context){

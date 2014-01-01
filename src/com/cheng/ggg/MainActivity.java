@@ -43,6 +43,8 @@ public class MainActivity extends Activity implements OnClickListener{
 	String tipsStr[] = null;
 	
 	public static int TEXT_SIZE = 20;
+	/**¹¦¹ýÑÕÉ«»¥»»*/
+	public static boolean COLOR_SWAP = false;
 	public boolean bCheckPasswordOK = false;
 	final int REQUEST_SELECT_PIC = 1;
 	
@@ -67,6 +69,7 @@ public class MainActivity extends Activity implements OnClickListener{
         mActivity = this;
         mSQLiteHelper = SQLiteHelper.getInstance(this);
         TEXT_SIZE = Settings.getFontSize(this);
+        COLOR_SWAP = Settings.getIsColorSwap(this);
         
         ((RelativeLayout)findViewById(R.id.layoutContent)).setOnClickListener(this);
         
@@ -121,7 +124,7 @@ public class MainActivity extends Activity implements OnClickListener{
 
     }
     
-    public void setFontSize(){
+    public void setFontSizeAndColor(){
     	for(int i=0; i< BUTTON_COUNTS; i++){
     		mButtons[i].setTextSize(TEXT_SIZE);
     	}
@@ -180,9 +183,9 @@ public class MainActivity extends Activity implements OnClickListener{
     
     @Override
 	protected void onResume() {
-    	
     	TEXT_SIZE = Settings.getFontSize(this);
-    	setFontSize();
+    	COLOR_SWAP = Settings.getIsColorSwap(this);
+    	setFontSizeAndColor();
     	
     	boolean isEnablePassword = Settings.getIsEnablePassword(this);
     	if(!bCheckPasswordOK && isEnablePassword){
@@ -243,11 +246,21 @@ public class MainActivity extends Activity implements OnClickListener{
 			return;
 		
 		view.setText(count+"");
+		
+		int gongColor = COM.COLOR_GONG;
+		int guoColor = COM.COLOR_GUO;
+		
+		if(COLOR_SWAP){
+			gongColor = COM.COLOR_GUO;
+			guoColor = COM.COLOR_GONG;
+		}
+		
+		
 		if(count > 0){
-			view.setTextColor(Color.RED);
+			view.setTextColor(gongColor);
 		}
 		else if(count < 0){
-			view.setTextColor(Color.GREEN);
+			view.setTextColor(guoColor);
 		}
 		else {
 			view.setTextColor(Color.WHITE);

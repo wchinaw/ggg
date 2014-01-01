@@ -222,10 +222,16 @@ public class UserGongGuoListActivity extends Activity {
 			holder.position = position;
 			
 			if(gongguo.count > 0){
-				holder.name.setTextColor(Color.RED);
+				if(MainActivity.COLOR_SWAP)
+					holder.name.setTextColor(COM.COLOR_GUO);
+				else
+					holder.name.setTextColor(COM.COLOR_GONG);
 			}
 			else{
-				holder.name.setTextColor(Color.GREEN);
+				if(MainActivity.COLOR_SWAP)
+					holder.name.setTextColor(COM.COLOR_GONG);
+				else
+					holder.name.setTextColor(COM.COLOR_GUO);
 			}
 			
 			return view;

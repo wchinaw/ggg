@@ -15,6 +15,8 @@
 		android:dialogTitle="设置字体大小"
 		
         ></ListPreference>
+    <CheckBoxPreference android:key="colorSwap"  
+       android:title="功过颜色互换" android:summary="选中后，功的颜色为绿色，过的颜色为红色"></CheckBoxPreference>
     </PreferenceScreen>
     
     <!-- android:defaultValue="@array/list_entries_value2" -->
