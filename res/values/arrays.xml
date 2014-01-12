@@ -14,6 +14,32 @@
 	<item>16</item>
 </string-array>
 
+<string-array name="list_days">
+    <item>重复周期：1分钟</item>
+	<item>重复周期：3分钟</item>
+	<item>重复周期：10分钟</item>
+	<item>重复周期：1天</item>
+	<item>重复周期：2天</item>
+	<item>重复周期：3天</item>
+	<item>重复周期：4天</item>
+	<item>重复周期：5天</item>
+	<item>重复周期：6天</item>
+	<item>重复周期：7天</item>
+</string-array>
+
+<string-array name="list_days_value">
+    <item>0</item>
+	<item>0</item>
+	<item>0</item>
+    <item>1</item>
+	<item>2</item>
+	<item>3</item>
+	<item>4</item>
+	<item>5</item>
+	<item>6</item>
+	<item>7</item>
+</string-array>
+
 <!-- <string-array name="list_entries_value2">
 <item>shandong2</item>
 <item>fujian2</item>

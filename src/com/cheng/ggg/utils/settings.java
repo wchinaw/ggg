@@ -23,6 +23,10 @@ public class Settings {
 	public static final String tips = "tips";
 	public static final String fontSize = "fontSize";
 	public static final String colorSwap = "colorSwap";//功过颜色互换
+	public static final String alarm_time = "alarm_time";//定时提醒时间 小时分钟换算的毫秒数
+	public static final String is_enable_alarm = "is_enable_alarm";
+	public static final String alarm_date_ms = "alarm_date_ms";//定时提醒的完整日期的毫秒数
+	public static final String repeat_time_ms = "repeat_time_ms";//重复提醒的时间间隔
 	
 	public static void changeLauguage(Context context, int lang){
 //		  在代码中切换语言：
@@ -43,9 +47,43 @@ public class Settings {
 		return sp.getBoolean(is_enable_password, false);
 	}
 	
+	public static long getAlarmDateMs(Context context){
+		return getLong(context,alarm_date_ms);
+	}
+	
+	/**下一次闹钟时间*/
+	public static void setAlarmDateMs(Context context,long date_ms){
+		setLong(context,alarm_date_ms, date_ms);
+	}
+	/**下一次闹钟时间*/
+	public static long getRepeatTimeMs(Context context){
+		return getLong(context,repeat_time_ms);
+	}
+	
+	public static void setRepeatTimeMs(Context context,long date_ms){
+		setLong(context,repeat_time_ms, date_ms);
+	}
+	
+	public static boolean getIsEnableAlarm(Context context){
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
+		return sp.getBoolean(is_enable_alarm, false);
+	}
+	
+	public static void setIsEnableAlarm(Context context,boolean bEnable){
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
+		Editor editor = sp.edit();
+		editor.putBoolean(is_enable_alarm, bEnable);
+		editor.commit();
+	}
+	
 	public static boolean getIsColorSwap(Context context){
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
 		return sp.getBoolean(colorSwap, false);
+	}
+	
+	public static long getAlarmTime(Context context){
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
+		return sp.getLong(alarm_time,0);
 	}
 	
 	public static String getPassword(Context context){
@@ -92,6 +130,18 @@ public class Settings {
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
 		Editor editor = sp.edit();
 		editor.putString(key, strValue);
+		editor.commit();
+	}
+	
+	public static long getLong(Context context, String key){
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
+		return sp.getLong(key, 0);
+	}
+	
+	public static void setLong(Context context,String key, long value){
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
+		Editor editor = sp.edit();
+		editor.putLong(key, value);
 		editor.commit();
 	}
 }

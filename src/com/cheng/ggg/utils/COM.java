@@ -8,7 +8,11 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -17,6 +21,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.cheng.ggg.R;
+import com.cheng.ggg.receiver.AlarmReceiver;
 
 public class COM {
 	
@@ -25,6 +30,8 @@ public class COM {
 	public static final String INTENT_GONG = "INTENT_GONG";
 	public static final String INTENT_TYPE = "INTENT_TYPE";
 	public static final String INTENT_USERDEFINE = "INTENT_USERDEFINE";//用户自定义标志
+	
+	public static final String INTENT_USERDEFINE_TIPS = "INTENT_USERDEFINE_TIPS";
 	
 	public static final String BACKUP_FILENAME = "ggg.db";
 	public static final String EXPORT_USERDEFINE_GONGGUO_FILENAME = "ggg.csv";
@@ -42,7 +49,10 @@ public class COM {
 	
 	public static final String DEFAULT_FONT_SIZE = "20";
 	
-	public final static boolean DEBUG = false;
+	/**闹钟重复时间*/
+	public static final long ALRAM_REPEAT_TIME_MS = 24*60*60*1000;//1天
+	
+	public final static boolean DEBUG = true;
 	public static int LOGE(String TAG, String msg){
 		if(DEBUG)
 			return Log.e(TAG, msg);
@@ -135,5 +145,13 @@ public class COM {
 		
 		return value;
 	}
+	
+	/**
+	 * 
+	 * @param context
+	 * @param triggerTimeMs 闹钟第一次提醒
+	 * @param repeatTimeMs  闹钟循环提醒时间
+	 */
+
 
 }

@@ -8,8 +8,12 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -18,22 +22,28 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cheng.ggg.database.SQLiteHelper;
+import com.cheng.ggg.receiver.AlarmReceiver;
+import com.cheng.ggg.utils.AlarmNotification;
 import com.cheng.ggg.utils.COM;
 import com.cheng.ggg.utils.DialogAPI;
 import com.cheng.ggg.utils.Settings;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
 
-public class MainActivity extends Activity implements OnClickListener{
+public class MainActivity extends Activity implements OnClickListener
+  ,OnSharedPreferenceChangeListener{
 	
 	SQLiteHelper mSQLiteHelper;
 	TextView textGong, textGuo, textTotal;
@@ -71,7 +81,14 @@ public class MainActivity extends Activity implements OnClickListener{
         TEXT_SIZE = Settings.getFontSize(this);
         COLOR_SWAP = Settings.getIsColorSwap(this);
         
-        ((RelativeLayout)findViewById(R.id.layoutContent)).setOnClickListener(this);
+        ((RelativeLayout)findViewById(R.id.layoutContent)).setOnLongClickListener(new OnLongClickListener(){
+
+			public boolean onLongClick(View arg0) {
+				showDialog();
+				return false;
+			}
+        	
+        });
         
         for(int i=0; i<BUTTON_COUNTS; i++){
         	mButtons[i] = ((Button)findViewById(buttonIds[i]));
@@ -121,8 +138,19 @@ public class MainActivity extends Activity implements OnClickListener{
 //        FeedbackAgent agent = new FeedbackAgent(this);
 //        agent.sync();
         //方法第一个参数类型为：Context，第二个参数为枚举类型，可选值为NotificationType.AlertDialog 或NotificationType.NotificationBar，分别对应两种不同的提示方式：
-
+       
+       
     }
+    
+//    BroadcastReceiver mBroadCast = new BroadcastReceiver(){
+//
+//		@Override
+//		public void onReceive(Context context, Intent intent) {
+//			String action = intent.getAction();
+//			
+//		}
+//    	
+//    };
     
     public void setFontSizeAndColor(){
     	for(int i=0; i< BUTTON_COUNTS; i++){
@@ -201,6 +229,8 @@ public class MainActivity extends Activity implements OnClickListener{
     		refreshGongGuoInfo();
     	}
 		super.onResume();
+		 //清除notification
+        AlarmNotification.clearNotification(this);
 		MobclickAgent.onResume(this);
 	}
 
@@ -300,10 +330,6 @@ public class MainActivity extends Activity implements OnClickListener{
 			break;
 		case R.id.textViewTips:
 			initTips(true);
-			break;
-		case R.id.layoutContent:
-//			selectPic();
-			showDialog();
 			break;
 		}
 	}
@@ -428,6 +454,13 @@ public class MainActivity extends Activity implements OnClickListener{
         SimpleDateFormat dateFormat = new SimpleDateFormat("'IMG'_yyyyMMdd_HHmmss");
         return dateFormat.format(date) + ".jpg";
     }
+
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+			String key) {
+		if(Settings.tips.equals(key)){
+			initTips(false);
+		}
+	}
  
 
 }

@@ -17,6 +17,9 @@
         ></ListPreference>
     <CheckBoxPreference android:key="colorSwap"  
        android:title="功过颜色互换" android:summary="选中后，功的颜色为绿色，过的颜色为红色"></CheckBoxPreference>
+    
+    <com.cheng.ggg.views.TimePreference android:key="alarm_time" android:title="设置提醒时间" android:defaultValue="1000000"/>
     </PreferenceScreen>
+    
     
     <!-- android:defaultValue="@array/list_entries_value2" -->
