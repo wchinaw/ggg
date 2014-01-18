@@ -39,6 +39,7 @@ import com.cheng.ggg.utils.AlarmNotification;
 import com.cheng.ggg.utils.COM;
 import com.cheng.ggg.utils.DialogAPI;
 import com.cheng.ggg.utils.Settings;
+import com.cheng.ggg.utils.TimeDate;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
 
@@ -76,6 +77,8 @@ public class MainActivity extends Activity implements OnClickListener
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        
         mActivity = this;
         mSQLiteHelper = SQLiteHelper.getInstance(this);
         TEXT_SIZE = Settings.getFontSize(this);
@@ -139,7 +142,7 @@ public class MainActivity extends Activity implements OnClickListener
 //        agent.sync();
         //方法第一个参数类型为：Context，第二个参数为枚举类型，可选值为NotificationType.AlertDialog 或NotificationType.NotificationBar，分别对应两种不同的提示方式：
        
-       
+        TimeDate.test(this);
     }
     
 //    BroadcastReceiver mBroadCast = new BroadcastReceiver(){

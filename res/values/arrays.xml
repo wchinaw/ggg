@@ -40,6 +40,23 @@
 	<item>7</item>
 </string-array>
 
+<string-array name="list_date_range">
+    <item>本年</item>
+	<item>本季</item>
+	<item>本月</item>
+	<item>本周</item>
+</string-array>
+
+<string-array name="list_weekday">
+    <item>星期日</item>
+	<item>星期一</item>
+	<item>星期二</item>
+	<item>星期三</item>
+	<item>星期四</item>
+	<item>星期五</item>
+	<item>星期六</item>
+</string-array>
+
 <!-- <string-array name="list_entries_value2">
 <item>shandong2</item>
 <item>fujian2</item>

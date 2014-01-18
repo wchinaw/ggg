@@ -28,6 +28,8 @@ public class Settings {
 	public static final String alarm_date_ms = "alarm_date_ms";//定时提醒的完整日期的毫秒数
 	public static final String repeat_time_ms = "repeat_time_ms";//重复提醒的时间间隔
 	
+	public static final String time_range_index = "time_range_index";//明细明显的时间范围 对应到arrays.xml list_date_range
+	
 	public static void changeLauguage(Context context, int lang){
 //		  在代码中切换语言：
      Resources resources = context.getResources();//获得res资源对象
@@ -47,6 +49,17 @@ public class Settings {
 		return sp.getBoolean(is_enable_password, false);
 	}
 	
+	//明细明显的时间范围 对应到arrays.xml list_date_range
+	public static int getTimeRangeIndex(Context context){
+	    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
+        return sp.getInt(time_range_index, 2); //默认为本月
+    }
+    
+	//明细明显的时间范围 对应到arrays.xml list_date_range
+    public static void setTimeRangeIndex(Context context,int index){
+        setInt(context,time_range_index, index);
+    }
+	
 	public static long getAlarmDateMs(Context context){
 		return getLong(context,alarm_date_ms);
 	}
@@ -57,7 +70,8 @@ public class Settings {
 	}
 	/**下一次闹钟时间*/
 	public static long getRepeatTimeMs(Context context){
-		return getLong(context,repeat_time_ms);
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
+		return sp.getLong(repeat_time_ms, TimeDate.ONE_DAY_MS);
 	}
 	
 	public static void setRepeatTimeMs(Context context,long date_ms){
@@ -144,4 +158,11 @@ public class Settings {
 		editor.putLong(key, value);
 		editor.commit();
 	}
+	
+	public static void setInt(Context context,String key, int value){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
+        Editor editor = sp.edit();
+        editor.putInt(key, value);
+        editor.commit();
+    }
 }

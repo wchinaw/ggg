@@ -25,6 +25,7 @@ import android.util.Log;
 import com.cheng.ggg.R;
 import com.cheng.ggg.types.GongGuoBase;
 import com.cheng.ggg.types.GongGuoDetail;
+import com.cheng.ggg.types.TimeRange;
 import com.cheng.ggg.types.UserGongGuo;
 import com.cheng.ggg.utils.COM;
 import com.cheng.ggg.utils.Settings;
@@ -451,7 +452,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	public ArrayList<GongGuoBase> getGongGuoBase(SQLiteDatabase db, String baseTableName,String userDefineDetailTableName, String detailTableName){
 		ArrayList<GongGuoBase> baseList = new ArrayList<GongGuoBase>();
     	
-		String sql="select * from "+baseTableName;
+		String sql="select * from "+baseTableName+" order by id desc";
     	Cursor cursor=null;
     	try{
     		cursor=db.rawQuery(sql, null);
@@ -597,12 +598,33 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		return guoCount;
 	}
 	
+	/**
+	 * 获取用户功过表中所有列表,按时间范围获取 ，并按时间逆序排序
+	 * ChenGang
+	 * 2014-1-18
+	 * @param db
+	 * @param startTimeS 开始时间(大于等于它)
+	 * @param endTimeS   截止时间(要小于它)
+	 * @return ArrayList<UserGongGuo>
+	 */
+    public ArrayList<UserGongGuo> getUserGongGuoListByRange(SQLiteDatabase db,TimeRange range ){
+        String where = " where time>="+range.mStartTimeS+" and time<"+range.mEndTimeS;
+        String sql = " select * from " + user_gong_table + where
+                   + " union all"
+                   + " select * from "+user_guo_table + where
+                   + " order by time desc";
+        return getUserGongGuoList(db,sql);
+    }
 	
 	/**获取用户功过表中所有列表,按时间逆序排序*/
 	public ArrayList<UserGongGuo> getUserGongGuoListAll(SQLiteDatabase db){
+	    String sql="select * from "+user_gong_table+" union all select * from "+user_guo_table+" order by time desc";
+	    return getUserGongGuoList(db,sql);
+	}
+	
+	/**获取用户功过表中列表*/
+	public ArrayList<UserGongGuo> getUserGongGuoList(SQLiteDatabase db,String sql){
 		ArrayList<UserGongGuo> detailList = new ArrayList<UserGongGuo>();
-		
-		String sql="select * from "+user_gong_table+" union all select * from "+user_guo_table+" order by time desc";
     	Cursor cursor=null;
     	try{
     		cursor=db.rawQuery(sql, null);

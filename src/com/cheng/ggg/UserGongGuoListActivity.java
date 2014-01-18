@@ -3,9 +3,10 @@ package com.cheng.ggg;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -13,24 +14,31 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cheng.ggg.database.SQLiteHelper;
+import com.cheng.ggg.types.TimeRange;
 import com.cheng.ggg.types.UserGongGuo;
 import com.cheng.ggg.utils.COM;
+import com.cheng.ggg.utils.Settings;
+import com.cheng.ggg.utils.TimeDate;
 import com.umeng.analytics.MobclickAgent;
 
 
 /**用户功过明细*/
-public class UserGongGuoListActivity extends Activity {
+public class UserGongGuoListActivity extends Activity implements OnClickListener{
 
+    final String TAG = "UserGongGuoListActivity";
 	Activity mActivity;
 	public static final int TYPE_GONG = 0; 
 	public static final int TYPE_GUO = 1; 
@@ -42,30 +50,46 @@ public class UserGongGuoListActivity extends Activity {
 	int mType = TYPE_ALL;
 	String strTimes = "";
 	
+	TextView mTextViewTimeRange;
+	long startTimeMs, endTimeMs;
+	TimeRange mTimeRange = null;
+	int mTimeRangeIndex = 0;
+	Button btnLeft,btnRight;
+	String[] mWeekdayArray;
+	
+	String strTotal,strGong,strGuo;
+	int mGong,mGuo;
+	TextView mTextViewGong,mTextViewGuo,mTextViewTotal;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         
         mActivity = this;
-        strTimes = getString(R.string.times);
-        
         getBundles();
+        strTimes = getString(R.string.times);
+        strTotal = getString(R.string.total);
+        strGong = getString(R.string.gong);
+        strGuo = getString(R.string.guo);
+        
+        mTextViewGong = (TextView)findViewById(R.id.textView1);
+        mTextViewGuo = (TextView)findViewById(R.id.textView2);
+        mTextViewTotal = (TextView)findViewById(R.id.textView3);
+        
+        mWeekdayArray = getResources().getStringArray(R.array.list_weekday);
+        
+        btnLeft = (Button) findViewById(R.id.btnLeft);
+        btnLeft.setOnClickListener(this);
+        btnRight = (Button) findViewById(R.id.btnRight);
+        btnRight.setOnClickListener(this);
+        
+        mTimeRangeIndex = Settings.getTimeRangeIndex(this);
+        mTimeRange = TimeDate.getTimeRangeByIndex(mTimeRange,mTimeRangeIndex,TimeDate.MODE_CURRENT);
         
         mSQLiteHelper = SQLiteHelper.getInstance(this);
-        SQLiteDatabase db = mSQLiteHelper.getReadableDatabase();
         
-        switch(mType){
-        case TYPE_GONG:
-        	break;
-        case TYPE_GUO:
-        	break;
-        case TYPE_ALL:
-        	mUserGongGuoList = mSQLiteHelper.getUserGongGuoListAll(db);
-        	break;
-        }
-        
-        db.close();
+        getList(mTimeRange);
         
         mListView = (ListView) findViewById(R.id.listView1);
         mAdapter = new UserGongGuoAdapter(this);
@@ -74,8 +98,116 @@ public class UserGongGuoListActivity extends Activity {
         
         if(mUserGongGuoList!=null && mUserGongGuoList.size()==0){
         	Toast.makeText(this, R.string.empty_user_detaillist, Toast.LENGTH_LONG).show();
+        	finish();
+        	return;
+        }
+        
+        //弹出选择日期对话框。
+        mTextViewTimeRange = (TextView)findViewById(R.id.dayInfo);
+        mTextViewTimeRange.setTextSize(MainActivity.TEXT_SIZE-2);
+        mTextViewTimeRange.setOnClickListener(mTimeRangeOnClickListener);
+        refreshTextViewTimeRange();
+    }
+    
+    public void setListDayInfo(){
+        if(mUserGongGuoList != null && mUserGongGuoList.size()>0){
+            int len = mUserGongGuoList.size();
+            UserGongGuo gongguoFirst = mUserGongGuoList.get(0);
+            gongguoFirst.setFirstDay();
+            TimeRange rangeFirstDay = new TimeRange();
+            rangeFirstDay.mStartTimeMS = gongguoFirst.time*1000L;
+            rangeFirstDay.setTimeRangeS();
+            rangeFirstDay = TimeDate.getCurrentDayRange(rangeFirstDay, TimeDate.MODE_CURRENT);
+            
+            long firstDayEndMs = rangeFirstDay.mStartTimeMS+24*60*60*1000;
+            UserGongGuo gongguo;
+            if(len == 1)
+                gongguoFirst.todayInfo = TimeDate.intTime2TodayInfo(mActivity, rangeFirstDay.mStartTimeS, mWeekdayArray);
+            
+            for(int i=1; i<len; i++){
+                gongguo = mUserGongGuoList.get(i);
+                gongguo.isFirst = false;
+                if(firstDayEndMs > gongguo.time){//当天
+                    gongguoFirst.todayCount+=(gongguo.count*gongguo.times);
+                    gongguoFirst.todayInfo = TimeDate.intTime2TodayInfo(mActivity, rangeFirstDay.mStartTimeS, mWeekdayArray);
+                }
+                else{//第二天
+                    firstDayEndMs+=TimeDate.ONE_DAY_MS;
+                    gongguoFirst = gongguo;
+                    gongguoFirst.setFirstDay();
+                }
+            }
         }
     }
+    
+    public void refreshTextViewTimeRange()
+    {
+        mTextViewTimeRange.setText(TimeDate.getTimeRangeDateString(mActivity,mTimeRange,mTimeRangeIndex));
+//        mTextViewTimeRange.invalidate();
+    }
+    
+    public void getList(TimeRange range){
+        
+        SQLiteDatabase db = mSQLiteHelper.getReadableDatabase();
+        
+        switch(mType){
+        case TYPE_GONG:
+            break;
+        case TYPE_GUO:
+            break;
+        case TYPE_ALL:
+            mUserGongGuoList = mSQLiteHelper.getUserGongGuoListByRange(db,range);
+            break;
+        }
+        db.close();
+        setListDayInfo();
+        refreshTotalGongGuoByList();
+        if(mAdapter != null)
+            mAdapter.notifyDataSetChanged();
+    }
+    
+    public void refreshTotalGongGuoByList(){
+    	mGong = 0;
+    	mGuo = 0;
+    	for(UserGongGuo data : mUserGongGuoList){
+    		if(data.count > 0){
+    			mGong += data.count*data.times;
+    		}
+    		else{
+    			mGuo += data.count*data.times;
+    		}
+    	}
+    	
+    	mTextViewGong.setText(strGong+" "+mGong);
+    	mTextViewGuo.setText(strGuo+" "+mGuo);
+    	
+    	int total = mGong+mGuo;
+    	mTextViewTotal.setText(strTotal+" "+total);
+    	
+    	setGongGuoColor(mTextViewGong, mGong);
+    	setGongGuoColor(mTextViewGuo, mGuo);
+    	setGongGuoColor(mTextViewTotal, total);
+    }
+    
+    OnClickListener mTimeRangeOnClickListener = new OnClickListener(){
+
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			final AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+			builder.setTitle(R.string.date_range);
+			builder.setItems(R.array.list_date_range, new DialogInterface.OnClickListener() {
+				
+				public void onClick(DialogInterface dialog, int which) {
+				    mTimeRangeIndex = which;
+				    mTimeRange = TimeDate.getTimeRangeByIndex(null,which,TimeDate.MODE_CURRENT);
+				    getList(mTimeRange);
+					refreshTextViewTimeRange();
+				}
+			});
+			builder.create().show();
+		}
+    	
+    };
     
     @Override
 	protected void onResume() {
@@ -133,7 +265,10 @@ public class UserGongGuoListActivity extends Activity {
 				else{//过
 					rc = mSQLiteHelper.deleteUserGuoItemById(db, gongguo.id);
 				}
+				boolean isFirst = gongguo.isFirst;
 				mUserGongGuoList.remove(id);
+				if(isFirst)
+				    setListDayInfo();
 				mAdapter.notifyDataSetChanged();
 				db.close();
 				
@@ -152,6 +287,24 @@ public class UserGongGuoListActivity extends Activity {
 	return super.onContextItemSelected(item);  
 
 }  
+	
+	public static void setGongGuoColor(TextView textView,int count)
+	{
+		if(count > 0){
+			if(MainActivity.COLOR_SWAP){
+				textView.setTextColor(COM.COLOR_GUO);
+			}
+			else{
+				textView.setTextColor(COM.COLOR_GONG);
+			}
+		}
+		else{
+			if(MainActivity.COLOR_SWAP)
+				textView.setTextColor(COM.COLOR_GONG);
+			else
+				textView.setTextColor(COM.COLOR_GUO);
+		}
+	}
     
     public void getBundles(){
     	Intent intent = getIntent();
@@ -192,6 +345,9 @@ public class UserGongGuoListActivity extends Activity {
 			if(view == null){
 				holder = new ViewHolder();
 				view = mInflater.inflate(R.layout.listview_user_detail, null);
+				holder.layoutDayInfo = (RelativeLayout) view.findViewById(R.id.layoutDayInfo);
+				holder.titleDate = (TextView) view.findViewById(R.id.titleDate);
+				holder.titleCount = (TextView) view.findViewById(R.id.titleCount);
 				holder.name = (TextView) view.findViewById(R.id.TextItemName);
 				holder.date = (TextView) view.findViewById(R.id.TextItemDate);
 				holder.times = (TextView) view.findViewById(R.id.TextViewGuoTitle);
@@ -200,7 +356,7 @@ public class UserGongGuoListActivity extends Activity {
 				holder.name.setTextSize(MainActivity.TEXT_SIZE);
 				holder.date.setTextSize(MainActivity.TEXT_SIZE);
 				holder.times.setTextSize(MainActivity.TEXT_SIZE);
-				holder.comment.setTextSize(MainActivity.TEXT_SIZE);
+				holder.comment.setTextSize(MainActivity.TEXT_SIZE-3);
 				
 				view.setTag(holder);
 			}
@@ -208,9 +364,22 @@ public class UserGongGuoListActivity extends Activity {
 				holder = (ViewHolder) view.getTag();
 			}
 			UserGongGuo gongguo = mUserGongGuoList.get(position);
+			
+			if(gongguo.isFirst){
+			    holder.layoutDayInfo.setVisibility(View.VISIBLE);
+			    holder.titleDate.setText(gongguo.todayInfo);
+			    holder.titleCount.setText(strTotal+" "+gongguo.todayCount);
+			}
+			else{
+			    holder.layoutDayInfo.setVisibility(View.GONE);
+			}
+			
 			holder.name.setText(gongguo.parent_name+" "+gongguo.name);
-			holder.date.setText(COM.intTime2Date(mActivity, gongguo.time));
-			holder.times.setText(gongguo.times+strTimes);
+			holder.date.setText(TimeDate.intTime2HourMinute(mActivity, gongguo.time));
+			if(gongguo.times>1)
+				holder.times.setText(gongguo.times+strTimes);
+			else
+				holder.times.setText("");
 			if(gongguo.comment == null || gongguo.comment.equals("")){
 				holder.comment.setVisibility(View.GONE);
 			}
@@ -220,24 +389,45 @@ public class UserGongGuoListActivity extends Activity {
 			}
 			
 			holder.position = position;
+			setGongGuoColor(holder.name,gongguo.count);
+			setGongGuoColor(holder.titleCount,gongguo.todayCount);
+//			if(gongguo.count > 0){
+//				if(MainActivity.COLOR_SWAP){
+//					holder.name.setTextColor(COM.COLOR_GUO);
+//				}
+//				else{
+//					holder.name.setTextColor(COM.COLOR_GONG);
+//				}
+//			}
+//			else{
+//				if(MainActivity.COLOR_SWAP)
+//					holder.name.setTextColor(COM.COLOR_GONG);
+//				else
+//					holder.name.setTextColor(COM.COLOR_GUO);
+//			}
 			
-			if(gongguo.count > 0){
-				if(MainActivity.COLOR_SWAP)
-					holder.name.setTextColor(COM.COLOR_GUO);
-				else
-					holder.name.setTextColor(COM.COLOR_GONG);
-			}
-			else{
-				if(MainActivity.COLOR_SWAP)
-					holder.name.setTextColor(COM.COLOR_GONG);
-				else
-					holder.name.setTextColor(COM.COLOR_GUO);
-			}
+//			if(gongguo.todayCount > 0){
+//				if(MainActivity.COLOR_SWAP){
+//					holder.titleCount.setTextColor(COM.COLOR_GUO);
+//				}
+//				else{
+//					holder.titleCount.setTextColor(COM.COLOR_GONG);
+//				}
+//			}
+//			else{
+//				if(MainActivity.COLOR_SWAP)
+//					holder.titleCount.setTextColor(COM.COLOR_GONG);
+//				else
+//					holder.titleCount.setTextColor(COM.COLOR_GUO);
+//			}
 			
 			return view;
 		}
 		
 		public class ViewHolder{
+		    RelativeLayout layoutDayInfo; //每日信息
+		    TextView titleDate;//每天的日期
+		    TextView titleCount; //每天功过统计
 			TextView name;
 			TextView date;
 			TextView times;
@@ -245,5 +435,22 @@ public class UserGongGuoListActivity extends Activity {
 			int position;
 		}
     	
+    }
+
+
+    public void onClick(View v)
+    {
+        switch(v.getId()){
+            case R.id.btnRight:
+                mTimeRange = TimeDate.getTimeRangeByIndex(mTimeRange,mTimeRangeIndex,TimeDate.MODE_TO_NEXT);
+                getList(mTimeRange);
+                refreshTextViewTimeRange();
+                break;
+            case R.id.btnLeft:
+                mTimeRange = TimeDate.getTimeRangeByIndex(mTimeRange,mTimeRangeIndex,TimeDate.MODE_TO_PRE);
+                getList(mTimeRange);
+                refreshTextViewTimeRange();
+                break;
+        }
     }
 }

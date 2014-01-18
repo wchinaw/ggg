@@ -5,12 +5,23 @@ import android.database.Cursor;
 public class UserGongGuo{
 	public String parent_id;
 	public String parent_name;
-	public int id;
-	public String name;
-	public int count;
-	public int time;
-	public int times;
-	public String comment;
+	public int id;       //id
+	public String name; //名称
+	public int count; //功过数量
+	public int time;  //时间
+	public int times; //次数
+	public String comment; //备注
+	
+	public boolean isFirst = false; //用于明细listView,如果此值为true,则显示当天日期。
+	public int todayCount = 0; //用于明细listView,如果此值为true,则显示当天功过总数。
+	public String todayInfo; //用于明细listView,如果此值为true,则显示当天功过总数。
+	
+	//是列表中当天第一个
+	public void setFirstDay()
+	{
+	    isFirst = true;
+	    todayCount = count*times;
+	}
 	
 	public static UserGongGuo getFromCursor(Cursor cursor){
 		UserGongGuo detail = new UserGongGuo();

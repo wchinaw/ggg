@@ -34,7 +34,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/btnRight"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
             android:layout_gravity="right|center_vertical"

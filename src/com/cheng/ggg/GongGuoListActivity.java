@@ -380,7 +380,7 @@ public class GongGuoListActivity  extends ExpandableListActivity {
             View view = mInflater.inflate(R.layout.listview_group, null);
 			holder.txtName = (TextView) view.findViewById(R.id.TextItemName);
 			holder.txtCount = (TextView) view.findViewById(R.id.TextItemCount);	
-			holder.button = (Button) view.findViewById(R.id.button1);
+			holder.button = (Button) view.findViewById(R.id.btnRight);
             holder.txtName.setTextAppearance(mThis, styleId);
             holder.txtCount.setTextAppearance(mThis, styleId);
             
@@ -414,7 +414,7 @@ public class GongGuoListActivity  extends ExpandableListActivity {
             View view = mInflater.inflate(R.layout.listview_detail, null);
 			holder.txtName = (TextView) view.findViewById(R.id.TextItemName);
 			holder.txtCount = (TextView) view.findViewById(R.id.TextItemCount);
-			holder.button = (Button) view.findViewById(R.id.button1);	
+			holder.button = (Button) view.findViewById(R.id.btnRight);	
             holder.txtName.setTextAppearance(mThis, styleId);
             
             holder.txtName.setTextSize(MainActivity.TEXT_SIZE);

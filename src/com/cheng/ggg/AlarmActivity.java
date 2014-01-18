@@ -43,7 +43,7 @@ public class AlarmActivity extends Activity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.dialog_alarm);
-		TextView msg = (TextView)findViewById(R.id.textView1);
+		TextView msg = (TextView)findViewById(R.id.dayInfo);
 		msg.setText("请记得每天按时记录功过，养成今日事今日毕的好习惯。也可以在设置里取消每天定时提醒。");
 		mActivity = this;
 	}
