@@ -119,22 +119,22 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
             rangeFirstDay.setTimeRangeS();
             rangeFirstDay = TimeDate.getCurrentDayRange(rangeFirstDay, TimeDate.MODE_CURRENT);
             
-            long firstDayEndMs = rangeFirstDay.mStartTimeMS+24*60*60*1000;
+            int firstDayStartS = (int) (rangeFirstDay.mStartTimeMS/1000);
             UserGongGuo gongguo;
-            if(len == 1)
-                gongguoFirst.todayInfo = TimeDate.intTime2TodayInfo(mActivity, rangeFirstDay.mStartTimeS, mWeekdayArray);
+//            if(len == 1)
+            gongguoFirst.todayInfo = TimeDate.intTime2TodayInfo(mActivity, firstDayStartS, mWeekdayArray);
             
             for(int i=1; i<len; i++){
                 gongguo = mUserGongGuoList.get(i);
                 gongguo.isFirst = false;
-                if(firstDayEndMs > gongguo.time){//当天
-                    gongguoFirst.todayCount+=(gongguo.count*gongguo.times);
-                    gongguoFirst.todayInfo = TimeDate.intTime2TodayInfo(mActivity, rangeFirstDay.mStartTimeS, mWeekdayArray);
+                if(firstDayStartS < gongguo.time){//当天
+                	gongguoFirst.todayCount+=(gongguo.count*gongguo.times);
                 }
                 else{//第二天
-                    firstDayEndMs+=TimeDate.ONE_DAY_MS;
+                	firstDayStartS-=TimeDate.ONE_DAY_S;
                     gongguoFirst = gongguo;
                     gongguoFirst.setFirstDay();
+                    gongguoFirst.todayInfo = TimeDate.intTime2TodayInfo(mActivity, firstDayStartS, mWeekdayArray);
                 }
             }
         }

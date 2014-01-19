@@ -17,7 +17,8 @@ public class TimeDate {
     public static final int MODE_TO_PRE = -1; //前一个周期
     public static final int MODE_TO_NEXT = 1; //后一个周期
     
-    public static final long ONE_DAY_MS = 24*60*60*1000;
+    public static final long ONE_DAY_S = 24*60*60;
+    public static final long ONE_DAY_MS = ONE_DAY_S*1000;
     
 	public static String twoZeroPre(int intValue){
 		String value = String.format("%02d", intValue);

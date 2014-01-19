@@ -163,7 +163,7 @@ public class AlarmNotification {
         //FLAG_NO_CLEAR      该通知不能被状态栏的清除按钮给清除掉
         //FLAG_ONGOING_EVENT 通知放置在正在运行
         //FLAG_INSISTENT     是否一直进行，比如音乐一直播放，知道用户响应
-        notification.flags |= Notification.FLAG_ONGOING_EVENT; // 将此通知放到通知栏的"Ongoing"即"正在运行"组中   
+//        notification.flags |= Notification.FLAG_ONGOING_EVENT; // 将此通知放到通知栏的"Ongoing"即"正在运行"组中   
 //        notification.flags |= Notification.FLAG_NO_CLEAR; // 表明在点击了通知栏中的"清除通知"后，此通知不清除，经常与FLAG_ONGOING_EVENT一起使用   
         notification.flags |= Notification.FLAG_SHOW_LIGHTS;   
         //DEFAULT_ALL     使用所有默认值，比如声音，震动，闪屏等等
