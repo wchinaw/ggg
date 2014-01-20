@@ -39,6 +39,9 @@ public class COM {
 	public static final String LFSX_TXT = "lfsx.txt";
 	/**了凡四训白话文*/
 	public static final String LFSXBHW_TXT = "lfsxbhw.txt";
+	/**功过格在SD卡上的目录 */
+	public static final String GGG_DIRECTORY_PATH = Environment.getExternalStorageDirectory().getAbsolutePath()+"/ggg";
+	
 	/**首页图片*/
 	public static final String HOMG_IMG = "home.jpg";
 	//进行恢复时，先对数据库文件进行备份，以便恢复失败时可以使用原来的数据。
@@ -78,11 +81,13 @@ public class COM {
 	}
 	
 	public static String getBackupFilePath(){
-		return Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+BACKUP_FILENAME;
+//		return Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+BACKUP_FILENAME;
+		return GGG_DIRECTORY_PATH+"/"+BACKUP_FILENAME;
 	}
 	
 	public static String getExportUserGoneGuoFilePath(){
-		return Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+EXPORT_USERDEFINE_GONGGUO_FILENAME;
+//		return Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+EXPORT_USERDEFINE_GONGGUO_FILENAME;
+		return GGG_DIRECTORY_PATH+"/"+EXPORT_USERDEFINE_GONGGUO_FILENAME;
 	}
 	
 	

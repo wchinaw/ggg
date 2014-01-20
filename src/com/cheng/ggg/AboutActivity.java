@@ -376,14 +376,14 @@ public class AboutActivity extends Activity implements OnClickListener {
 
 	
 	public void readLFSX(String fileName){
-		File file = new File ("/sdcard/"+fileName);
+		File file = new File (COM.GGG_DIRECTORY_PATH+"/"+fileName);
 		if(!file.exists()){
 			Log.e("","!file.exists()");
 			try{
 				InputStream is = getAssets().open(fileName);
 				inputstreamtofile(is,file);
 				
-				file = new File ("/sdcard/"+fileName);
+				file = new File (COM.GGG_DIRECTORY_PATH+"/"+fileName);
 				if(file.exists())
 					viewTextFile(this,file);
 			} catch (IOException e) {

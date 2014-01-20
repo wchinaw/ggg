@@ -62,7 +62,7 @@ public class MainActivity extends Activity implements OnClickListener
     private static final int PHOTO_REQUEST_TAKEPHOTO = 1;// 拍照
     private static final int PHOTO_REQUEST_GALLERY = 2;// 从相册中选择
     private static final int PHOTO_REQUEST_CUT = 3;// 结果
-    File tempFile = new File(Environment.getExternalStorageDirectory(),getPhotoFileName());
+    File tempFile;//
     String mHomeImagePath;
     
     public static MainActivity mActivity;
@@ -77,6 +77,20 @@ public class MainActivity extends Activity implements OnClickListener
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        //每次进入之前，检查并创建 ggg文件夹。
+        File file = new File(COM.GGG_DIRECTORY_PATH);  
+        if (!file.exists()) {  
+            try {  
+                //按照指定的路径创建文件夹  
+                file.mkdirs();  
+            } catch (Exception e) {  
+                // TODO: handle exception  
+            }  
+        }  
+        
+        tempFile = new File(COM.GGG_DIRECTORY_PATH,getPhotoFileName());
+        
         
         mActivity = this;
         mSQLiteHelper = SQLiteHelper.getInstance(this);
