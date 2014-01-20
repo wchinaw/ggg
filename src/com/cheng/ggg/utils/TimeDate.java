@@ -234,6 +234,28 @@ public class TimeDate {
 		 * @param mode
 		 * @return
 		 */
+		public static int getCurrentDayStartTimeS(int time, int mode){
+            
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeZone(TimeZone.getDefault());
+            int startDay;
+            
+            calendar.setTimeInMillis(time*1000L); 
+            
+            startDay = calendar.get(Calendar.DAY_OF_MONTH)+mode;         
+            
+            calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) , startDay , 0, 0, 0);
+            return (int) (calendar.getTimeInMillis()/1000);
+        }
+		
+		/**
+		 * 获取一天之内的起始时间和结束时间 用于按天分组排序。
+		 * ChenGang
+		 * 2014-1-18
+		 * @param range
+		 * @param mode
+		 * @return
+		 */
 		public static TimeRange getCurrentDayRange(TimeRange range, int mode){
             
             Calendar calendar = Calendar.getInstance();

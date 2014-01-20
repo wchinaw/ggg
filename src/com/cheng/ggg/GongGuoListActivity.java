@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ExpandableListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
@@ -37,7 +35,7 @@ import com.cheng.ggg.utils.DialogAPI;
 import com.cheng.ggg.utils.Settings;
 import com.umeng.analytics.MobclickAgent;
 
-public class GongGuoListActivity  extends ExpandableListActivity {
+public class GongGuoListActivity  extends Activity {
 	
 	final String TAG = "GongGuoListActivity";
 	public BaseExpandableListAdapter mAdapter;
@@ -51,24 +49,35 @@ public class GongGuoListActivity  extends ExpandableListActivity {
     Resources mRs;
     boolean mbGongguoconfirm_dialog = false;
     SharedPreferences sp;
-
+    
+    Button recordButton;//快速记录按钮。记过或记功
+    Button buttonGraphic; 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
         mThis = this;
+        setContentView(R.layout.activity_gongguo_list);
         getBundles();
         sp = PreferenceManager.getDefaultSharedPreferences(this); 
-        mListView = getExpandableListView();
         mRs = getResources();
         
+        recordButton = (Button)findViewById(R.id.recordButton);
+        recordButton.setTextSize(MainActivity.TEXT_SIZE-2);
+        
+        buttonGraphic = (Button)findViewById(R.id.buttonGraphic);
+        buttonGraphic.setTextSize(MainActivity.TEXT_SIZE-2);
+        
+        mListView = (ExpandableListView) findViewById(R.id.list);
 //        mListView.setOnItemClickListener(mOnItemClickListener);
 //        mListView.setOnChildClickListener(mOnChildClickListener);
 //        mListView.setOnLongClickListener(mOnLongClickListenerGroup);
         mListView.setGroupIndicator(getResources().getDrawable(R.drawable.list_expand_btn));
         
-        if(mbUserDefine)
+        if(mbUserDefine){
         	mListView.setOnCreateContextMenuListener(mContextMenuListener);
+        	buttonGraphic.setVisibility(View.GONE);
+        }
         else{
         	mListView.setOnChildClickListener(mOnChildClickListener);
         	mListView.setOnCreateContextMenuListener(mContextMenuListener);
@@ -78,7 +87,8 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 //        mListView.setCacheColorHint(0xFFFFFFFF);
         // Set up our adapter
         mAdapter = new MyExpandableListAdapter(this);
-        setListAdapter(mAdapter);
+//        mListView.setListAdapter(mAdapter);
+        mListView.setAdapter(mAdapter);
                 
 //        registerForContextMenu(getExpandableListView());
         mSQLiteHelper = SQLiteHelper.getInstance(this);
@@ -87,10 +97,22 @@ public class GongGuoListActivity  extends ExpandableListActivity {
         
         getBundles();
         
-        if(mbGong)
+        if(mbGong){
         	mGongGuoBaseList = mSQLiteHelper.getGongBase(db);
-        else 
+        	
+        	if(mbUserDefine)
+        		recordButton.setText(R.string.userdefine_guo);
+        	else
+        		recordButton.setText(R.string.record_guo);
+        }
+        else{ 
         	mGongGuoBaseList = mSQLiteHelper.getGuoBase(db);
+        	
+        	if(mbUserDefine)
+        		recordButton.setText(R.string.userdefine_gong);
+        	else
+        		recordButton.setText(R.string.record_gong);
+        }
         db.close();
         
 //        if(mGongGuoBaseList != null){
@@ -504,5 +526,28 @@ public class GongGuoListActivity  extends ExpandableListActivity {
 			groupPosition = groupPos;
 		}
 	}
-
+	
+	public void backClick(View view)
+	{
+		finish();
+	}
+	
+	public void recordClick(View view)
+	{
+		if(mbUserDefine){
+			AboutActivity.gotoUserDefineGongGuoActivity(this,!mbGong);
+		}
+		else{
+			MainActivity.gotoGongGuoActivity(this, !mbGong);
+		}
+		
+		finish();
+	}
+	
+	public void detailClick(View view)
+	{
+		MainActivity.gotoUserGongGuoListActivity(this, UserGongGuoListActivity.TYPE_ALL);
+		finish();
+	}
+			
 }

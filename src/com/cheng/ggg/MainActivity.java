@@ -78,7 +78,6 @@ public class MainActivity extends Activity implements OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        
         mActivity = this;
         mSQLiteHelper = SQLiteHelper.getInstance(this);
         TEXT_SIZE = Settings.getFontSize(this);
@@ -174,6 +173,7 @@ public class MainActivity extends Activity implements OnClickListener
     		textTips = (TextView) findViewById(R.id.textViewTips);
     	if(tipsStr == null){
     		String userDefineTips = Settings.getUserdefineTips(this);
+    		userDefineTips = userDefineTips.trim();
     		if("".equals(userDefineTips)){
     			tipsStr = getResources().getStringArray(R.array.TIPS_STR);
     		}
@@ -300,16 +300,16 @@ public class MainActivity extends Activity implements OnClickListener
 		}
 	}
     
-    public void gotoGongGuoActivity(boolean bGong){
-    	Intent intent = new Intent(this,GongGuoListActivity.class);
+    public static void gotoGongGuoActivity(Context context, boolean bGong){
+    	Intent intent = new Intent(context,GongGuoListActivity.class);
     	intent.putExtra(COM.INTENT_GONG, bGong);
-    	startActivity(intent);
+    	context.startActivity(intent);
     }
     
-    private void gotoUserGongGuoListActivity(int type){
-    	Intent intent = new Intent(this,UserGongGuoListActivity.class);
+    public static void gotoUserGongGuoListActivity(Context context,int type){
+    	Intent intent = new Intent(context,UserGongGuoListActivity.class);
     	intent.putExtra(COM.INTENT_TYPE, type);
-    	startActivity(intent);
+    	context.startActivity(intent);
     }
 
     private void gotoAboutActivity(){
@@ -320,13 +320,13 @@ public class MainActivity extends Activity implements OnClickListener
 	public void onClick(View v) {
 		switch(v.getId()){
 		case R.id.buttonGong: 
-			gotoGongGuoActivity(true);
+			gotoGongGuoActivity(this,true);
 			break;
 		case R.id.buttonGuo:
-			gotoGongGuoActivity(false);
+			gotoGongGuoActivity(this,false);
 			break;
 		case R.id.buttonDetail:
-			gotoUserGongGuoListActivity(UserGongGuoListActivity.TYPE_ALL);
+			gotoUserGongGuoListActivity(this,UserGongGuoListActivity.TYPE_ALL);
 			break;
 		case R.id.buttonAbout:
 			gotoAboutActivity();

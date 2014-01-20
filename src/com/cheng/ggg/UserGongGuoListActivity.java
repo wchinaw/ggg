@@ -14,6 +14,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
@@ -64,6 +65,7 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_detail);
         
         mActivity = this;
@@ -76,6 +78,11 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
         mTextViewGong = (TextView)findViewById(R.id.textView1);
         mTextViewGuo = (TextView)findViewById(R.id.textView2);
         mTextViewTotal = (TextView)findViewById(R.id.textView3);
+        
+        mTextViewGong.setTextSize(MainActivity.TEXT_SIZE);
+        mTextViewGuo.setTextSize(MainActivity.TEXT_SIZE);
+        mTextViewTotal.setTextSize(MainActivity.TEXT_SIZE);
+        ((Button)findViewById(R.id.buttonGraphic)).setTextSize(MainActivity.TEXT_SIZE-2);
         
         mWeekdayArray = getResources().getStringArray(R.array.list_weekday);
         
@@ -114,12 +121,7 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
             int len = mUserGongGuoList.size();
             UserGongGuo gongguoFirst = mUserGongGuoList.get(0);
             gongguoFirst.setFirstDay();
-            TimeRange rangeFirstDay = new TimeRange();
-            rangeFirstDay.mStartTimeMS = gongguoFirst.time*1000L;
-            rangeFirstDay.setTimeRangeS();
-            rangeFirstDay = TimeDate.getCurrentDayRange(rangeFirstDay, TimeDate.MODE_CURRENT);
-            
-            int firstDayStartS = (int) (rangeFirstDay.mStartTimeMS/1000);
+            int firstDayStartS = TimeDate.getCurrentDayStartTimeS(gongguoFirst.time, TimeDate.MODE_CURRENT);
             UserGongGuo gongguo;
 //            if(len == 1)
             gongguoFirst.todayInfo = TimeDate.intTime2TodayInfo(mActivity, firstDayStartS, mWeekdayArray);
@@ -131,9 +133,9 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
                 	gongguoFirst.todayCount+=(gongguo.count*gongguo.times);
                 }
                 else{//µÚ¶þÌì
-                	firstDayStartS-=TimeDate.ONE_DAY_S;
                     gongguoFirst = gongguo;
                     gongguoFirst.setFirstDay();
+                    firstDayStartS = TimeDate.getCurrentDayStartTimeS(gongguoFirst.time, TimeDate.MODE_CURRENT);
                     gongguoFirst.todayInfo = TimeDate.intTime2TodayInfo(mActivity, firstDayStartS, mWeekdayArray);
                 }
             }
@@ -209,6 +211,11 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
     	
     };
     
+    public void backClick(View view)
+    {
+    	finish();
+    }
+    
     @Override
 	protected void onResume() {
 		super.onResume();
@@ -269,6 +276,7 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 				mUserGongGuoList.remove(id);
 				if(isFirst)
 				    setListDayInfo();
+				refreshTotalGongGuoByList();
 				mAdapter.notifyDataSetChanged();
 				db.close();
 				

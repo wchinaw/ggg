@@ -54,6 +54,8 @@ public class AboutActivity extends Activity implements OnClickListener {
 		((Button)findViewById(R.id.buttonExport)).setOnClickListener(this);
 		((Button)findViewById(R.id.buttonImport)).setOnClickListener(this);
 		
+		((Button)findViewById(R.id.recordButton)).setVisibility(View.GONE);
+		((Button)findViewById(R.id.buttonGraphic)).setVisibility(View.GONE);
 		
 		mActivity = this;
 		mSQLiteHelper = SQLiteHelper.getInstance(this);
@@ -78,10 +80,10 @@ public class AboutActivity extends Activity implements OnClickListener {
 //			UMFeedbackService.openUmengFeedbackSDK(this);
 			break;
 		case R.id.buttonUserDefineGong:
-			gotoUserDefineGongGuoActivity(true);
+			gotoUserDefineGongGuoActivity(this,true);
 			break;
 		case R.id.buttonUserDefineGuo:
-			gotoUserDefineGongGuoActivity(false);
+			gotoUserDefineGongGuoActivity(this,false);
 			break;
 		case R.id.buttonBackup:
 			backUp();
@@ -243,11 +245,11 @@ public class AboutActivity extends Activity implements OnClickListener {
 	}
 	
 	
-	public void gotoUserDefineGongGuoActivity(boolean bGong){
-    	Intent intent = new Intent(this,GongGuoListActivity.class);
+	public static void gotoUserDefineGongGuoActivity(Context context, boolean bGong){
+    	Intent intent = new Intent(context,GongGuoListActivity.class);
     	intent.putExtra(COM.INTENT_GONG, bGong);
     	intent.putExtra(COM.INTENT_USERDEFINE, true);
-    	startActivity(intent);
+    	context.startActivity(intent);
     }
 	
 	public void gotoSettingsActivity(){
@@ -415,4 +417,9 @@ public static void viewTextFile(Context context,File file)
   intent.setDataAndType(uri, "text/plain");
   context.startActivity(intent);
 }
+
+	public void backClick(View view){
+		finish();
+	}
+
 }
