@@ -1,6 +1,7 @@
 package com.cheng.ggg;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -14,7 +15,6 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
@@ -28,11 +28,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cheng.ggg.database.SQLiteHelper;
+import com.cheng.ggg.types.ChartData;
 import com.cheng.ggg.types.TimeRange;
 import com.cheng.ggg.types.UserGongGuo;
 import com.cheng.ggg.utils.COM;
 import com.cheng.ggg.utils.Settings;
 import com.cheng.ggg.utils.TimeDate;
+import com.cheng.ggg.views.chart.BarChart;
+import com.cheng.ggg.views.chart.SalesComparisonChartWave;
+import com.cheng.ggg.views.chart.SalesComparisonChartGongGuo;
+import com.cheng.ggg.views.chart.SalesStackedBarChart;
 import com.umeng.analytics.MobclickAgent;
 
 
@@ -79,10 +84,10 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
         mTextViewGuo = (TextView)findViewById(R.id.textView2);
         mTextViewTotal = (TextView)findViewById(R.id.textView3);
         
-        mTextViewGong.setTextSize(MainActivity.TEXT_SIZE);
-        mTextViewGuo.setTextSize(MainActivity.TEXT_SIZE);
-        mTextViewTotal.setTextSize(MainActivity.TEXT_SIZE);
-        ((Button)findViewById(R.id.buttonGraphic)).setTextSize(MainActivity.TEXT_SIZE-2);
+        mTextViewGong.setTextSize(MainActivity.TEXT_SIZE-2);
+        mTextViewGuo.setTextSize(MainActivity.TEXT_SIZE-2);
+        mTextViewTotal.setTextSize(MainActivity.TEXT_SIZE-2);
+//        ((Button)findViewById(R.id.buttonGraphic)).setTextSize(MainActivity.TEXT_SIZE-2);
         
         mWeekdayArray = getResources().getStringArray(R.array.list_weekday);
         
@@ -126,11 +131,19 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 //            if(len == 1)
             gongguoFirst.todayInfo = TimeDate.intTime2TodayInfo(mActivity, firstDayStartS, mWeekdayArray);
             
+            int temp = 0;
             for(int i=1; i<len; i++){
                 gongguo = mUserGongGuoList.get(i);
                 gongguo.isFirst = false;
                 if(firstDayStartS < gongguo.time){//当天
-                	gongguoFirst.todayCount+=(gongguo.count*gongguo.times);
+                	temp = gongguo.count*gongguo.times;
+                	gongguoFirst.todayCount+=gongguo.count*gongguo.times;
+                	if(gongguo.count>0){
+                		gongguoFirst.todayGong += temp;
+                	}
+                	else{
+                		gongguoFirst.todayGuo += temp;
+                	}
                 }
                 else{//第二天
                     gongguoFirst = gongguo;
@@ -295,6 +308,34 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 	return super.onContextItemSelected(item);  
 
 }  
+	
+	public static int getGuoColor()
+	{
+		return getGongGuoColor(-1);
+	}
+	
+	public static int getGongColor()
+	{
+		return getGongGuoColor(1);
+	}
+	
+	private static int getGongGuoColor(int count)
+	{
+		if(count > 0){
+			if(MainActivity.COLOR_SWAP){
+				return (COM.COLOR_GUO);
+			}
+			else{
+				return(COM.COLOR_GONG);
+			}
+		}
+		else{
+			if(MainActivity.COLOR_SWAP)
+				return(COM.COLOR_GONG);
+			else
+				return(COM.COLOR_GUO);
+		}
+	}
 	
 	public static void setGongGuoColor(TextView textView,int count)
 	{
@@ -461,4 +502,162 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
                 break;
         }
     }
+    
+    public ChartData getChartData(boolean isWave)
+    {
+    	ChartData chartData = new ChartData();
+    	
+    	ArrayList<Double> gong = new ArrayList<Double>();
+    	ArrayList<Double> guo = new ArrayList<Double>();
+    	if(mTimeRangeIndex == 0) //本年 获取12个月每个月的功过值。
+    	{
+    		//显示有记录月份的数据。
+    		int len = mUserGongGuoList.size();
+    		UserGongGuo data;
+    		String currentMonth = "";
+    		String tempMonth = "";
+    		int gongMonth = 0, guoMonth = 0;
+    		for(int i=len-1; i>=0; i--){
+    			data = mUserGongGuoList.get(i);
+    			if(data.isFirst){
+    				tempMonth = TimeDate.getCurrentMonth(data.time);
+    				if(i == len-1){
+    					currentMonth = tempMonth;
+    				}
+        			
+        			//当月，继续累加
+        			if(tempMonth.equals(currentMonth)){
+        				gongMonth += data.todayGong;
+        				if(isWave){
+        					guoMonth += data.todayGuo;
+        				}
+        				else{
+        					guoMonth -= data.todayGuo;
+        				}
+        			}//第二月 将前一月的保存，并设置第二月的初始值。
+        			else{
+        				gong.add((double)gongMonth);
+        				guo.add((double)guoMonth);
+        				chartData.xlabels.add(currentMonth);
+        				currentMonth = tempMonth;
+        				gongMonth = data.todayGong;;
+        				if(isWave){
+        					guoMonth = data.todayGuo;
+        				}
+        				else{
+        					guoMonth = data.todayGuo;
+        				}
+        			}
+        			
+        			//最后一个记录时，需要保存。
+        			if(i==0){
+        				gong.add((double)gongMonth);
+        				guo.add((double)guoMonth);
+        				chartData.xlabels.add(currentMonth);
+        			}
+    			}
+    		}
+    	}
+    	else
+    	{  //显示每天的结果
+    		int len = mUserGongGuoList.size();
+    		UserGongGuo data;
+    		String xlabel;
+    		for(int i=len-1; i>=0; i--){
+    			data = mUserGongGuoList.get(i);
+    			if(data.isFirst){
+    				gong.add((double)data.todayGong);
+    				if(isWave){
+    					guo.add((double)data.todayGuo);
+    				}
+    				else{
+    					guo.add(-(double)data.todayGuo);
+    				}
+    				
+    				xlabel = TimeDate.getCurrentDay(data.time); 
+    				chartData.xlabels.add(xlabel);
+    			}
+    			
+    		}
+    	}
+    	
+    	int size = gong.size();
+		double[] dGong = new double[size];
+		double[] dGuo = new double[size];
+		for(int i=0; i<size; i++){
+			dGong[i] = gong.get(i);
+			dGuo[i] = guo.get(i);
+		}
+		chartData.values.add(dGong);
+		chartData.values.add(dGuo);
+    	
+    	return chartData;
+    }
+    
+    public void chartBarClick(View v)
+    {
+    	ChartData chartData = getChartData(false);
+    	List<double[]> values = chartData.values;
+    	if(values != null && values.size()>0){
+    		BarChart c = new BarChart();
+    		String xName;
+        	if(mTimeRangeIndex == 0){
+        		xName = mActivity.getString(R.string.month);
+        	}
+        	else{
+        		xName = mActivity.getString(R.string.day);
+        	}
+        	
+        	chartData.xName = xName;
+        	Intent intent = c.execute(this,chartData);
+    		startActivity(intent);
+    	}
+    	
+    }
+    
+    public void chartWaveClick(View v)
+    {
+    	ChartData chartData = getChartData(true);
+    	List<double[]> values = chartData.values;
+    	if(values != null && values.size()>0){
+    		SalesComparisonChartWave c = new SalesComparisonChartWave();
+//        	SalesStackedBarChart c = new SalesStackedBarChart();
+        	String xName;
+        	if(mTimeRangeIndex == 0){
+        		xName = mActivity.getString(R.string.month);
+        	}
+        	else{
+        		xName = mActivity.getString(R.string.day);
+        	}
+        	chartData.xName = xName;
+        	Intent intent = c.execute(this,chartData);
+    		startActivity(intent);
+    	}
+    }
+    
+    public void chartQuxianClick(View v)
+    {
+    	ChartData chartData = getChartData(false);
+    	List<double[]> values = chartData.values;
+    	if(values != null && values.size()>0){
+    		SalesComparisonChartGongGuo c = new SalesComparisonChartGongGuo();
+//        	SalesStackedBarChart c = new SalesStackedBarChart();
+        	String xName;
+        	if(mTimeRangeIndex == 0){
+        		xName = mActivity.getString(R.string.month);
+        	}
+        	else{
+        		xName = mActivity.getString(R.string.day);
+        	}
+        	chartData.xName = xName;
+        	Intent intent = c.execute(this,chartData);
+    		startActivity(intent);
+    	}
+    }
+    
+//    public void test(){
+//    	addView(getLocalActivityManager()
+//				.startActivity("Picture", new Intent(NewsListActivity.this, PictrueActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP))
+//				.getDecorView());
+//    }
 }

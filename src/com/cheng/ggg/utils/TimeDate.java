@@ -227,6 +227,48 @@ public class TimeDate {
 		}
 		
 		/**
+		 * 获取当前日期的天 DAY_OF_MONTH
+		 * ChenGang
+		 * 2014-1-23
+		 * @param range
+		 * @param mode
+		 * @return
+		 */
+		public static String getCurrentDay(int time){
+            
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeZone(TimeZone.getDefault());
+            int day;
+            
+            calendar.setTimeInMillis(time*1000L); 
+            
+            day = calendar.get(Calendar.DAY_OF_MONTH);
+            
+            return day+"";
+        }
+		
+		/**
+		 * 获取当前日期的天 DAY_OF_MONTH
+		 * ChenGang
+		 * 2014-1-23
+		 * @param range
+		 * @param mode
+		 * @return
+		 */
+		public static String getCurrentMonth(int time){
+            
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeZone(TimeZone.getDefault());
+            int month;
+            
+            calendar.setTimeInMillis(time*1000L); 
+            
+            month = calendar.get(Calendar.MONTH)+1;
+            
+            return month+"";
+        }
+		
+		/**
 		 * 获取一天之内的起始时间和结束时间 用于按天分组排序。
 		 * ChenGang
 		 * 2014-1-18

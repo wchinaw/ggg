@@ -13,14 +13,24 @@ public class UserGongGuo{
 	public String comment; //备注
 	
 	public boolean isFirst = false; //用于明细listView,如果此值为true,则显示当天日期。
-	public int todayCount = 0; //用于明细listView,如果此值为true,则显示当天功过总数。
-	public String todayInfo; //用于明细listView,如果此值为true,则显示当天功过总数。
+	public int todayCount = 0; //用于明细listView,如果isFirst为true,则显示当天功过总数。
+	public int todayGong = 0; //用于图表当天功总数。
+	public int todayGuo = 0; //用于图表当天过总数。
+	public String todayInfo; //
 	
 	//是列表中当天第一个
 	public void setFirstDay()
 	{
 	    isFirst = true;
 	    todayCount = count*times;
+	    if(todayCount > 0){
+	    	todayGong = todayCount;
+	    	todayGuo = 0;
+	    }
+	    else{
+	    	todayGuo = todayCount;
+	    	todayGong = 0;
+	    }
 	}
 	
 	public static UserGongGuo getFromCursor(Cursor cursor){

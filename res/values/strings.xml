@@ -66,7 +66,7 @@
         <!-- 100 -->
         <item>救免一人死,完一妇女节,阻人不溺一子女,为人延一嗣</item>
         <!-- 50 -->
-        <item>免堕一胎,当欲染境,守正不染,收养一无倚,葬一无主骸骨,救免一人流离,救免一人军徒重罪,白一人冤,发一言利及百姓</item>
+        <item>免堕一胎,当欲染境 守正不染,收养一无倚,葬一无主骸骨,救免一人流离,救免一人军徒重罪,白一人冤,发一言利及百姓</item>
         <!-- 30 -->
         <item>施一葬地与无土之家,化一为非者改行,度一受戒弟子,完聚一人夫妇,收养一无主遗弃门孩,成就一人德业</item>
         <!-- 10 -->
@@ -120,6 +120,7 @@
     <string name="year">年</string>
     <string name="month">月</string>
     <string name="day">日</string>
+    <string name="tian">天</string>
     <string name="hour">时</string>
     <string name="minute">分</string>
     <string name="second">秒</string>
