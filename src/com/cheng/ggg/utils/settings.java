@@ -29,6 +29,7 @@ public class Settings {
 	public static final String repeat_time_ms = "repeat_time_ms";//重复提醒的时间间隔
 	
 	public static final String time_range_index = "time_range_index";//明细明显的时间范围 对应到arrays.xml list_date_range
+	public static final String home_text_color = "home_text_color";//首页文字颜色
 	
 	public static void changeLauguage(Context context, int lang){
 //		  在代码中切换语言：
@@ -48,6 +49,15 @@ public class Settings {
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
 		return sp.getBoolean(is_enable_password, false);
 	}
+	
+	public static int getHomeTextColorIndex(Context context){
+	    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
+        return sp.getInt(home_text_color, 0xFF777777);
+    }
+    
+    public static void setHomeTextColorIndex(Context context,int color){
+        setInt(context,home_text_color, color);
+    }
 	
 	//明细明显的时间范围 对应到arrays.xml list_date_range
 	public static int getTimeRangeIndex(Context context){

@@ -72,7 +72,17 @@ public class MainActivity extends Activity implements OnClickListener
     int buttonIds[] = {R.id.buttonGong, R.id.buttonGuo ,R.id.buttonDetail,R.id.buttonAbout};
     //调整fontSize
     TextView textViewGongTitle,TextViewGuoTitle,TextViewTotalTitle;
-    
+    int colors[] = {0xff777777,Color.BLACK,    
+    		Color.BLUE, 
+    		Color.CYAN ,
+    		Color.DKGRAY, 
+    		Color.GRAY ,
+    		Color.GREEN ,
+    		Color.LTGRAY ,
+    		Color.MAGENTA ,
+    		Color.RED ,
+    		Color.WHITE ,
+    		Color.YELLOW };
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -185,6 +195,10 @@ public class MainActivity extends Activity implements OnClickListener
     public void initTips(boolean bAnimation){
     	if(textTips == null)
     		textTips = (TextView) findViewById(R.id.textViewTips);
+    	
+    	//设置首页字体颜色
+    	textTips.setTextColor(Settings.getHomeTextColorIndex(this));
+    	
     	if(tipsStr == null){
     		String userDefineTips = Settings.getUserdefineTips(this);
     		userDefineTips = userDefineTips.trim();
@@ -207,6 +221,24 @@ public class MainActivity extends Activity implements OnClickListener
     	COM.LOGE("", "tipsStr["+index+"]:"+tipsStr[index]);
     	textTips.setText(tipsStr[index]);
     	textTips.setOnClickListener(this);
+    	textTips.setOnLongClickListener(new OnLongClickListener(){
+
+			public boolean onLongClick(View arg0) {
+				final AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+				builder.setTitle(R.string.date_range);
+				builder.setItems(R.array.list_colors, new DialogInterface.OnClickListener() {
+					
+					public void onClick(DialogInterface dialog, int which) {
+						int color = colors[which];
+						Settings.setHomeTextColorIndex(mActivity, color);
+						textTips.setTextColor(color);
+					}
+				});
+				builder.create().show();
+				return false;
+			}
+    		
+    	});
     	
     	if(bAnimation){
     		startAlphaAnimation(textTips);
