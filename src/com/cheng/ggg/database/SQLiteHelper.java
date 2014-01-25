@@ -322,7 +322,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	}
 	
 	/**在用户功过表中插入数据*/
-	public void insertUserGONGGUOTable(SQLiteDatabase db,String table_name,int parent_id,String parent_name, String name, int count, int time, int times,String comment){
+	public void insertUserGONGGUOTable(SQLiteDatabase db,String table_name,String parent_id,String parent_name, String name, int count, int time, int times,String comment){
 //		int intCount = Integer.parseInt(count);
 //		db.insert(table, nullColumnHack, values)
 		String str = "insert into "+ table_name +" values(null,'"+parent_id+"','"+parent_name+"','"+name+"','"+count+"','"+time+"','"+times+"','"+getReplacedString(comment)+"')";
@@ -343,14 +343,43 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 //		insertUserGONGGUOTable(db,user_guo_table,parent_id,parent_name,name,count,time,1);
 //	}
 	
+	public int updateUserGONGTable(SQLiteDatabase db,UserGongGuo oldgongguo,UserGongGuo newgongguo){
+		return updateUserGONGGUOTable(db,user_gong_table,oldgongguo,newgongguo);
+	}
+	
+	public int updateUserGUOTable(SQLiteDatabase db,UserGongGuo oldgongguo,UserGongGuo newgongguo){
+		return updateUserGONGGUOTable(db,user_guo_table,oldgongguo,newgongguo);
+	}
+	
+	public int updateUserGONGGUOTable(SQLiteDatabase db,String tableName,UserGongGuo oldgongguo,UserGongGuo newgongguo){
+		ContentValues values = new ContentValues();
+		if(oldgongguo.time != newgongguo.time)
+			values.put("time", newgongguo.time);
+		
+		if(oldgongguo.times != newgongguo.times)
+			values.put("times", newgongguo.times);
+		
+		if(!oldgongguo.comment.equals(newgongguo.comment))
+			values.put("comment", newgongguo.comment);
+		
+		if(values.size()>0){
+			return db.update(tableName, values, "id=?", new String[]{oldgongguo.id+""});
+		}
+		else
+			return 0;
+		
+		
+		
+	}
+	
 	/**在用户功表中插入数据*/
-	public void insertUserGONGTable(SQLiteDatabase db,int parent_id,String parent_name, String name, int count, int time, int times,String comment){
-		insertUserGONGGUOTable(db,user_gong_table,parent_id,parent_name,name,count,time,times,comment);
+	public void insertUserGONGTable(SQLiteDatabase db,String parent_id,String base_name, String name, int count, int time, int times,String comment){
+		insertUserGONGGUOTable(db,user_gong_table,parent_id,base_name,name,count,time,times,comment);
 	}
 	
 	/**在用户过表中插入数据*/
-	public void insertUserGUOTable(SQLiteDatabase db,int parent_id, String parent_name, String name, int count, int time, int times,String comment){
-		insertUserGONGGUOTable(db,user_guo_table,parent_id,parent_name,name,count,time,times,comment);
+	public void insertUserGUOTable(SQLiteDatabase db,String parent_id, String base_name, String name, int count, int time, int times,String comment){
+		insertUserGONGGUOTable(db,user_guo_table,parent_id,base_name,name,count,time,times,comment);
 	}
 	
 	/**插入自定义功过之前，比较是否有相同名称，相同count的功或过   在预定义功过和自定义功过中查询*/

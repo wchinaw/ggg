@@ -7,8 +7,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -19,6 +21,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -29,6 +32,9 @@ import android.widget.Toast;
 
 import com.cheng.ggg.database.SQLiteHelper;
 import com.cheng.ggg.types.ChartData;
+import com.cheng.ggg.types.GongGuoBase;
+import com.cheng.ggg.types.GongGuoDetail;
+import com.cheng.ggg.types.InsertGongGuoListener;
 import com.cheng.ggg.types.TimeRange;
 import com.cheng.ggg.types.UserGongGuo;
 import com.cheng.ggg.utils.COM;
@@ -67,12 +73,14 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 	int mGong,mGuo;
 	TextView mTextViewGong,mTextViewGuo,mTextViewTotal;
 	
+	boolean mbGongguoconfirm_dialog = false;
+	SharedPreferences sp;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_detail);
-        
+        sp = PreferenceManager.getDefaultSharedPreferences(this); 
         mActivity = this;
         getBundles();
         strTimes = getString(R.string.times);
@@ -107,6 +115,7 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
         mAdapter = new UserGongGuoAdapter(this);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemLongClickListener(mOnItemLongClickListener);
+        mListView.setOnItemClickListener(mOnItemClickListener);
         
         if(mUserGongGuoList!=null && mUserGongGuoList.size()==0){
         	Toast.makeText(this, R.string.empty_user_detaillist, Toast.LENGTH_LONG).show();
@@ -121,6 +130,36 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
         refreshTextViewTimeRange();
     }
     
+    OnItemClickListener mOnItemClickListener = new OnItemClickListener(){
+
+		public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+				long arg3) {
+			UserGongGuo gongguo = mUserGongGuoList.get(position);
+			if(gongguo != null){
+				UserGongGuo newgongguo = new UserGongGuo();
+				newgongguo.count = gongguo.count;
+				newgongguo.parent_id = gongguo.parent_id;
+				newgongguo.name = gongguo.name;
+				newgongguo.parent_name = gongguo.parent_name;
+				newgongguo.time = (int) (System.currentTimeMillis()/1000);
+				//插入一条记录
+				if(mbGongguoconfirm_dialog == true){
+					mInsertGongGuoListener.bInsert = true;
+					GongGuoListActivity.createAddConfirmDialog(mActivity,null,null,newgongguo,mInsertGongGuoListener);
+				}
+				else{
+					mInsertGongGuoListener.insert(newgongguo);
+				}
+			}
+			
+			
+		}
+    	
+    };
+    
+    /**
+     * 统计每一天的功过小计，包括功过总和，功总和，过总和。
+     */
     public void setListDayInfo(){
         if(mUserGongGuoList != null && mUserGongGuoList.size()>0){
             int len = mUserGongGuoList.size();
@@ -137,7 +176,7 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
                 gongguo.isFirst = false;
                 if(firstDayStartS < gongguo.time){//当天
                 	temp = gongguo.count*gongguo.times;
-                	gongguoFirst.todayCount+=gongguo.count*gongguo.times;
+                	gongguoFirst.todayCount+= temp;
                 	if(gongguo.count>0){
                 		gongguoFirst.todayGong += temp;
                 	}
@@ -214,6 +253,7 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 				
 				public void onClick(DialogInterface dialog, int which) {
 				    mTimeRangeIndex = which;
+				    Settings.setTimeRangeIndex(mActivity, which);
 				    mTimeRange = TimeDate.getTimeRangeByIndex(null,which,TimeDate.MODE_CURRENT);
 				    getList(mTimeRange);
 					refreshTextViewTimeRange();
@@ -231,13 +271,11 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
     
     @Override
 	protected void onResume() {
+    	mbGongguoconfirm_dialog = sp.getBoolean(Settings.gongguoconfirm_dialog, false);
 		super.onResume();
 		MobclickAgent.onResume(this);
 	}
-
     
-
-
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -252,15 +290,66 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 
 	            public void onCreateContextMenu(ContextMenu menu, View v,  
 	                            ContextMenuInfo menuInfo) {  
-	                    menu.add(0,0,0,"删除");   
+	            		menu.add(0,0,0,"编辑");
+	                    menu.add(0,1,0,"删除");   
 	            }
 	    });
 		return false;
 		}
     	
-    };
+    };	
     
-      
+    InsertGongGuoListener mInsertGongGuoListener = new InsertGongGuoListener(){
+
+		@Override
+		public boolean insert(GongGuoBase base, GongGuoDetail detail,
+				UserGongGuo gongguo) {
+			
+			return false;
+		}
+
+		@Override
+		public boolean insert(UserGongGuo gongguo) {
+			boolean bGong = true;
+			if(gongguo.count < 0)
+				bGong = false;
+			GongGuoListActivity.insertOneItem(mActivity,bGong,mSQLiteHelper,gongguo);
+			
+			getList(mTimeRange);
+			refreshTextViewTimeRange();
+			return false;
+		}
+
+		@Override
+		public boolean update(UserGongGuo oldGongGuo, UserGongGuo newGongGuo) {
+			
+			int rc = 0;
+			if(oldGongGuo.time == newGongGuo.time && oldGongGuo.times == newGongGuo.times
+					&& oldGongGuo.comment.equals(newGongGuo.comment))
+			{
+				Toast.makeText(mActivity, mActivity.getString(R.string.save_ok), Toast.LENGTH_SHORT).show();
+				return true;
+			}
+			
+			SQLiteDatabase db = mSQLiteHelper.getWritableDatabase();
+			if(oldGongGuo.count > 0)
+				rc = mSQLiteHelper.updateUserGONGTable(db, oldGongGuo, newGongGuo);
+			else
+				rc = mSQLiteHelper.updateUserGUOTable(db, oldGongGuo, newGongGuo);
+			db.close();
+			
+			if(rc > 0){
+				Toast.makeText(mActivity, mActivity.getString(R.string.save_ok), Toast.LENGTH_SHORT).show();
+				getList(mTimeRange);
+				refreshTextViewTimeRange();
+				return true;
+			}{
+				Toast.makeText(mActivity, mActivity.getString(R.string.save_fail), Toast.LENGTH_SHORT).show();
+				return false;
+			}
+		}
+    	
+    };
 
 	// 长按菜单响应函数  
 	public boolean onContextItemSelected(MenuItem item) {  
@@ -272,9 +361,16 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 	int id = (int) info.position;
 	Log.i(""," info.id:"+ info.id+" info.position:"+info.position);
 	
-	switch(item.getItemId()) {  
-		case 0:  //删除
+	switch(item.getItemId()) { 
+		case 0:  //编辑
 			UserGongGuo gongguo = mUserGongGuoList.get(id);
+			if(gongguo != null){
+				mInsertGongGuoListener.bInsert = false;
+				GongGuoListActivity.createAddConfirmDialog(mActivity, null, null, gongguo, mInsertGongGuoListener);
+			}
+			break;
+		case 1:  //删除
+			gongguo = mUserGongGuoList.get(id);
 			
 			if(gongguo != null){
 				boolean rc = false;
@@ -300,7 +396,7 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 					Toast.makeText(mActivity, gongguo.parent_name+" "+gongguo.name+" "+getString(R.string.deletefail), Toast.LENGTH_LONG).show();
 				}
 			}
-	
+			break;
 	default:  
 	break;  
 	}  

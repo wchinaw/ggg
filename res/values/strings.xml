@@ -12,6 +12,9 @@
     <string name="read_lfsx">阅读了凡四训(推荐用云中书城或QQ阅读)</string>
     <string name="read_lfsxbhw">阅读了凡四训白话文</string>
     
+    <string name="save_ok">保存成功</string>
+    <string name="save_fail">保存失败</string>
+    
     <string name="set_password">设置密码</string>
     <string name="login_password">请输入登录密码</string>
     <string name="input_password">请输入密码</string>
@@ -130,9 +133,16 @@
     <string name="title_activity_about">关于</string>
     
     <string name="about_title">关于功过格（了凡四训）</string>
-    <string name="about">  功过格应用在不断完善中，请点击  我要提建议 按钮提出您宝贵的建议，以帮助提高程序的可用性。\n    Email: gongguoge@126.com \n    QQ群: 138512516\n</string>
+    <string name="about">  \n功过格应用在不断完善中，请点击  我要提建议 按钮提出您宝贵的建议，以帮助提高程序的可用性。\n    Email: gongguoge@126.com \n    QQ群: 138512516\n</string>
     <string name="about_author"> 作者：聖剛</string>
     <string name="about_version"> 版本：</string>
+    <string name="help">\n  使用技巧：\n  首页提示文字切换：\n点击文字
+\n  首页背景图片更换：\n首页空白处长按弹出设置功能\n
+  记功/记过：\n方式1 ：点击“记功/记过”列表的具体功过项可进行记录  \n方式2：在明细界面点击相应项，也可快速添加。\n
+  自定义功/过：\n方式1：在“记功/记过”列表页面，长按“准一功”等，可添加自定义功/过。 可长按具体过功项，对其进行编辑，删除。
+方式2：在“更多”-> “自定义功/自定义过”进行自定义功过设置。\n
+  导出自定义功过功能：\n点击“导出自定义功过”，在SD卡的ggg目录 下，复制ggg.csv到电脑，可以自己使用文本工具，或Excel进行批量编辑，导入，导出。
+  图表分析功能：\n在“明细”页面，可点击右下角三个图标，进行三种不同形式的图表分析。</string>
     
     <string name="more_str">更多</string>
 	<string name="abount_str">关于</string>
@@ -182,6 +192,7 @@
 	<!-- 设置 -->
 	<string name="settings">设置</string>
 	<string name="gonggongadd_confirm">请确认是否添加</string>
+	<string name="gonggongmodify_confirm">编辑并确认</string>
 	
 	
 	

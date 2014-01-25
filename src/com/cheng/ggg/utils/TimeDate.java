@@ -38,7 +38,7 @@ public class TimeDate {
         return date;
     }
 	
-	public static String intTime2Date(Activity activity, int value){
+	public static String intTime2DateAll(Activity activity, int value){
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeZone(TimeZone.getDefault());
 		calendar.setTimeInMillis(value*1000L);
@@ -53,6 +53,71 @@ public class TimeDate {
 		return date;
 	}
 	
+	/**
+	 * 完整日期的前半部分 年 月 日
+	 * @param activity
+	 * @param value
+	 * @return
+	 */
+	public static String intTime2Date1(Activity activity, Calendar calendar){
+		
+		String date = calendar.get(Calendar.YEAR)+activity.getString(R.string.year)
+				+twoZeroPre((calendar.get(Calendar.MONTH)+1))+activity.getString(R.string.month)
+				+twoZeroPre(calendar.get(Calendar.DAY_OF_MONTH))+activity.getString(R.string.day);
+		
+		return date;
+	}
+	
+	/**
+	 * 完整日期的前半部分 年 月 日
+	 * @param activity
+	 * @param value
+	 * @return
+	 */
+	public static String intTime2Date1(Activity activity, int value){
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeZone(TimeZone.getDefault());
+		calendar.setTimeInMillis(value*1000L);
+		
+		String date = calendar.get(Calendar.YEAR)+activity.getString(R.string.year)
+				+twoZeroPre((calendar.get(Calendar.MONTH)+1))+activity.getString(R.string.month)
+				+twoZeroPre(calendar.get(Calendar.DAY_OF_MONTH))+activity.getString(R.string.day);
+		
+		return date;
+	}
+	
+	/**
+	 * 完整日期的后半部分 时 分
+	 * @param activity
+	 * @param value
+	 * @return
+	 */
+	public static String intTime2Date2(Activity activity, Calendar calendar){
+		
+		String date = twoZeroPre(calendar.get(Calendar.HOUR_OF_DAY))+activity.getString(R.string.hour)
+				+twoZeroPre(calendar.get(Calendar.MINUTE))+activity.getString(R.string.minute);
+		
+		return date;
+	}
+	
+	/**
+	 * 完整日期的后半部分 时 分
+	 * @param activity
+	 * @param value
+	 * @return
+	 */
+	public static String intTime2Date2(Activity activity, int value){
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeZone(TimeZone.getDefault());
+		calendar.setTimeInMillis(value*1000L);
+		
+		String date = twoZeroPre(calendar.get(Calendar.HOUR_OF_DAY))+activity.getString(R.string.hour)
+				+twoZeroPre(calendar.get(Calendar.MINUTE))+activity.getString(R.string.minute);
+		
+		return date;
+	}
+	
+	/**简洁格式*/
 	public static String intTime2HourMinute(Activity activity, int value){
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getDefault());
@@ -100,12 +165,12 @@ public class TimeDate {
 		return range;
 	}
 	
-	private static TimeRange getCurrentQuarterTimeRange(Calendar calendar,int year, int startMonth, int endMonth)
+	private static TimeRange getCurrentQuarterTimeRange(Calendar calendar,int year, int startMonth)
 	{
 		TimeRange range = new TimeRange();
 		calendar.set(year, startMonth, 1, 0, 0, 0);
 		range.mStartTimeMS = calendar.getTimeInMillis();
-		calendar.set(year, endMonth+1, 1, 0, 0, 0);
+		calendar.set(year, startMonth+3, 1, 0, 0, 0);
 		range.mEndTimeMS = calendar.getTimeInMillis();
 		range.setTimeRangeS();
 		return range;
@@ -119,7 +184,7 @@ public class TimeDate {
 		
 		int year = calendar.get(Calendar.YEAR);
 		calendar.set(Calendar.YEAR, year);
-		Log.e("",intTime2Date(activity, (int)(calendar.getTimeInMillis()/1000)));
+		Log.e("",intTime2DateAll(activity, (int)(calendar.getTimeInMillis()/1000)));
 //		for(int i=1; i<=12; i++){
 ////			calendar.set(year, i+1, 1, 0, 0, 0);
 //			Log.e("",);
@@ -151,20 +216,30 @@ public class TimeDate {
 		mode *= 3;  //往前三个月 或往后三个月
 		month += mode;
 		
+		if(month < 0){ //month小于0 则往前一年。
+			month+=12;
+			year--;
+		}
+		else if(month>11){
+			year++;
+			month-=11;
+		}
+		
 		switch(month){
-		case 1:	case 2:	case 3:
-			range = getCurrentQuarterTimeRange(calendar,year,0,2);
+		case 0:	case 1:	case 2:
+			range = getCurrentQuarterTimeRange(calendar,year,0);
 			break;
-		case 4:	case 5:	case 6:
-			range = getCurrentQuarterTimeRange(calendar,year,3,5);
+		case 3:	case 4:	case 5:
+			range = getCurrentQuarterTimeRange(calendar,year,3);
 			break;
-		case 7:	case 8:	case 9:
-			range = getCurrentQuarterTimeRange(calendar,year,6,8);
-		case 10: case 11: case 12:
-			range = getCurrentQuarterTimeRange(calendar,year,9,11);
+		case 6:	case 7:	case 8:
+			range = getCurrentQuarterTimeRange(calendar,year,6);
+			break;
+		case 9: case 10: case 11:
+			range = getCurrentQuarterTimeRange(calendar,year,9);
 			break;
 		default :
-			range = getCurrentQuarterTimeRange(calendar,year,0,2);
+			range = getCurrentQuarterTimeRange(calendar,year,0);
 			break;
 		}
 		
@@ -191,11 +266,11 @@ public class TimeDate {
 		    }
 		    
 		    startMonth = calendar.get(Calendar.MONTH)+mode;			
-			
-			calendar.set(calendar.get(Calendar.YEAR), startMonth , 1, 0, 0, 0);
+			int year = calendar.get(Calendar.YEAR);
+			calendar.set(year, startMonth , 1, 0, 0, 0);
 			range.mStartTimeMS = calendar.getTimeInMillis();
 			
-			calendar.set(calendar.get(Calendar.YEAR), startMonth +1, 1, 0, 0, 0);
+			calendar.set(year, startMonth +1, 1, 0, 0, 0);
 			range.mEndTimeMS = calendar.getTimeInMillis();
 			range.setTimeRangeS();
 			return range;

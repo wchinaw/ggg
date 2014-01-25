@@ -123,7 +123,7 @@
         android:gravity="center_horizontal"
         android:text="@string/feedback"
         android:textSize="20sp" />
-
+	
     <Button
         android:id="@+id/buttonSettings"
         android:layout_width="fill_parent"
@@ -160,12 +160,18 @@
           android:gravity="center_horizontal"
           android:text="@string/about_version"
           android:textSize="20sp" />
-
+	<TextView
+          android:id="@+id/textViewHelp"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/TextViewTotalTitle"
+          android:text="@string/help"
+          android:textSize="20sp" />
       <TextView
           android:id="@+id/textViewGongTitle"
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
-          android:layout_below="@+id/TextViewTotalTitle"
+          android:layout_below="@+id/textViewHelp"
           android:autoLink="all"
           android:text="@string/about"
           android:textSize="20sp" />
@@ -189,38 +195,6 @@
             android:layout_marginTop="6dp"
             android:background="@drawable/back_btn"
             android:onClick="backClick" />
-
-        <LinearLayout
-            android:id="@+id/layout01"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginBottom="6dp"
-            android:layout_marginLeft="100dp"
-            android:layout_marginTop="6dp" >
-
-            <Button
-                android:id="@+id/recordButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
-                android:layout_weight="1"
-                android:background="@drawable/gray_btn"
-                android:onClick="recordClick"
-                android:text="@string/record_guo" />
-
-            <Button
-                android:id="@+id/buttonGraphic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
-                android:layout_weight="1"
-                android:background="@drawable/gray_btn"
-                android:onClick="detailClick"
-                android:text="@string/record_detail" />
-
-        </LinearLayout>
     </RelativeLayout>
 	</RelativeLayout>
 </ScrollView>

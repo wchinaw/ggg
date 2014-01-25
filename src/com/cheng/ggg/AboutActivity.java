@@ -54,9 +54,6 @@ public class AboutActivity extends Activity implements OnClickListener {
 		((Button)findViewById(R.id.buttonExport)).setOnClickListener(this);
 		((Button)findViewById(R.id.buttonImport)).setOnClickListener(this);
 		
-		((Button)findViewById(R.id.recordButton)).setVisibility(View.GONE);
-		((Button)findViewById(R.id.buttonGraphic)).setVisibility(View.GONE);
-		
 		mActivity = this;
 		mSQLiteHelper = SQLiteHelper.getInstance(this);
 		mRs = getResources();
