@@ -73,7 +73,7 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 	int mGong,mGuo;
 	TextView mTextViewGong,mTextViewGuo,mTextViewTotal;
 	
-	boolean mbGongguoconfirm_dialog = false;
+//	boolean mbGongguoconfirm_dialog = false;
 	SharedPreferences sp;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -143,13 +143,13 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 				newgongguo.parent_name = gongguo.parent_name;
 				newgongguo.time = (int) (System.currentTimeMillis()/1000);
 				//插入一条记录
-				if(mbGongguoconfirm_dialog == true){
-					mInsertGongGuoListener.bInsert = true;
-					GongGuoListActivity.createAddConfirmDialog(mActivity,null,null,newgongguo,mInsertGongGuoListener);
-				}
-				else{
-					mInsertGongGuoListener.insert(newgongguo);
-				}
+//				if(mbGongguoconfirm_dialog == true){
+				mInsertGongGuoListener.bInsert = true;
+				GongGuoListActivity.createAddConfirmDialog(mActivity,null,null,newgongguo,mInsertGongGuoListener);
+//				}
+//				else{
+//					mInsertGongGuoListener.insert(newgongguo);
+//				}
 			}
 			
 			
@@ -271,7 +271,7 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
     
     @Override
 	protected void onResume() {
-    	mbGongguoconfirm_dialog = sp.getBoolean(Settings.gongguoconfirm_dialog, false);
+//    	mbGongguoconfirm_dialog = sp.getBoolean(Settings.gongguoconfirm_dialog, false);
 		super.onResume();
 		MobclickAgent.onResume(this);
 	}

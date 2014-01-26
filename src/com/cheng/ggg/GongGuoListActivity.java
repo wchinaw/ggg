@@ -56,8 +56,8 @@ public class GongGuoListActivity  extends Activity {
     GongGuoListActivity mThis;
     public ExpandableListView mListView;
     Resources mRs;
-    boolean mbGongguoconfirm_dialog = false;
-    SharedPreferences sp;
+//    boolean mbGongguoconfirm_dialog = false;
+//    SharedPreferences sp;
     
     Button recordButton;//快速记录按钮。记过或记功
     Button buttonGraphic; 
@@ -72,7 +72,7 @@ public class GongGuoListActivity  extends Activity {
         mThis = this;
         setContentView(R.layout.activity_gongguo_list);
         getBundles();
-        sp = PreferenceManager.getDefaultSharedPreferences(this); 
+//        sp = PreferenceManager.getDefaultSharedPreferences(this); 
         mRs = getResources();
         
         recordButton = (Button)findViewById(R.id.recordButton);
@@ -188,7 +188,7 @@ public class GongGuoListActivity  extends Activity {
 
 	@Override
 	protected void onResume() {
-		mbGongguoconfirm_dialog = sp.getBoolean(Settings.gongguoconfirm_dialog, false);
+//		mbGongguoconfirm_dialog = sp.getBoolean(Settings.gongguoconfirm_dialog, false);
 		super.onResume();
 		MobclickAgent.onResume(this);
 	}
@@ -457,12 +457,12 @@ public class GongGuoListActivity  extends Activity {
 				gongguo.time = (int) (System.currentTimeMillis()/1000);
 				mInsertGongGuoListener.bInsert = true;
 				//插入一条记录
-				if(mbGongguoconfirm_dialog == true){
-					createAddConfirmDialog(mThis,base,detail,gongguo,mInsertGongGuoListener);
-				}
-				else{
-					mInsertGongGuoListener.insert(gongguo);
-				}
+//				if(mbGongguoconfirm_dialog == true){
+				createAddConfirmDialog(mThis,base,detail,gongguo,mInsertGongGuoListener);
+//				}
+//				else{
+//					mInsertGongGuoListener.insert(gongguo);
+//				}
 			}
 			
 			

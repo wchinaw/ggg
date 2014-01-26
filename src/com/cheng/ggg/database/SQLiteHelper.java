@@ -154,10 +154,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		createUserTables(db);
 		
 		//默认弹出确认对话框
-		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
-		Editor editor = sp.edit();
-		editor.putBoolean(Settings.gongguoconfirm_dialog, true);
-		editor.commit();
+//		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+//		Editor editor = sp.edit();
+//		editor.putBoolean(Settings.gongguoconfirm_dialog, true);
+//		editor.commit();
 	}
 	
 	public void createUserTables(SQLiteDatabase db){

@@ -16,7 +16,7 @@ public class Settings {
 	public static final int CHINESE_SIMPLE = 0;  //简体中文
 	public static final int CHINESE_TRADITION = 1; //繁体中文
 	
-	public static final String gongguoconfirm_dialog = "gongguoconfirm_dialog";
+//	public static final String gongguoconfirm_dialog = "gongguoconfirm_dialog";
 	public static final String is_enable_password = "is_enable_password";
 	public static final String password = "password";
 	public static final String defaultpic = "defaultpic";
