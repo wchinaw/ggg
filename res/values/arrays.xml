@@ -15,9 +15,6 @@
 </string-array>
 
 <string-array name="list_days">
-    <item>重复周期：1分钟</item>
-	<item>重复周期：3分钟</item>
-	<item>重复周期：10分钟</item>
 	<item>重复周期：1天</item>
 	<item>重复周期：2天</item>
 	<item>重复周期：3天</item>
@@ -28,9 +25,6 @@
 </string-array>
 
 <string-array name="list_days_value">
-    <item>0</item>
-	<item>0</item>
-	<item>0</item>
     <item>1</item>
 	<item>2</item>
 	<item>3</item>

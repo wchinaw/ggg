@@ -35,6 +35,8 @@ public class TimePreference extends DialogPreference {
 	int mListDaysValues[];
 	String mListDays[];
 	final int ONE_DAY_MS = 24*60*60*1000;
+	final int EIGHT_HOURS_MS = 8*60*60*1000;
+	final int TW_HOURS_MS = 12*60*60*1000;
 		
 	public TimePreference(Context context, AttributeSet attrs) {
 		super(context, attrs);		
@@ -80,7 +82,7 @@ public class TimePreference extends DialogPreference {
 		mCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener(
 				) {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				Settings.setIsEnableAlarm(mContext, isChecked);
+				
 //				mPicker.setEnabled(isChecked);
 				if(isChecked){
 					mPicker.setVisibility(View.VISIBLE);
@@ -112,14 +114,14 @@ public class TimePreference extends DialogPreference {
 		int len = mListDays.length;
 		for(int i=0; i< len; i++){
 			if(mListDays[i].equals(strItem)){
-				if(i==0){
-					return 60*1000;
-				}else if(i==1)
-					return 180*1000;
-				else if(i==2)
-					return 10*60*1000;
-				else
-					return (mListDaysValues[i]*ONE_DAY_MS);
+//				if(i==0){
+//					return EIGHT_HOURS_MS;
+//				}
+//				else if(i==1){
+//					return TW_HOURS_MS;
+//				}
+//				else
+				return (mListDaysValues[i]*ONE_DAY_MS);
 			}
 		}
 		
@@ -134,6 +136,7 @@ public class TimePreference extends DialogPreference {
 			String strItem = (String) mSpinner.getSelectedItem();
 			long repeatTimeMs = getRepeatTime(strItem);
 			
+			Settings.setIsEnableAlarm(mContext, mCheckBox.isChecked());
 			//设置成功，并且允许提醒，则设置闹钟
 			if(mCheckBox.isChecked()){
 				Date d = new Date(0, 0, 0, mPicker.getCurrentHour(), mPicker.getCurrentMinute(), 0);			
