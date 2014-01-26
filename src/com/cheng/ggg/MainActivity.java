@@ -128,7 +128,7 @@ public class MainActivity extends Activity implements OnClickListener
         textGong = (TextView) findViewById(R.id.textMonthGong);
         textGuo = (TextView) findViewById(R.id.textMonthGuo);
         textTotal = (TextView) findViewById(R.id.textMonthTotal);
-        mHomeImagePath = Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+COM.HOMG_IMG;
+        mHomeImagePath = COM.GGG_DIRECTORY_PATH+"/"+COM.HOMG_IMG;
         mLayoutBackground = (RelativeLayout)findViewById(R.id.layoutBackground);
 //        String uriStr = Settings.getPic(this);
 //        Uri uri = Uri.parse(uriStr);
@@ -457,7 +457,19 @@ public class MainActivity extends Activity implements OnClickListener
                         intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,"image/*");
                         startActivityForResult(intent, PHOTO_REQUEST_GALLERY);
                     }
-                }).show();
+                })
+                .setNeutralButton(R.string.defaultpic, new DialogInterface.OnClickListener(){
+
+					public void onClick(DialogInterface arg0, int arg1) {
+						File file = new File(mHomeImagePath);
+						if(file.exists()){
+							file.delete();
+						}
+						mLayoutBackground.setBackgroundResource(R.drawable.b);
+					}
+                	
+                })
+                .show();
     }
     
     private void startPhotoZoom(Uri uri, int size) {

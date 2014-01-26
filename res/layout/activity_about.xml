@@ -166,7 +166,7 @@
           android:layout_height="wrap_content"
           android:layout_below="@+id/TextViewTotalTitle"
           android:text="@string/help"
-          android:textSize="20sp" />
+          android:textSize="18sp" />
       <TextView
           android:id="@+id/textViewGongTitle"
           android:layout_width="fill_parent"

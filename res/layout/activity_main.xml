@@ -23,7 +23,7 @@
             android:layout_marginTop="12dp"
             android:layout_toLeftOf="@+id/layoutgongguo"
             android:text="Medium Text"
-            android:textColor="#FF888888"
+            android:textColor="#FF777777"
             android:textSize="16dp" />
 
         <RelativeLayout
