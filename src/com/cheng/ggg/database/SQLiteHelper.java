@@ -32,7 +32,8 @@ import com.cheng.ggg.utils.Settings;
 
 public class SQLiteHelper extends SQLiteOpenHelper {
 //	private static final int VERSION = 2;
-	private static final int VERSION = 3;//相对version 2 增加一个，功过次数的字段（适用于放生n个之类的）。
+	private static final int VERSION = 3;//相对version 2 增加一个，功过次数的字段和备注字段 times,comment（适用于放生n个之类的）。
+//	private static final int VERSION = 4;//相对version 3 将times为0的 默认设置为1。
 	public boolean isAdd=true;
 	
 	public Context mContext = null;
@@ -276,7 +277,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	public int insertUserDefineGONGTable(SQLiteDatabase db,String value, int count){
 		return insertUserDefineGONGGUOTable(db,userdefine_gong_detail_table,value,count);
 	}
-	
+		
 	/**插入一条用户自定义过项*/
 	public int insertUserDefineGUOTable(SQLiteDatabase db,String value, int count){
 		return insertUserDefineGONGGUOTable(db,userdefine_guo_detail_table,value,count);
@@ -292,7 +293,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	}
 	
 	public String getReplacedString(String value){
-		value = value.replace("'", "\"");
+		if(value != null)
+			value = value.replace("'", "\"");
 		return value;
 	}
 	
@@ -367,9 +369,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		}
 		else
 			return 0;
-		
-		
-		
 	}
 	
 	/**在用户功表中插入数据*/
@@ -597,7 +596,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	
 	public int getUserGongGuoCount(SQLiteDatabase db, String tableName){
 		int count = 0;
-		String sql = "select SUM(count*times) from "+tableName;
+		String sql = "select SUM(count*times) from "+tableName +" where times is not null";
+		String sql2 = "select SUM(count) from "+tableName +" where times is null";
 		Cursor cursor = db.rawQuery( sql, null);
 		
 //        if(cursor!=null && cursor.moveToFirst()) {
@@ -609,6 +609,13 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 				count = cursor.getInt(0);
         	cursor.close();
         }
+		
+		cursor = db.rawQuery( sql2, null);
+		if(cursor!=null) {
+			if(cursor.moveToFirst())
+				count += cursor.getInt(0);
+      	cursor.close();
+      }
 
 		return count;
 	}

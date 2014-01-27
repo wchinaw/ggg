@@ -117,11 +117,11 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
         mListView.setOnItemLongClickListener(mOnItemLongClickListener);
         mListView.setOnItemClickListener(mOnItemClickListener);
         
-        if(mUserGongGuoList!=null && mUserGongGuoList.size()==0){
-        	Toast.makeText(this, R.string.empty_user_detaillist, Toast.LENGTH_LONG).show();
-        	finish();
-        	return;
-        }
+//        if(mUserGongGuoList!=null && mUserGongGuoList.size()==0){
+//        	Toast.makeText(this, R.string.empty_user_detaillist, Toast.LENGTH_LONG).show();
+//        	finish();
+//        	return;
+//        }
         
         //弹出选择日期对话框。
         mTextViewTimeRange = (TextView)findViewById(R.id.dayInfo);

@@ -44,6 +44,10 @@ public class UserGongGuo{
 		detail.time = cursor.getInt(i++);
 		detail.times = cursor.getInt(i++);
 		detail.comment = cursor.getString(i++);
+		
+		if(detail.times == 0){
+			detail.times = 1;
+		}
 		return detail;
 	}
 }

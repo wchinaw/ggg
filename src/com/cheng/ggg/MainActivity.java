@@ -32,6 +32,7 @@ import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cheng.ggg.database.SQLiteHelper;
 import com.cheng.ggg.receiver.AlarmReceiver;
@@ -48,6 +49,7 @@ public class MainActivity extends Activity implements OnClickListener
 	
 	SQLiteHelper mSQLiteHelper;
 	TextView textGong, textGuo, textTotal;
+	int mGongCount, mGuoCount;
 	TextView textTips;
 	RelativeLayout mLayoutBackground;
 	Animation mAlphaAnimation;
@@ -309,14 +311,14 @@ public class MainActivity extends Activity implements OnClickListener
 
 	public void refreshGongGuoInfo(){
     	SQLiteDatabase db = mSQLiteHelper.getReadableDatabase();
-    	int monthGong = mSQLiteHelper.getUserGongCount(db);
-    	int monthGuo = mSQLiteHelper.getUserGuoCount(db);
-    	int monthTotal = monthGong+monthGuo;
+    	mGongCount = mSQLiteHelper.getUserGongCount(db);
+    	mGuoCount = mSQLiteHelper.getUserGuoCount(db);
+    	int monthTotal = mGongCount+mGuoCount;
     	
     	db.close();
     	
-    	setTextViewColorAndCount(textGong,monthGong);
-    	setTextViewColorAndCount(textGuo,monthGuo);
+    	setTextViewColorAndCount(textGong,mGongCount);
+    	setTextViewColorAndCount(textGuo,mGuoCount);
     	setTextViewColorAndCount(textTotal,monthTotal);
     }
 	
@@ -372,7 +374,11 @@ public class MainActivity extends Activity implements OnClickListener
 			gotoGongGuoActivity(this,false);
 			break;
 		case R.id.buttonDetail:
-			gotoUserGongGuoListActivity(this,UserGongGuoListActivity.TYPE_ALL);
+			if(mGuoCount==0 && mGongCount == 0){
+				Toast.makeText(this, R.string.empty_user_detaillist, Toast.LENGTH_LONG).show();
+			}
+			else
+				gotoUserGongGuoListActivity(this,UserGongGuoListActivity.TYPE_ALL);
 			break;
 		case R.id.buttonAbout:
 			gotoAboutActivity();
