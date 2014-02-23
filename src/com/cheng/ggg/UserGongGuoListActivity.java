@@ -684,9 +684,10 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 			dGong[i] = gong.get(i);
 			dGuo[i] = guo.get(i);
 		}
-		chartData.values.add(dGong);
-		chartData.values.add(dGuo);
-    	
+		if(size != 0){
+			chartData.values.add(dGong);
+			chartData.values.add(dGuo);
+		}
     	return chartData;
     }
     
