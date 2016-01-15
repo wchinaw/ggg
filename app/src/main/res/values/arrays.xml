@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string-array name="list_entries">
+	<item>特大</item>
+	<item>大</item>
+	<item>中</item>
+	<item>小</item>
+</string-array>
+
+<string-array name="list_entries_value">
+    <item>32</item>
+	<item>26</item>
+	<item>20</item>
+	<item>16</item>
+</string-array>
+
+<string-array name="list_days">
+	<item>重复周期：1天</item>
+	<item>重复周期：2天</item>
+	<item>重复周期：3天</item>
+	<item>重复周期：4天</item>
+	<item>重复周期：5天</item>
+	<item>重复周期：6天</item>
+	<item>重复周期：7天</item>
+</string-array>
+
+<string-array name="list_days_value">
+    <item>1</item>
+	<item>2</item>
+	<item>3</item>
+	<item>4</item>
+	<item>5</item>
+	<item>6</item>
+	<item>7</item>
+</string-array>
+
+<string-array name="list_colors">
+    <item>默认色</item>
+    <item>黑色</item>
+    <item>蓝色</item>
+    <item>青绿色</item>
+    <item>灰黑色</item>
+    <item>灰色</item>
+    <item>绿色</item>
+    <item>浅灰色</item>
+    <item>红紫色</item>
+    <item>红色</item>
+    <item>白色</item>
+    <item>黄色</item>
+</string-array>
+
+<string-array name="list_date_range">
+    <item>本年</item>
+	<item>本季</item>
+	<item>本月</item>
+	<item>本周</item>
+</string-array>
+
+<string-array name="list_weekday">
+    <item>星期日</item>
+	<item>星期一</item>
+	<item>星期二</item>
+	<item>星期三</item>
+	<item>星期四</item>
+	<item>星期五</item>
+	<item>星期六</item>
+</string-array>
+
+<!-- <string-array name="list_entries_value2">
+<item>shandong2</item>
+<item>fujian2</item>
+<item>beijing2</item>
+<item>hebei2</item>
+</string-array> -->
+</resources>
