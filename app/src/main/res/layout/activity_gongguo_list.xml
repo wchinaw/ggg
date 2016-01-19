@@ -65,7 +65,8 @@
         android:cacheColorHint="#00000000"
         android:divider="@android:drawable/divider_horizontal_dark"
         android:listSelector="@null"
-        android:scrollingCache="false" >
+        android:scrollingCache="false"
+        android:background="#222222">
 
     </ExpandableListView>
 

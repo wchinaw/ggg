@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_calendar"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:visibility="visible"
+    android:background="@color/calendar_top_bg">
+
+    <TextView
+        android:id="@+id/calendarCenter"
+        style="@style/main_bar_text_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="8dp" />
+
+    <ImageButton
+        android:id="@+id/calendarLeft"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignParentLeft="true"
+        android:background="@null"
+        android:contentDescription="@null"
+        android:padding="8dp"
+        android:src="@drawable/left_arrow_btn" />
+
+    <ImageButton
+        android:id="@+id/calendarRight"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignParentRight="true"
+        android:background="@null"
+        android:contentDescription="@null"
+        android:padding="8dp"
+        android:src="@drawable/right_arrow_btn" />
+
+    <com.cheng.ggg.views.calendar.CalendarView
+        android:id="@+id/calendar"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/calendarCenter" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/listView"
+        android:layout_below="@+id/calendar"
+        android:cacheColorHint="#00000000"
+        android:divider="@android:drawable/divider_horizontal_dark"
+        android:listSelector="@null"
+        android:background="#222222" />
+
+</RelativeLayout>

@@ -23,15 +23,30 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="8dp"
-        android:padding="8dp" >
+        android:padding="8dp">
 
-        <TextView
-            android:id="@+id/TextItemCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|center_vertical"
-            android:text="Medium Text"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/TextItemCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:text="Medium Text"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:id="@+id/imageView"
+                android:background="@drawable/calendar_date_ggg"
+                android:layout_gravity="center_vertical" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/btnRight"

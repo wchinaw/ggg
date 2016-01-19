@@ -19,6 +19,11 @@ public class TimeDate {
     
     public static final long ONE_DAY_S = 24*60*60;
     public static final long ONE_DAY_MS = ONE_DAY_S*1000;
+
+	public static final int CURRENT_YEAR = 0;
+	public static final int CURRENT_QUARTER  = 1;
+	public static final int CURRENT_MONTH = 2;
+	public static final int CURRENT_WEEK = 3;
     
 	public static String twoZeroPre(int intValue){
 		String value = String.format("%02d", intValue);
@@ -467,13 +472,13 @@ public class TimeDate {
 	
 	public static TimeRange getTimeRangeByIndex(TimeRange range,int index, int mode){
 	    switch(index){
-	        case 0: //本年
+	        case CURRENT_YEAR: //本年
 	            return getCurrentYearRange(range, mode);
-	        case 1: //本季
+	        case CURRENT_QUARTER: //本季
 	            return getCurrentQuarterTimeRange(range, mode);
-	        case 3: //本周
+	        case CURRENT_WEEK: //本周
 	            return getCurrentWeekRange(range, mode);
-	        case 2: //本月 默认本月
+	        case CURRENT_MONTH: //本月 默认本月
 	        default :
 	            return getCurrentMonthRange(range, mode);
 	    }

@@ -9,7 +9,7 @@
         android:id="@+id/layoutDayInfo"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
+        android:layout_marginBottom="3dp"
         android:layout_marginLeft="3dp"
         android:layout_marginRight="3dp"
         android:layout_marginTop="6dp"
@@ -53,7 +53,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="false"
         android:layout_marginLeft="3dp"
-        android:layout_marginTop="6dp"
         android:layout_toLeftOf="@+id/TextViewGuoTitle"
         android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -65,7 +64,6 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="6dp"
         android:layout_marginLeft="3dp"
-        android:layout_marginTop="6dp"
         android:layout_marginRight="6dp"
         android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -76,7 +74,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/TextItemName"
-        android:layout_marginBottom="6dp"
+        android:layout_marginBottom="3dp"
         android:layout_marginLeft="3dp"
         android:layout_marginRight="6dp"
         android:layout_marginTop="3dp"
@@ -90,11 +88,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_gravity="right"
-        android:layout_marginBottom="6dp"
+        android:layout_marginBottom="3dp"
         android:layout_marginRight="6dp"
-        android:layout_marginTop="3dp"
         android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#777777" />
+        android:textColor="#777777"
+        android:textSize="13sp" />
 
 </LinearLayout>

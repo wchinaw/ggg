@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -28,6 +29,7 @@ import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.TimePicker.OnTimeChangedListener;
@@ -37,11 +39,13 @@ import com.cheng.ggg.database.SQLiteHelper;
 import com.cheng.ggg.types.GongGuoBase;
 import com.cheng.ggg.types.GongGuoDetail;
 import com.cheng.ggg.types.InsertGongGuoListener;
+import com.cheng.ggg.types.TimeRange;
 import com.cheng.ggg.types.UserGongGuo;
 import com.cheng.ggg.utils.COM;
 import com.cheng.ggg.utils.DialogAPI;
 import com.cheng.ggg.utils.Settings;
 import com.cheng.ggg.utils.TimeDate;
+import com.cheng.ggg.views.calendar.CalendarActivity;
 import com.umeng.analytics.MobclickAgent;
 
 public class GongGuoListActivity  extends Activity {
@@ -85,7 +89,8 @@ public class GongGuoListActivity  extends Activity {
 //        mListView.setOnItemClickListener(mOnItemClickListener);
 //        mListView.setOnChildClickListener(mOnChildClickListener);
 //        mListView.setOnLongClickListener(mOnLongClickListenerGroup);
-        mListView.setGroupIndicator(getResources().getDrawable(R.drawable.list_expand_btn));
+//        mListView.setGroupIndicator(getResources().getDrawable(R.drawable.list_expand_btn));
+		mListView.setGroupIndicator(null);
 
         if(mbUserDefine){
         	mListView.setOnCreateContextMenuListener(mContextMenuListener);
@@ -335,7 +340,7 @@ public class GongGuoListActivity  extends Activity {
 		AlertDialog dialog =  new AlertDialog.Builder(activity)
         .setTitle(titleId)
 //        .setMessage(base.name+" "+detail.name)
-        .setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
+        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				int saveTime = (int) (calendar.getTimeInMillis() / 1000);
 				int times = COM.parseInt(editTimes.getText().toString());
@@ -442,7 +447,6 @@ public class GongGuoListActivity  extends Activity {
 			GroupChildHolder g = (GroupChildHolder) v.getTag();
 			
 			if(g != null){
-				int time = (int) (System.currentTimeMillis()/1000);
 				GongGuoBase base = (GongGuoBase)mAdapter.getGroup(g.groupPosition);
 				GongGuoDetail detail = (GongGuoDetail) mAdapter.getChild(g.groupPosition,g.childPosition);
 				
@@ -474,6 +478,45 @@ public class GongGuoListActivity  extends Activity {
 
 		LayoutInflater mInflater; 
     	Activity mActivity;
+
+		private final int[] EMPTY_STATE_SET = {};
+		/** State indicating the group is expanded. */
+		private final int[] GROUP_EXPANDED_STATE_SET = { android.R.attr.state_expanded };
+		/** State indicating the group is empty (has no children). */
+		private final int[] GROUP_EMPTY_STATE_SET = { android.R.attr.state_empty };
+		/** State indicating the group is expanded and empty (has no children). */
+		private final int[] GROUP_EXPANDED_EMPTY_STATE_SET = { android.R.attr.state_expanded,
+				android.R.attr.state_empty };
+		/** States for the group where the 0th bit is expanded and 1st bit is empty. */
+		private final int[][] GROUP_STATE_SETS = { EMPTY_STATE_SET, // 00
+				GROUP_EXPANDED_STATE_SET, // 01
+				GROUP_EMPTY_STATE_SET, // 10
+				GROUP_EXPANDED_EMPTY_STATE_SET // 11
+		};
+
+//		protected void setIndicatorState(Drawable indicator, int groupPosition, boolean isExpanded) 	{
+//			final int stateSetIndex = (isExpanded ? 1 : 0) | // Expanded?
+//					(getChildrenCount(groupPosition) == 0 ? 2 : 0); // Empty?
+//			indicator.setState(GROUP_STATE_SETS[stateSetIndex]);
+//		}
+
+		@Override
+		public final void onGroupCollapsed(int groupPosition) {
+			onGroupCollapsedEx(groupPosition);
+			notifyDataSetChanged();
+		}
+
+		@Override
+		public final void onGroupExpanded(int groupPosition) {
+			onGroupExpandedEx(groupPosition);
+			notifyDataSetChanged();
+		}
+
+		protected void onGroupCollapsedEx(int groupPosition) {
+		}
+
+		protected void onGroupExpandedEx(int groupPosition) {
+		}
     	
     	public MyExpandableListAdapter(Activity activity){
     		mActivity = activity;
@@ -511,7 +554,7 @@ public class GongGuoListActivity  extends Activity {
 			GroupChildHolder holder = (GroupChildHolder) textView.getTag();
 			
 			holder.txtName.setText(detail.name);
-			holder.txtCount.setText(detail.userCount+"");
+			holder.txtCount.setText(detail.userCount + "");
 			
 			holder.txtName.setTextSize(MainActivity.TEXT_SIZE);
 			holder.txtCount.setTextSize(MainActivity.TEXT_SIZE);
@@ -576,7 +619,9 @@ public class GongGuoListActivity  extends Activity {
             holder.txtName.setTextSize(MainActivity.TEXT_SIZE);
             holder.txtCount.setTextSize(MainActivity.TEXT_SIZE);
             holder.button.setTextSize(MainActivity.TEXT_SIZE);
-            
+			holder.countClickArea = view.findViewById(R.id.frame01);
+			holder.indicatorView = (ImageView)view.findViewById(R.id.indicator);
+
             if(mbUserDefine){
             	holder.button.setVisibility(View.VISIBLE);
             	holder.button.setText(R.string.add);
@@ -592,24 +637,64 @@ public class GongGuoListActivity  extends Activity {
             	holder.button.setVisibility(View.GONE);
             	holder.txtCount.setVisibility(View.VISIBLE);
             	holder.txtCount.setTextAppearance(mThis, styleId);
+				holder.countClickArea.setOnClickListener(countClickAreaLisenter);
+				holder.countClickArea.setTag(holder);
             }
             
             view.setTag(holder);
             return view;
 		}
+
+		OnClickListener countClickAreaLisenter = new OnClickListener() {
+			public void onClick(View view) {
+				Object obj = view.getTag();
+				if(obj instanceof GroupChildHolder){
+					GroupChildHolder g = (GroupChildHolder) view.getTag();
+					if(g == null)
+						return;
+
+					if(g != null){
+						GongGuoBase base = (GongGuoBase)mAdapter.getGroup(g.groupPosition);
+						GongGuoDetail detail = (GongGuoDetail) mAdapter.getChild(g.groupPosition, g.childPosition);
+						if(detail != null && detail.userCount != 0)
+							CalendarActivity.startActvitiyForGongGuoDate(mThis,base,detail,true,mbGong);
+						else{
+							Toast.makeText(mActivity, R.string.empty_user_detaillist, Toast.LENGTH_LONG).show();
+						}
+					}
+				}
+				else{
+					GroupHolder g = (GroupHolder) view.getTag();
+					if(g == null)
+						return;
+
+					if(g != null){
+						GongGuoBase base = (GongGuoBase) mAdapter.getGroup(g.groupPosition);
+
+						if(base != null && base.userCount != 0){
+							CalendarActivity.startActvitiyForGongGuoDate(mThis,base,null,false,mbGong);
+						}
+						else{
+							Toast.makeText(mActivity, R.string.empty_user_detaillist, Toast.LENGTH_LONG).show();
+						}
+					}
+				}
+			}
+		};
 		
 		public View getGenericViewByStyle(final GongGuoDetail detail,final int groupPosition, final int childPosition, int styleId) {
             GroupChildHolder holder = new GroupChildHolder();
             View view = mInflater.inflate(R.layout.listview_detail, null);
 			holder.txtName = (TextView) view.findViewById(R.id.TextItemName);
 			holder.txtCount = (TextView) view.findViewById(R.id.TextItemCount);
-			holder.button = (Button) view.findViewById(R.id.btnRight);	
+			holder.button = (Button) view.findViewById(R.id.btnRight);
+			holder.countClickArea = view.findViewById(R.id.frame01);
             holder.txtName.setTextAppearance(mThis, styleId);
             
             holder.txtName.setTextSize(MainActivity.TEXT_SIZE);
             holder.txtCount.setTextSize(MainActivity.TEXT_SIZE);
             holder.button.setTextSize(MainActivity.TEXT_SIZE);
-            
+
             if(mbUserDefine){
             	holder.button.setVisibility(View.VISIBLE);
             	holder.button.setText(R.string.delete);
@@ -625,6 +710,8 @@ public class GongGuoListActivity  extends Activity {
             	holder.button.setVisibility(View.GONE);
             	holder.txtCount.setVisibility(View.VISIBLE);
             	holder.txtCount.setTextAppearance(mThis, styleId);
+				holder.countClickArea.setOnClickListener(countClickAreaLisenter);
+				holder.countClickArea.setTag(holder);
             }
             
             view.setTag(holder);
@@ -644,8 +731,15 @@ public class GongGuoListActivity  extends Activity {
 			 holder.txtCount.setText(base.userCount+"");
 			 holder.groupPosition = groupPosition;
 			 
-	            holder.txtCount.setTextSize(MainActivity.TEXT_SIZE);
-	            holder.button.setTextSize(MainActivity.TEXT_SIZE);
+			holder.txtCount.setTextSize(MainActivity.TEXT_SIZE);
+			holder.button.setTextSize(MainActivity.TEXT_SIZE);
+
+			if(isExpanded){
+				holder.indicatorView.setImageResource(R.drawable.btn_list_expand_p);
+			}else{
+				holder.indicatorView.setImageResource(R.drawable.btn_list_expand_n);
+			}
+//			setIndicatorState(holder.indicatorView.getDrawable(),groupPosition,isExpanded);
 
 			return textView;
 		}
@@ -665,9 +759,11 @@ public class GongGuoListActivity  extends Activity {
 	class GroupChildHolder{
 		int groupPosition;
 		int childPosition;
+
 		TextView txtName;
 		TextView txtCount;
-		Button button;
+		Button button;//删除按钮
+		View countClickArea;//记功记过界面,右侧数字按钮区域,点击之后可以进入日历统计界面
 		
 		public GroupChildHolder(){
 			
@@ -680,11 +776,13 @@ public class GongGuoListActivity  extends Activity {
 	}
 	
 	class GroupHolder{
+		View countClickArea;
 		int groupPosition;
 		TextView txtName;
 		TextView txtCount;
 		Button button;
-		
+		ImageView indicatorView;
+
 		public GroupHolder(){
 			
 		}

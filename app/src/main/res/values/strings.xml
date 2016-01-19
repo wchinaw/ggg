@@ -169,7 +169,9 @@
 	<string name="user_define">自定义</string>
 	
 	<string name="empty_user_detaillist">您还没有相关明细记录，请先添加。</string>
-	
+    <string name="empty_user_detaillist_gong">您还没有"功"的明细记录，请先添加。</string>
+    <string name="empty_user_detaillist_guo">您还没有"过"的明细记录，请先添加。</string>
+
 	<string name="exportok">导出成功</string>
 	<string name="exportfail">导出失败</string>
 	
@@ -198,10 +200,10 @@
 	<string name="settings">设置</string>
 	<string name="gonggongadd_confirm">请确认是否添加</string>
 	<string name="gonggongmodify_confirm">编辑并确认</string>
-	
-	
-	
-	
+    <string name="calendar_title_gong">功 统计</string>
+    <string name="calendar_title_guo">过 统计</string>
+    <string name="calendar_title_all">功过合并 统计</string>
+    <string name="calendar">日历</string>
 	
 	
 	

@@ -41,6 +41,7 @@ import com.cheng.ggg.utils.COM;
 import com.cheng.ggg.utils.DialogAPI;
 import com.cheng.ggg.utils.Settings;
 import com.cheng.ggg.utils.TimeDate;
+import com.cheng.ggg.views.calendar.CalendarActivity;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
 
@@ -68,10 +69,11 @@ public class MainActivity extends Activity implements OnClickListener
     String mHomeImagePath;
     
     public static MainActivity mActivity;
-    
-    final int BUTTON_COUNTS = 4;
+
+    final int BUTTON_COUNTS = 5;
     Button mButtons[] = new Button[BUTTON_COUNTS];
-    int buttonIds[] = {R.id.buttonGong, R.id.buttonGuo ,R.id.buttonDetail,R.id.buttonAbout};
+    int buttonIds[] = {R.id.buttonGong, R.id.buttonGuo ,R.id.buttonCalendar,R.id.buttonDetail,R.id.buttonAbout};
+
     //调整fontSize
     TextView textViewGongTitle,TextViewGuoTitle,TextViewTotalTitle;
     int colors[] = {0xff777777,Color.BLACK,    
@@ -219,17 +221,17 @@ public class MainActivity extends Activity implements OnClickListener
     	if(index <0 || index >= len){
     		index = 0;
     	}
-    	COM.LOGE("", "index:"+index);
-    	COM.LOGE("", "tipsStr["+index+"]:"+tipsStr[index]);
+    	COM.LOGE("", "index:" + index);
+    	COM.LOGE("", "tipsStr[" + index + "]:" + tipsStr[index]);
     	textTips.setText(tipsStr[index]);
     	textTips.setOnClickListener(this);
-    	textTips.setOnLongClickListener(new OnLongClickListener(){
+    	textTips.setOnLongClickListener(new OnLongClickListener() {
 
 			public boolean onLongClick(View arg0) {
 				final AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
 				builder.setTitle(R.string.date_range);
 				builder.setItems(R.array.list_colors, new DialogInterface.OnClickListener() {
-					
+
 					public void onClick(DialogInterface dialog, int which) {
 						int color = colors[which];
 						Settings.setHomeTextColorIndex(mActivity, color);
@@ -239,8 +241,8 @@ public class MainActivity extends Activity implements OnClickListener
 				builder.create().show();
 				return false;
 			}
-    		
-    	});
+
+		});
     	
     	if(bAnimation){
     		startAlphaAnimation(textTips);
@@ -326,7 +328,7 @@ public class MainActivity extends Activity implements OnClickListener
 		if(view == null)
 			return;
 		
-		view.setText(count+"");
+		view.setText(count + "");
 		
 		int gongColor = COM.COLOR_GONG;
 		int guoColor = COM.COLOR_GUO;
@@ -364,6 +366,30 @@ public class MainActivity extends Activity implements OnClickListener
     	Intent intent = new Intent(this,AboutActivity.class);
     	startActivity(intent);
     }
+
+	public void guoTitleClick(View v){
+		if(mGuoCount==0){
+			Toast.makeText(this, R.string.empty_user_detaillist_guo, Toast.LENGTH_LONG).show();
+		}
+		else
+			CalendarActivity.startActvitiyForGongGuoDate(this,null,null,false,false);
+	}
+
+	public void gongTitleClick(View v){
+		if(mGongCount == 0){
+			Toast.makeText(this, R.string.empty_user_detaillist_gong, Toast.LENGTH_LONG).show();
+		}
+		else
+			CalendarActivity.startActvitiyForGongGuoDate(this,null,null,false,true);
+	}
+
+	public void totalTitleClick(View v){
+		if(mGuoCount==0 && mGongCount == 0){
+			Toast.makeText(this, R.string.empty_user_detaillist, Toast.LENGTH_LONG).show();
+		}
+		else
+			CalendarActivity.startActvitiyForGongGuoDate(this, null, null, false, true, true);
+	}
     
 	public void onClick(View v) {
 		switch(v.getId()){
@@ -373,6 +399,11 @@ public class MainActivity extends Activity implements OnClickListener
 		case R.id.buttonGuo:
 			gotoGongGuoActivity(this,false);
 			break;
+
+		case R.id.buttonCalendar:
+			totalTitleClick(v);
+			break;
+
 		case R.id.buttonDetail:
 			if(mGuoCount==0 && mGongCount == 0){
 				Toast.makeText(this, R.string.empty_user_detaillist, Toast.LENGTH_LONG).show();

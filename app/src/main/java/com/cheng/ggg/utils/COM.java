@@ -30,6 +30,11 @@ public class COM {
 	public static final String INTENT_GONG = "INTENT_GONG";
 	public static final String INTENT_TYPE = "INTENT_TYPE";
 	public static final String INTENT_USERDEFINE = "INTENT_USERDEFINE";//用户自定义标志
+
+	public static final String INTENT_GONGGUOBASE = "INTENT_GONGGUOBASE";
+	public static final String INTENT_GONGGUODETAIL = "INTENT_GONGGUODETAIL";
+	public static final String INTENT_ISDETAIL = "INTENT_ISDETAIL";
+	public static final String INTENT_ISTOTAL = "INTENT_ISTOTAL";
 	
 	public static final String INTENT_USERDEFINE_TIPS = "INTENT_USERDEFINE_TIPS";
 	

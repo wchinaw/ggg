@@ -40,6 +40,7 @@ import com.cheng.ggg.types.UserGongGuo;
 import com.cheng.ggg.utils.COM;
 import com.cheng.ggg.utils.Settings;
 import com.cheng.ggg.utils.TimeDate;
+import com.cheng.ggg.views.calendar.CalendarActivity;
 import com.cheng.ggg.views.chart.BarChart;
 import com.cheng.ggg.views.chart.SalesComparisonChartWave;
 import com.cheng.ggg.views.chart.SalesComparisonChartGongGuo;
@@ -160,7 +161,7 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
     /**
      * 统计每一天的功过小计，包括功过总和，功总和，过总和。
      */
-    public void setListDayInfo(){
+    public static ArrayList<UserGongGuo> setListDayInfo(Activity mActivity, ArrayList<UserGongGuo> mUserGongGuoList, String[] mWeekdayArray){
         if(mUserGongGuoList != null && mUserGongGuoList.size()>0){
             int len = mUserGongGuoList.size();
             UserGongGuo gongguoFirst = mUserGongGuoList.get(0);
@@ -192,6 +193,7 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
                 }
             }
         }
+		return mUserGongGuoList;
     }
     
     public void refreshTextViewTimeRange()
@@ -214,7 +216,7 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
             break;
         }
         db.close();
-        setListDayInfo();
+        mUserGongGuoList = setListDayInfo(mActivity,mUserGongGuoList,mWeekdayArray);
         refreshTotalGongGuoByList();
         if(mAdapter != null)
             mAdapter.notifyDataSetChanged();
@@ -383,8 +385,9 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 				}
 				boolean isFirst = gongguo.isFirst;
 				mUserGongGuoList.remove(id);
-				if(isFirst)
-				    setListDayInfo();
+				if(isFirst) {
+					mUserGongGuoList = setListDayInfo(mActivity,mUserGongGuoList,mWeekdayArray);
+				}
 				refreshTotalGongGuoByList();
 				mAdapter.notifyDataSetChanged();
 				db.close();
@@ -499,7 +502,7 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 				holder.comment = (TextView) view.findViewById(R.id.TextViewComments);
 				
 				holder.name.setTextSize(MainActivity.TEXT_SIZE);
-				holder.date.setTextSize(MainActivity.TEXT_SIZE);
+				holder.date.setTextSize(MainActivity.TEXT_SIZE-5);
 				holder.times.setTextSize(MainActivity.TEXT_SIZE);
 				holder.comment.setTextSize(MainActivity.TEXT_SIZE-3);
 				
@@ -598,6 +601,10 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
                 break;
         }
     }
+
+	public void calendarClick(View v){
+		CalendarActivity.startActvitiyForGongGuoDate(this, null, null, false, true, true);
+	}
     
     public ChartData getChartData(boolean isWave)
     {

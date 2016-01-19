@@ -1,11 +1,12 @@
 package com.cheng.ggg.types;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.cheng.ggg.utils.COM;
 
 /**功过基本类型，包含功过Detail.*/
-public class GongGuoBase {
+public class GongGuoBase implements Serializable{
 	final String TAG = "GongGuoBase";
 	
 	public int id;

@@ -4,8 +4,10 @@ import android.database.Cursor;
 
 import com.cheng.ggg.utils.COM;
 
+import java.io.Serializable;
+
 /**功过具体类型.*/
-public class GongGuoDetail{
+public class GongGuoDetail implements Serializable {
 	final String TAG = "GongGuoBase";
 	
 	public int id;

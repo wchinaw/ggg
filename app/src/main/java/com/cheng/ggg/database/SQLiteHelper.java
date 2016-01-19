@@ -535,7 +535,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     				GongGuoDetail detail = GongGuoDetail.getFromCursor(cursor);
     				
     				detail.bUserdefine = bUserDefine;
-    				detail.userCount = getUserGongGuoCountByName(db,userGongGuoTableName,detail.name,count);
+    				detail.userCount = getUserGongGuoCountByName(db,userGongGuoTableName,detail.name,detail.id,count);
     				detailList.add(detail);
     			}
     			cursor.close();
@@ -573,9 +573,9 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 //		return id;
 //	}
 	
-	public int getUserGongGuoCountByName(SQLiteDatabase db, String tableName, String name, int count){
+	public int getUserGongGuoCountByName(SQLiteDatabase db, String tableName, String name,int parent_id, int count){
 		int total = 0;
-		String sql = "select SUM(times) from "+tableName +" where name = '"+name+"' and count = '"+count+"'";
+		String sql = "select SUM(times) from "+tableName +" where name = '"+name+"' and count = '"+count+"'"+" and parent_id = "+parent_id;
 		Cursor cursor = db.rawQuery( sql, null);
 		
 //        if(cursor!=null && cursor.moveToFirst()) {
@@ -632,6 +632,50 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 //		if(guoCount > 0)
 //			guoCount = 0;
 		return guoCount;
+	}
+
+	/**
+	 * 获取用户功过表中特定类型功过/或按功过base筛选的列表,按时间范围获取 ，并按时间逆序排序
+	 * ChenGang
+	 * 2014-1-18
+	 * @param isDetail 是具体的功过项,还是功过base大类
+	 * @param startTimeS 开始时间(大于等于它)
+	 * @param endTimeS   截止时间(要小于它)
+	 * @return ArrayList<UserGongGuo>
+	 */
+	public ArrayList<UserGongGuo> getUserGongGuoTypeListByRange(SQLiteDatabase db,boolean bGong, boolean isDetail, GongGuoBase base, GongGuoDetail detail, TimeRange range ){
+		String where;
+		if(isDetail){
+			where = " where time>="+range.mStartTimeS+" and time<"+range.mEndTimeS +" and name='"+detail.name+"'"+"" +
+					" and parent_id="+detail.id+" and count="+base.count+" and parent_name='"+base.name+"'";
+		}
+		else{
+			if(base != null){
+				if(detail != null){
+					where = " where time>="+range.mStartTimeS+" and time<"+range.mEndTimeS +
+							" and parent_id="+detail.id+" and count="+base.count+" and parent_name='"+base.name+"'";
+				}
+				else{
+					where = " where time>="+range.mStartTimeS+" and time<"+range.mEndTimeS +
+							" and count="+base.count+" and parent_name='"+base.name+"'";
+				}
+			}
+			//首页功过统计点进来的
+			else{
+				where = " where time>="+range.mStartTimeS+" and time<"+range.mEndTimeS;
+			}
+		}
+
+		String sql;
+		if(bGong){
+			sql = " select * from " + user_gong_table + where
+					+ " order by time desc";
+		}
+		else{
+			sql = " select * from "+user_guo_table + where
+					+ " order by time desc";
+		}
+		return getUserGongGuoList(db,sql);
 	}
 	
 	/**
