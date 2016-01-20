@@ -55,6 +55,14 @@ public class CalendarActivity extends Activity {
 	SQLiteHelper mSQLiteHelper;
 	CalendarActivity mActivity;
 
+	boolean istotal;
+	boolean isdetail;
+	boolean isgong;
+	GongGuoBase base;
+	GongGuoDetail detail;
+
+	String strTotal,strGong,strGuo;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -67,6 +75,10 @@ public class CalendarActivity extends Activity {
 		//获取日历控件对象
 		calendar = (CalendarView)findViewById(R.id.calendar);
 		calendar.setSelectMore(false); //单选
+
+		strTotal = getString(R.string.total);
+		strGong = getString(R.string.gong);
+		strGuo = getString(R.string.guo);
 
 		getBundles();
 		
@@ -82,6 +94,7 @@ public class CalendarActivity extends Activity {
 		}
 		mAdapter = new UserGongGuoAdapter(this);
 		mAdapter.setList(calendar.getUserGongGuoList());
+		refreshTotalGongGuoByList();
 		
 		//获取日历中年月 ya[0]为年，ya[1]为月（格式大家可以自行在日历控件中改）
 		String[] ya = calendar.getYearAndmonth().split("-");
@@ -138,6 +151,7 @@ public class CalendarActivity extends Activity {
 		}
 		if(mAdapter != null)
 			mAdapter.notifyDataSetChanged();
+		refreshTotalGongGuoByList();
 	}
 
 	AdapterView.OnItemLongClickListener mOnItemLongClickListener = new AdapterView.OnItemLongClickListener(){
@@ -156,6 +170,44 @@ public class CalendarActivity extends Activity {
 		}
 
 	};
+
+	public void refreshTotalGongGuoByList(){
+		int mGong = 0;
+		int mGuo = 0;
+		ArrayList<UserGongGuo> mUserGongGuoList = mAdapter.getList();
+		for(UserGongGuo data : mUserGongGuoList){
+			if(data.count > 0){
+				mGong += data.count*data.times;
+			}
+			else{
+				mGuo += data.count*data.times;
+			}
+		}
+
+		String title;
+		if(istotal){
+			title = getString(R.string.calendar_title_all);
+			setTitle(title+" "+strGong+" "+mGong+" "+strGuo+" "+mGuo+" "+strTotal+" "+(mGong+mGuo));
+		}
+		else if(isdetail && detail != null){ //具体的功过
+			title = detail.name;
+			setTitle(title+" "+strTotal+" "+(mGong+mGuo));
+		}
+		else if(base != null){ //大类别  一功 十功等
+			title = base.name;
+			setTitle(title+" "+strTotal+" "+(mGong+mGuo));
+		}
+		else{ //所有的功  过 统计
+			if(isgong) {
+				title = getString(R.string.calendar_title_gong);
+				setTitle(title+" "+strTotal+" "+mGong);
+			}
+			else {
+				title = getString(R.string.calendar_title_guo);
+				setTitle(title+" "+strTotal+" "+mGuo);
+			}
+		}
+	}
 
 	AdapterView.OnItemClickListener mOnItemClickListener = new AdapterView.OnItemClickListener(){
 
@@ -290,11 +342,11 @@ public class CalendarActivity extends Activity {
 
 	public void getBundles(){
 		Intent intent = getIntent();
-		GongGuoBase base = (GongGuoBase) intent.getSerializableExtra(COM.INTENT_GONGGUOBASE);
-		GongGuoDetail detail = (GongGuoDetail) intent.getSerializableExtra(COM.INTENT_GONGGUODETAIL);
-		boolean isdetail = intent.getBooleanExtra(COM.INTENT_ISDETAIL,true);
-		boolean isgong = intent.getBooleanExtra(COM.INTENT_GONG, true);
-		boolean istotal = intent.getBooleanExtra(COM.INTENT_ISTOTAL, false);
+		base = (GongGuoBase) intent.getSerializableExtra(COM.INTENT_GONGGUOBASE);
+		detail = (GongGuoDetail) intent.getSerializableExtra(COM.INTENT_GONGGUODETAIL);
+		isdetail = intent.getBooleanExtra(COM.INTENT_ISDETAIL,true);
+		isgong = intent.getBooleanExtra(COM.INTENT_GONG, true);
+		istotal = intent.getBooleanExtra(COM.INTENT_ISTOTAL, false);
 		calendar.setGongGuoData(base, detail, isdetail, isgong, istotal);
 		if(istotal){
 			setTitle(R.string.calendar_title_all);

@@ -41,14 +41,22 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/calendarCenter" />
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:id="@+id/line"
+        android:background="#CCCCCC"
+        android:layout_below="@+id/calendar"></LinearLayout>
+
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:id="@+id/listView"
-        android:layout_below="@+id/calendar"
+        android:layout_below="@+id/line"
         android:cacheColorHint="#00000000"
         android:divider="@android:drawable/divider_horizontal_dark"
-        android:listSelector="@null"
+        android:listSelector="@drawable/list_item_selector"
         android:background="#222222" />
 
 </RelativeLayout>

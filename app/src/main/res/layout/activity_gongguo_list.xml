@@ -63,7 +63,7 @@
         android:layout_alignParentLeft="false"
         android:layout_alignParentTop="false"
         android:cacheColorHint="#00000000"
-        android:listSelector="@null"
+        android:listSelector="@drawable/list_item_selector"
         android:scrollingCache="false"
         android:background="#222222"
         android:divider="@android:drawable/divider_horizontal_dark">

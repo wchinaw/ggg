@@ -143,7 +143,7 @@
         android:layout_below="@+id/layoutDetailTop"
         android:cacheColorHint="#00000000"
         android:divider="@android:drawable/divider_horizontal_dark"
-        android:listSelector="@null"
+        android:listSelector="@drawable/list_item_selector"
         android:scrollingCache="false"
         android:background="#222222">
 
