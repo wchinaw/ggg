@@ -657,7 +657,7 @@ public class GongGuoListActivity  extends Activity {
 						GongGuoBase base = (GongGuoBase)mAdapter.getGroup(g.groupPosition);
 						GongGuoDetail detail = (GongGuoDetail) mAdapter.getChild(g.groupPosition, g.childPosition);
 						if(detail != null && detail.userCount != 0)
-							CalendarActivity.startActvitiyForGongGuoDate(mThis,base,detail,true,mbGong);
+							CalendarActivity.startActvitiyForGongGuoDate(mThis,base,detail,true,mbGong); // 单一具体的功过
 						else{
 							Toast.makeText(mActivity, R.string.empty_user_detaillist, Toast.LENGTH_LONG).show();
 						}

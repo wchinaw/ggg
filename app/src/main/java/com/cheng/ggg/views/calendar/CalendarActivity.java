@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.cheng.ggg.GongGuoListActivity;
 import com.cheng.ggg.MainActivity;
 import com.cheng.ggg.R;
+import com.cheng.ggg.UserGongGuoAdapter;
 import com.cheng.ggg.UserGongGuoListActivity;
 import com.cheng.ggg.database.SQLiteHelper;
 import com.cheng.ggg.types.GongGuoBase;
@@ -46,9 +47,9 @@ public class CalendarActivity extends Activity {
 
 	public String[] mWeekdayArray;
 	/**获取列表*/
-	ArrayList<UserGongGuo> mUserGongGuoList;
-	String strTotal,strGong,strGuo;
-	String strTimes = "";
+//	ArrayList<UserGongGuo> mUserGongGuoList;
+
+
 	ListView mListView;
 	UserGongGuoAdapter mAdapter;
 	SQLiteHelper mSQLiteHelper;
@@ -79,8 +80,8 @@ public class CalendarActivity extends Activity {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-
-		mUserGongGuoList = calendar.getUserGongGuoList();
+		mAdapter = new UserGongGuoAdapter(this);
+		mAdapter.setList(calendar.getUserGongGuoList());
 		
 		//获取日历中年月 ya[0]为年，ya[1]为月（格式大家可以自行在日历控件中改）
 		String[] ya = calendar.getYearAndmonth().split("-");
@@ -96,7 +97,7 @@ public class CalendarActivity extends Activity {
 				getList();
 			}
 		});
-		
+
 		calendarRight.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -123,14 +124,8 @@ public class CalendarActivity extends Activity {
 			}
 		});
 
-		strTimes = getString(R.string.times);
-		strTotal = getString(R.string.total);
-		strGong = getString(R.string.gong);
-		strGuo = getString(R.string.guo);
-
-
 		mListView = (ListView) findViewById(R.id.listView);
-		mAdapter = new UserGongGuoAdapter(this);
+
 		mListView.setAdapter(mAdapter);
 		mListView.setOnItemLongClickListener(mOnItemLongClickListener);
 		mListView.setOnItemClickListener(mOnItemClickListener);
@@ -166,7 +161,7 @@ public class CalendarActivity extends Activity {
 
 		public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 								long arg3) {
-			UserGongGuo gongguo = mUserGongGuoList.get(position);
+			UserGongGuo gongguo = mAdapter.getList().get(position);
 			if(gongguo != null){
 				UserGongGuo newgongguo = new UserGongGuo();
 				newgongguo.count = gongguo.count;
@@ -250,14 +245,14 @@ public class CalendarActivity extends Activity {
 
 		switch(item.getItemId()) {
 			case 0:  //编辑
-				UserGongGuo gongguo = mUserGongGuoList.get(id);
+				UserGongGuo gongguo = mAdapter.getList().get(id);
 				if(gongguo != null){
 					mInsertGongGuoListener.bInsert = false;
 					GongGuoListActivity.createAddConfirmDialog(mActivity, null, null, gongguo, mInsertGongGuoListener);
 				}
 				break;
 			case 1:  //删除
-				gongguo = mUserGongGuoList.get(id);
+				gongguo = mAdapter.getList().get(id);
 
 				if(gongguo != null){
 					boolean rc = false;
@@ -269,7 +264,7 @@ public class CalendarActivity extends Activity {
 						rc = mSQLiteHelper.deleteUserGuoItemById(db, gongguo.id);
 					}
 					boolean isFirst = gongguo.isFirst;
-					mUserGongGuoList.remove(id);
+					mAdapter.getList().remove(id);
 					if(isFirst) {
 						calendar.getUserGongGuoList();
 						calendar.invalidate();
@@ -351,115 +346,140 @@ public class CalendarActivity extends Activity {
 		activity.startActivity(intent);
 	}
 
-	public class UserGongGuoAdapter extends BaseAdapter {
-		LayoutInflater mInflater;
-		Activity mActivity;
+//	public class UserGongGuoAdapter extends BaseAdapter {
+//		LayoutInflater mInflater;
+//		Activity mActivity;
+//
+//		public UserGongGuoAdapter(Activity activity){
+//			mActivity = activity;
+//			mInflater = LayoutInflater.from(mActivity);
+//		}
+//
+//		public int getCount() {
+//			if(mUserGongGuoList != null)
+//				return mUserGongGuoList.size();
+//			return 0;
+//		}
+//
+//		public Object getItem(int arg0) {
+//			// TODO Auto-generated method stub
+//			return null;
+//		}
+//
+//		public long getItemId(int arg0) {
+//			// TODO Auto-generated method stub
+//			return 0;
+//		}
+//
+//		public View getView(int position, View view, ViewGroup arg2) {
+//
+//			ViewHolder holder;
+//			if(view == null){
+//				holder = new ViewHolder();
+//				view = mInflater.inflate(R.layout.listview_user_detail, null);
+//				holder.layoutDayInfo = (RelativeLayout) view.findViewById(R.id.layoutDayInfo);
+//				holder.layoutTimesCalendar = view.findViewById(R.id.layoutTimesCalendar);
+//				holder.layoutTimesCalendar.setOnClickListener(mCalendarClickListener);
+//				holder.layoutTimesCalendar.setTag(holder);
+//
+//				holder.titleDate = (TextView) view.findViewById(R.id.titleDate);
+//				holder.titleCount = (TextView) view.findViewById(R.id.titleCount);
+//				holder.name = (TextView) view.findViewById(R.id.TextItemName);
+//				holder.date = (TextView) view.findViewById(R.id.TextItemDate);
+//				holder.times = (TextView) view.findViewById(R.id.TextViewGuoTitle);
+//				holder.comment = (TextView) view.findViewById(R.id.TextViewComments);
+//
+//				holder.name.setTextSize(MainActivity.TEXT_SIZE);
+//				holder.date.setTextSize(MainActivity.TEXT_SIZE-5);
+//				holder.times.setTextSize(MainActivity.TEXT_SIZE);
+//				holder.comment.setTextSize(MainActivity.TEXT_SIZE-3);
+//
+//				view.setTag(holder);
+//			}
+//			else{
+//				holder = (ViewHolder) view.getTag();
+//			}
+//			UserGongGuo gongguo = mUserGongGuoList.get(position);
+//
+//			if(gongguo.isFirst){
+//				holder.layoutDayInfo.setVisibility(View.VISIBLE);
+//				holder.titleDate.setText(gongguo.todayInfo);
+//				holder.titleCount.setText(strTotal+" "+gongguo.todayCount);
+//			}
+//			else{
+//				holder.layoutDayInfo.setVisibility(View.GONE);
+//			}
+//
+//			holder.name.setText(gongguo.parent_name+" "+gongguo.name);
+//			holder.date.setText(TimeDate.intTime2HourMinute(mActivity, gongguo.time));
+//			if(gongguo.times>1)
+//				holder.times.setText(gongguo.times+strTimes);
+//			else
+//				holder.times.setText("");
+//			if(gongguo.comment == null || gongguo.comment.equals("")){
+//				holder.comment.setVisibility(View.GONE);
+//			}
+//			else{
+//				holder.comment.setText("  "+gongguo.comment);//strComment+
+//				holder.comment.setVisibility(View.VISIBLE);
+//			}
+//
+//			holder.position = position;
+//			setGongGuoColor(holder.name,gongguo.count);
+//			setGongGuoColor(holder.titleCount,gongguo.todayCount);
+//
+//			return view;
+//		}
+//
+//		OnClickListener mCalendarClickListener = new OnClickListener() {
+//			public void onClick(View view) {
+//				ViewHolder holder = (ViewHolder) view.getTag();
+//				if(holder != null){
+//					UserGongGuo gongguo = mUserGongGuoList.get(holder.position);
+//					if(gongguo != null){
+//						GongGuoBase base = new GongGuoBase();
+//						base.name = gongguo.parent_name;
+//						base.count = gongguo.count;
+//
+//						GongGuoDetail detail = new GongGuoDetail();
+//						detail.id = COM.parseInt(gongguo.parent_id);
+//						detail.name = gongguo.name;
+//						CalendarActivity.startActvitiyForGongGuoDate(mActivity,base,detail,true,(gongguo.count>0)?true:false); // 单一具体的功过
+//					}
+//				}
+//			}
+//
+//		};
+//
+//		public class ViewHolder{
+//			RelativeLayout layoutDayInfo; //每日信息
+//			View layoutTimesCalendar;//点击之后进入日历界面
+//			TextView titleDate;//每天的日期
+//			TextView titleCount; //每天功过统计
+//			TextView name;
+//			TextView date;
+//			TextView times;
+//			TextView comment;
+//			int position;
+//		}
+//
+//	}
 
-		public UserGongGuoAdapter(Activity activity){
-			mActivity = activity;
-			mInflater = LayoutInflater.from(mActivity);
-		}
-
-		public int getCount() {
-			if(mUserGongGuoList != null)
-				return mUserGongGuoList.size();
-			return 0;
-		}
-
-		public Object getItem(int arg0) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public long getItemId(int arg0) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		public View getView(int position, View view, ViewGroup arg2) {
-
-			ViewHolder holder;
-			if(view == null){
-				holder = new ViewHolder();
-				view = mInflater.inflate(R.layout.listview_user_detail, null);
-				holder.layoutDayInfo = (RelativeLayout) view.findViewById(R.id.layoutDayInfo);
-				holder.titleDate = (TextView) view.findViewById(R.id.titleDate);
-				holder.titleCount = (TextView) view.findViewById(R.id.titleCount);
-				holder.name = (TextView) view.findViewById(R.id.TextItemName);
-				holder.date = (TextView) view.findViewById(R.id.TextItemDate);
-				holder.times = (TextView) view.findViewById(R.id.TextViewGuoTitle);
-				holder.comment = (TextView) view.findViewById(R.id.TextViewComments);
-
-				holder.name.setTextSize(MainActivity.TEXT_SIZE);
-				holder.date.setTextSize(MainActivity.TEXT_SIZE);
-				holder.times.setTextSize(MainActivity.TEXT_SIZE);
-				holder.comment.setTextSize(MainActivity.TEXT_SIZE-3);
-
-				view.setTag(holder);
-			}
-			else{
-				holder = (ViewHolder) view.getTag();
-			}
-			UserGongGuo gongguo = mUserGongGuoList.get(position);
-
-			if(gongguo.isFirst){
-				holder.layoutDayInfo.setVisibility(View.VISIBLE);
-				holder.titleDate.setText(gongguo.todayInfo);
-				holder.titleCount.setText(strTotal+" "+gongguo.todayCount);
-			}
-			else{
-				holder.layoutDayInfo.setVisibility(View.GONE);
-			}
-
-			holder.name.setText(gongguo.parent_name+" "+gongguo.name);
-			holder.date.setText(TimeDate.intTime2HourMinute(mActivity, gongguo.time));
-			if(gongguo.times>1)
-				holder.times.setText(gongguo.times+strTimes);
-			else
-				holder.times.setText("");
-			if(gongguo.comment == null || gongguo.comment.equals("")){
-				holder.comment.setVisibility(View.GONE);
-			}
-			else{
-				holder.comment.setText("  "+gongguo.comment);//strComment+
-				holder.comment.setVisibility(View.VISIBLE);
-			}
-
-			holder.position = position;
-			setGongGuoColor(holder.name,gongguo.count);
-			setGongGuoColor(holder.titleCount,gongguo.todayCount);
-
-			return view;
-		}
-
-		public class ViewHolder{
-			RelativeLayout layoutDayInfo; //每日信息
-			TextView titleDate;//每天的日期
-			TextView titleCount; //每天功过统计
-			TextView name;
-			TextView date;
-			TextView times;
-			TextView comment;
-			int position;
-		}
-
-	}
-
-	public static void setGongGuoColor(TextView textView,int count)
-	{
-		if(count > 0){
-			if(MainActivity.COLOR_SWAP){
-				textView.setTextColor(COM.COLOR_GUO);
-			}
-			else{
-				textView.setTextColor(COM.COLOR_GONG);
-			}
-		}
-		else{
-			if(MainActivity.COLOR_SWAP)
-				textView.setTextColor(COM.COLOR_GONG);
-			else
-				textView.setTextColor(COM.COLOR_GUO);
-		}
-	}
+//	public static void setGongGuoColor(TextView textView,int count)
+//	{
+//		if(count > 0){
+//			if(MainActivity.COLOR_SWAP){
+//				textView.setTextColor(COM.COLOR_GUO);
+//			}
+//			else{
+//				textView.setTextColor(COM.COLOR_GONG);
+//			}
+//		}
+//		else{
+//			if(MainActivity.COLOR_SWAP)
+//				textView.setTextColor(COM.COLOR_GONG);
+//			else
+//				textView.setTextColor(COM.COLOR_GUO);
+//		}
+//	}
 }

@@ -379,18 +379,18 @@ public class CalendarView extends View {
 
 		SQLiteHelper helper = SQLiteHelper.getInstance(mContext);
 		if(mIsTotal){
-			mContext.mUserGongGuoList = helper.getUserGongGuoListByRange(helper.getReadableDatabase(),range);
+			mContext.mAdapter.setList(helper.getUserGongGuoListByRange(helper.getReadableDatabase(), range));//获取所有的功过
 		}
 		else{
-			mContext.mUserGongGuoList = helper.getUserGongGuoTypeListByRange(helper.getReadableDatabase(), mIsGong, mIsDetail, mGongGuoBase, mGongGuoDetail, range);
+			mContext.mAdapter.setList(helper.getUserGongGuoTypeListByRange(helper.getReadableDatabase(), mIsGong, mIsDetail, mGongGuoBase, mGongGuoDetail, range));
 		}
-		mContext.mUserGongGuoList = UserGongGuoListActivity.setListDayInfo(mContext, mContext.mUserGongGuoList, mContext.mWeekdayArray);
+		mContext.mAdapter.setList(UserGongGuoListActivity.setListDayInfo(mContext,mContext.mAdapter.getList(), mContext.mWeekdayArray));
 
 		//将每天的第一条保存下来供日历显示
-		int len = mContext.mUserGongGuoList.size();
+		int len = mContext.mAdapter.getList().size();
 		ArrayList<UserGongGuo> list = new ArrayList<UserGongGuo>();
 		for(int i=0; i<len; i++){
-			UserGongGuo item = mContext.mUserGongGuoList.get(i);
+			UserGongGuo item = mContext.mAdapter.getList().get(i);
 			if(item.isFirst == true && item.todayCount != 0){
 				list.add(item);
 			}
@@ -412,7 +412,7 @@ public class CalendarView extends View {
 			timeList.add(item);
 		}
 
-		return mContext.mUserGongGuoList;
+		return mContext.mAdapter.getList();
 	}
 
 	/**在日历上绘制功过明细 几种模式

@@ -53,20 +53,40 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="false"
         android:layout_marginLeft="3dp"
-        android:layout_toLeftOf="@+id/TextViewGuoTitle"
+        android:layout_toLeftOf="@+id/layoutTimesCalendar"
         android:text="Medium Text"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_centerVertical="true" />
 
-    <TextView
-        android:id="@+id/TextViewGuoTitle"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="6dp"
-        android:layout_marginLeft="3dp"
-        android:layout_marginRight="6dp"
-        android:text="Medium Text"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:id="@+id/layoutTimesCalendar"
+        android:layout_alignParentRight="true">
+
+        <TextView
+            android:id="@+id/TextViewGuoTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginBottom="6dp"
+            android:layout_marginLeft="3dp"
+            android:text="Medium Text"
+            android:layout_toLeftOf="@+id/imageViewCalendar"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="5dp" />
+
+        <ImageView
+            android:layout_alignParentRight="false"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:id="@+id/imageViewCalendar"
+            android:background="@drawable/calendar_date_ggg"
+            android:layout_centerVertical="true" />
+    </LinearLayout>
+
 </RelativeLayout>
 
     <TextView

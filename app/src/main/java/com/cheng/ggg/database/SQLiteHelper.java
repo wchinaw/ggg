@@ -645,7 +645,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	 */
 	public ArrayList<UserGongGuo> getUserGongGuoTypeListByRange(SQLiteDatabase db,boolean bGong, boolean isDetail, GongGuoBase base, GongGuoDetail detail, TimeRange range ){
 		String where;
-		if(isDetail){
+		if(isDetail){ //具体的功过
 			where = " where time>="+range.mStartTimeS+" and time<"+range.mEndTimeS +" and name='"+detail.name+"'"+"" +
 					" and parent_id="+detail.id+" and count="+base.count+" and parent_name='"+base.name+"'";
 		}

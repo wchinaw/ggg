@@ -59,7 +59,6 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 	ListView mListView;
 	UserGongGuoAdapter mAdapter;
 	SQLiteHelper mSQLiteHelper;
-	ArrayList<UserGongGuo> mUserGongGuoList;
 	int mType = TYPE_ALL;
 	String strTimes = "";
 	
@@ -106,14 +105,14 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
         btnRight.setOnClickListener(this);
         
         mTimeRangeIndex = Settings.getTimeRangeIndex(this);
-        mTimeRange = TimeDate.getTimeRangeByIndex(mTimeRange,mTimeRangeIndex,TimeDate.MODE_CURRENT);
+        mTimeRange = TimeDate.getTimeRangeByIndex(mTimeRange, mTimeRangeIndex, TimeDate.MODE_CURRENT);
         
         mSQLiteHelper = SQLiteHelper.getInstance(this);
-        
+		mAdapter = new UserGongGuoAdapter(this);
         getList(mTimeRange);
         
         mListView = (ListView) findViewById(R.id.listView1);
-        mAdapter = new UserGongGuoAdapter(this);
+
         mListView.setAdapter(mAdapter);
         mListView.setOnItemLongClickListener(mOnItemLongClickListener);
         mListView.setOnItemClickListener(mOnItemClickListener);
@@ -135,7 +134,7 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 
 		public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 				long arg3) {
-			UserGongGuo gongguo = mUserGongGuoList.get(position);
+			UserGongGuo gongguo = mAdapter.getList().get(position);
 			if(gongguo != null){
 				UserGongGuo newgongguo = new UserGongGuo();
 				newgongguo.count = gongguo.count;
@@ -152,10 +151,10 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 //					mInsertGongGuoListener.insert(newgongguo);
 //				}
 			}
-			
-			
+
+
 		}
-    	
+
     };
     
     /**
@@ -212,12 +211,12 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
         case TYPE_GUO:
             break;
         case TYPE_ALL:
-            mUserGongGuoList = mSQLiteHelper.getUserGongGuoListByRange(db,range);
+            mAdapter.setList(mSQLiteHelper.getUserGongGuoListByRange(db,range));
             break;
         }
         db.close();
-        mUserGongGuoList = setListDayInfo(mActivity,mUserGongGuoList,mWeekdayArray);
-        refreshTotalGongGuoByList();
+		mAdapter.setList(setListDayInfo(mActivity, mAdapter.getList(), mWeekdayArray));
+		refreshTotalGongGuoByList();
         if(mAdapter != null)
             mAdapter.notifyDataSetChanged();
     }
@@ -225,6 +224,7 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
     public void refreshTotalGongGuoByList(){
     	mGong = 0;
     	mGuo = 0;
+		ArrayList<UserGongGuo> mUserGongGuoList = mAdapter.getList();
     	for(UserGongGuo data : mUserGongGuoList){
     		if(data.count > 0){
     			mGong += data.count*data.times;
@@ -240,9 +240,9 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
     	int total = mGong+mGuo;
     	mTextViewTotal.setText(strTotal+" "+total);
     	
-    	setGongGuoColor(mTextViewGong, mGong);
-    	setGongGuoColor(mTextViewGuo, mGuo);
-    	setGongGuoColor(mTextViewTotal, total);
+    	UserGongGuoAdapter.setGongGuoColor(mTextViewGong, mGong);
+		UserGongGuoAdapter.setGongGuoColor(mTextViewGuo, mGuo);
+		UserGongGuoAdapter.setGongGuoColor(mTextViewTotal, total);
     }
     
     OnClickListener mTimeRangeOnClickListener = new OnClickListener(){
@@ -306,7 +306,7 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 		@Override
 		public boolean insert(GongGuoBase base, GongGuoDetail detail,
 				UserGongGuo gongguo) {
-			
+
 			return false;
 		}
 
@@ -316,7 +316,7 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 			if(gongguo.count < 0)
 				bGong = false;
 			GongGuoListActivity.insertOneItem(mActivity,bGong,mSQLiteHelper,gongguo);
-			
+
 			getList(mTimeRange);
 			refreshTextViewTimeRange();
 			return false;
@@ -324,7 +324,7 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 
 		@Override
 		public boolean update(UserGongGuo oldGongGuo, UserGongGuo newGongGuo) {
-			
+
 			int rc = 0;
 			if(oldGongGuo.time == newGongGuo.time && oldGongGuo.times == newGongGuo.times
 					&& oldGongGuo.comment.equals(newGongGuo.comment))
@@ -332,14 +332,14 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 				Toast.makeText(mActivity, mActivity.getString(R.string.save_ok), Toast.LENGTH_SHORT).show();
 				return true;
 			}
-			
+
 			SQLiteDatabase db = mSQLiteHelper.getWritableDatabase();
 			if(oldGongGuo.count > 0)
 				rc = mSQLiteHelper.updateUserGONGTable(db, oldGongGuo, newGongGuo);
 			else
 				rc = mSQLiteHelper.updateUserGUOTable(db, oldGongGuo, newGongGuo);
 			db.close();
-			
+
 			if(rc > 0){
 				Toast.makeText(mActivity, mActivity.getString(R.string.save_ok), Toast.LENGTH_SHORT).show();
 				getList(mTimeRange);
@@ -350,7 +350,7 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 				return false;
 			}
 		}
-    	
+
     };
 
 	// 长按菜单响应函数  
@@ -365,14 +365,14 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 	
 	switch(item.getItemId()) { 
 		case 0:  //编辑
-			UserGongGuo gongguo = mUserGongGuoList.get(id);
+			UserGongGuo gongguo = mAdapter.getList().get(id);
 			if(gongguo != null){
 				mInsertGongGuoListener.bInsert = false;
 				GongGuoListActivity.createAddConfirmDialog(mActivity, null, null, gongguo, mInsertGongGuoListener);
 			}
 			break;
 		case 1:  //删除
-			gongguo = mUserGongGuoList.get(id);
+			gongguo = mAdapter.getList().get(id);
 			
 			if(gongguo != null){
 				boolean rc = false;
@@ -384,9 +384,9 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 					rc = mSQLiteHelper.deleteUserGuoItemById(db, gongguo.id);
 				}
 				boolean isFirst = gongguo.isFirst;
-				mUserGongGuoList.remove(id);
+				mAdapter.getList().remove(id);
 				if(isFirst) {
-					mUserGongGuoList = setListDayInfo(mActivity,mUserGongGuoList,mWeekdayArray);
+					mAdapter.setList(setListDayInfo(mActivity,mAdapter.getList(),mWeekdayArray));
 				}
 				refreshTotalGongGuoByList();
 				mAdapter.notifyDataSetChanged();
@@ -412,12 +412,12 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 	{
 		return getGongGuoColor(-1);
 	}
-	
+
 	public static int getGongColor()
 	{
 		return getGongGuoColor(1);
 	}
-	
+
 	private static int getGongGuoColor(int count)
 	{
 		if(count > 0){
@@ -435,156 +435,13 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 				return(COM.COLOR_GUO);
 		}
 	}
-	
-	public static void setGongGuoColor(TextView textView,int count)
-	{
-		if(count > 0){
-			if(MainActivity.COLOR_SWAP){
-				textView.setTextColor(COM.COLOR_GUO);
-			}
-			else{
-				textView.setTextColor(COM.COLOR_GONG);
-			}
-		}
-		else{
-			if(MainActivity.COLOR_SWAP)
-				textView.setTextColor(COM.COLOR_GONG);
-			else
-				textView.setTextColor(COM.COLOR_GUO);
-		}
-	}
-    
+
     public void getBundles(){
     	Intent intent = getIntent();
     	if(intent != null){
     		mType = intent.getIntExtra(COM.INTENT_TYPE, TYPE_ALL);
     	}
     }
-
-
-    public class UserGongGuoAdapter extends BaseAdapter{
-    	LayoutInflater mInflater; 
-    	Activity mActivity;
-    	
-    	public UserGongGuoAdapter(Activity activity){
-    		mActivity = activity;
-    		mInflater = LayoutInflater.from(mActivity);
-    	}
-    	
-		public int getCount() {
-			if(mUserGongGuoList != null)
-				return mUserGongGuoList.size();
-			return 0;
-		}
-
-		public Object getItem(int arg0) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public long getItemId(int arg0) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		public View getView(int position, View view, ViewGroup arg2) {
-			
-			ViewHolder holder;
-			if(view == null){
-				holder = new ViewHolder();
-				view = mInflater.inflate(R.layout.listview_user_detail, null);
-				holder.layoutDayInfo = (RelativeLayout) view.findViewById(R.id.layoutDayInfo);
-				holder.titleDate = (TextView) view.findViewById(R.id.titleDate);
-				holder.titleCount = (TextView) view.findViewById(R.id.titleCount);
-				holder.name = (TextView) view.findViewById(R.id.TextItemName);
-				holder.date = (TextView) view.findViewById(R.id.TextItemDate);
-				holder.times = (TextView) view.findViewById(R.id.TextViewGuoTitle);
-				holder.comment = (TextView) view.findViewById(R.id.TextViewComments);
-				
-				holder.name.setTextSize(MainActivity.TEXT_SIZE);
-				holder.date.setTextSize(MainActivity.TEXT_SIZE-5);
-				holder.times.setTextSize(MainActivity.TEXT_SIZE);
-				holder.comment.setTextSize(MainActivity.TEXT_SIZE-3);
-				
-				view.setTag(holder);
-			}
-			else{
-				holder = (ViewHolder) view.getTag();
-			}
-			UserGongGuo gongguo = mUserGongGuoList.get(position);
-			
-			if(gongguo.isFirst){
-			    holder.layoutDayInfo.setVisibility(View.VISIBLE);
-			    holder.titleDate.setText(gongguo.todayInfo);
-			    holder.titleCount.setText(strTotal+" "+gongguo.todayCount);
-			}
-			else{
-			    holder.layoutDayInfo.setVisibility(View.GONE);
-			}
-			
-			holder.name.setText(gongguo.parent_name+" "+gongguo.name);
-			holder.date.setText(TimeDate.intTime2HourMinute(mActivity, gongguo.time));
-			if(gongguo.times>1)
-				holder.times.setText(gongguo.times+strTimes);
-			else
-				holder.times.setText("");
-			if(gongguo.comment == null || gongguo.comment.equals("")){
-				holder.comment.setVisibility(View.GONE);
-			}
-			else{
-				holder.comment.setText("  "+gongguo.comment);//strComment+
-				holder.comment.setVisibility(View.VISIBLE);
-			}
-			
-			holder.position = position;
-			setGongGuoColor(holder.name,gongguo.count);
-			setGongGuoColor(holder.titleCount,gongguo.todayCount);
-//			if(gongguo.count > 0){
-//				if(MainActivity.COLOR_SWAP){
-//					holder.name.setTextColor(COM.COLOR_GUO);
-//				}
-//				else{
-//					holder.name.setTextColor(COM.COLOR_GONG);
-//				}
-//			}
-//			else{
-//				if(MainActivity.COLOR_SWAP)
-//					holder.name.setTextColor(COM.COLOR_GONG);
-//				else
-//					holder.name.setTextColor(COM.COLOR_GUO);
-//			}
-			
-//			if(gongguo.todayCount > 0){
-//				if(MainActivity.COLOR_SWAP){
-//					holder.titleCount.setTextColor(COM.COLOR_GUO);
-//				}
-//				else{
-//					holder.titleCount.setTextColor(COM.COLOR_GONG);
-//				}
-//			}
-//			else{
-//				if(MainActivity.COLOR_SWAP)
-//					holder.titleCount.setTextColor(COM.COLOR_GONG);
-//				else
-//					holder.titleCount.setTextColor(COM.COLOR_GUO);
-//			}
-			
-			return view;
-		}
-		
-		public class ViewHolder{
-		    RelativeLayout layoutDayInfo; //每日信息
-		    TextView titleDate;//每天的日期
-		    TextView titleCount; //每天功过统计
-			TextView name;
-			TextView date;
-			TextView times;
-			TextView comment;
-			int position;
-		}
-    	
-    }
-
 
     public void onClick(View v)
     {
@@ -615,13 +472,13 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
     	if(mTimeRangeIndex == 0) //本年 获取12个月每个月的功过值。
     	{
     		//显示有记录月份的数据。
-    		int len = mUserGongGuoList.size();
+    		int len = mAdapter.getList().size();
     		UserGongGuo data;
     		String currentMonth = "";
     		String tempMonth = "";
     		int gongMonth = 0, guoMonth = 0;
     		for(int i=len-1; i>=0; i--){
-    			data = mUserGongGuoList.get(i);
+    			data = mAdapter.getList().get(i);
     			if(data.isFirst){
     				tempMonth = TimeDate.getCurrentMonth(data.time);
     				if(i == len-1){
@@ -663,11 +520,11 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
     	}
     	else
     	{  //显示每天的结果
-    		int len = mUserGongGuoList.size();
+    		int len = mAdapter.getList().size();
     		UserGongGuo data;
     		String xlabel;
     		for(int i=len-1; i>=0; i--){
-    			data = mUserGongGuoList.get(i);
+    			data = mAdapter.getList().get(i);
     			if(data.isFirst){
     				gong.add((double)data.todayGong);
     				if(isWave){
