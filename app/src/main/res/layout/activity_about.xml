@@ -137,9 +137,9 @@
         android:text="@string/settings"
         android:textSize="20sp" />
             
-        </LinearLayout>
-    
-        
+        </LinearLayout>\n    Email: gongguoge@126.com \n    QQ群: 138512516\n
+
+
 
       <TextView
           android:id="@+id/TextViewGuoTitle"
@@ -149,22 +149,32 @@
           android:gravity="center_horizontal"
           android:text="@string/about_author"
           android:textSize="20sp" />
+        <TextView
+            android:id="@+id/TextViewTotalTitle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/TextViewGuoTitle"
+            android:layout_marginBottom="5dp"
+            android:gravity="center_horizontal"
+            android:text="@string/about_version"
+            android:textSize="20sp" />
+        <TextView
+            android:id="@+id/textViewContact"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/TextViewTotalTitle"
+            android:autoLink="all"
+            android:text="@string/contact_address"
+            android:textSize="20sp"
+            android:layout_marginLeft="2dp" />
 
-      <TextView
-          android:id="@+id/TextViewTotalTitle"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:layout_alignParentLeft="true"
-          android:layout_below="@+id/TextViewGuoTitle"
-          android:layout_marginBottom="5dp"
-          android:gravity="center_horizontal"
-          android:text="@string/about_version"
-          android:textSize="20sp" />
+
 	<TextView
           android:id="@+id/textViewHelp"
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
-          android:layout_below="@+id/TextViewTotalTitle"
+          android:layout_below="@+id/textViewContact"
           android:text="@string/help"
           android:textSize="18sp" />
       <TextView
@@ -175,7 +185,7 @@
           android:autoLink="all"
           android:text="@string/about"
           android:textSize="20sp" />
-      
+
       <RelativeLayout
         android:id="@+id/layoutBottom"
         android:layout_below="@+id/textViewGongTitle"

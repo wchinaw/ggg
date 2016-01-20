@@ -254,11 +254,13 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 					int len = detailStr.length;
 					if(len > detailValue.length)
 						len = detailValue.length;
+
+					int id = 0;
 					
 					for(int i=0; i<len; i++){
 						String detailArray[]=detailStr[i].split("\\,");
 						for(int j=0; j<detailArray.length; j++){
-							insertGONGGUOTable(db,tableName,j,detailArray[j],detailValue[i]);
+							insertGONGGUOTable(db,tableName,id++,detailArray[j],detailValue[i]);
 						}
 					}
 				}

@@ -4,10 +4,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.zip.Inflater;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -28,19 +31,30 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cheng.ggg.database.SQLiteHelper;
 import com.cheng.ggg.receiver.AlarmReceiver;
+import com.cheng.ggg.types.GongGuoBase;
+import com.cheng.ggg.types.GongGuoDetail;
+import com.cheng.ggg.types.InsertGongGuoListener;
+import com.cheng.ggg.types.UserGongGuo;
 import com.cheng.ggg.utils.AlarmNotification;
 import com.cheng.ggg.utils.COM;
 import com.cheng.ggg.utils.DialogAPI;
 import com.cheng.ggg.utils.Settings;
 import com.cheng.ggg.utils.TimeDate;
+import com.cheng.ggg.views.Layoutr;
 import com.cheng.ggg.views.calendar.CalendarActivity;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
@@ -74,7 +88,12 @@ public class MainActivity extends Activity implements OnClickListener
     Button mButtons[] = new Button[BUTTON_COUNTS];
     int buttonIds[] = {R.id.buttonGong, R.id.buttonGuo ,R.id.buttonCalendar,R.id.buttonDetail,R.id.buttonAbout};
 
-    //调整fontSize
+	//首页用户自定义功过热键
+//	Layoutr mLayoutr;
+	GridView mGridView;
+	public GridAdapter mGridAdapter;
+	ArrayList<UserGongGuo> mHotUserGongGuoList;
+	//调整fontSize
     TextView textViewGongTitle,TextViewGuoTitle,TextViewTotalTitle;
     int colors[] = {0xff777777,Color.BLACK,    
     		Color.BLUE, 
@@ -170,7 +189,132 @@ public class MainActivity extends Activity implements OnClickListener
         //方法第一个参数类型为：Context，第二个参数为枚举类型，可选值为NotificationType.AlertDialog 或NotificationType.NotificationBar，分别对应两种不同的提示方式：
        
         TimeDate.test(this);
+
+//		mLayoutr = (Layoutr) findViewById(R.id.layoutGroup);
+//		View view;
+//		for(int i=0; i<10; i++){
+//			view = View.inflate(this,R.layout.main_userdefine_hotbutton,null);
+//			mLayoutr.addView(view);
+//		}
+		mHotUserGongGuoList = Settings.getHomeHotGongGuoList(this);
+		mGridView = (GridView) findViewById(R.id.gridView);
+		mGridAdapter = new GridAdapter();
+		mGridView.setAdapter(mGridAdapter);
+		mGridView.setOnItemLongClickListener(mGridItemLongClickListener);
+		mGridView.setOnItemClickListener(mGridItemClickListener);
     }
+
+	InsertGongGuoListener mInsertGongGuoListener = new InsertGongGuoListener(){
+
+		@Override
+		public boolean insert(GongGuoBase base, GongGuoDetail detail, UserGongGuo gongguo) {
+			return false;
+		}
+
+		@Override
+		public boolean update(UserGongGuo oldGongGuo, UserGongGuo newGongGuo) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean insert(UserGongGuo gongguo) {
+			boolean mbGong = gongguo.count>0?true:false;
+			GongGuoListActivity.insertOneItem(mActivity,mbGong,mSQLiteHelper,gongguo);
+			return true;
+		}
+	};
+
+
+	AdapterView.OnItemClickListener mGridItemClickListener = new AdapterView.OnItemClickListener() {
+		public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+			if(i>=0 && i<mHotUserGongGuoList.size()){
+				UserGongGuo gongguo = mHotUserGongGuoList.get(i);
+				gongguo.time = (int) (System.currentTimeMillis()/1000);
+				GongGuoListActivity.createAddConfirmDialog(mActivity,null,null,gongguo,mInsertGongGuoListener);
+			}
+		}
+	};
+
+	AdapterView.OnItemLongClickListener mGridItemLongClickListener = new AdapterView.OnItemLongClickListener() {
+		public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+//			if(i>=0 && i<mHotUserGongGuoList.size()){
+//				UserGongGuo gongguo = mHotUserGongGuoList.get(i);
+//				String info = gongguo.name + " "+getString(R.string.delete_ok);
+//				mHotUserGongGuoList.remove(i);
+//				Settings.setHomeHotGongGuo(mActivity, mHotUserGongGuoList);
+//
+//				Toast.makeText(mActivity,info,Toast.LENGTH_SHORT).show();
+//				mGridAdapter.notifyDataSetChanged();
+//			}
+			DialogAPI.showDeleteHotGongGuoItemDialog(mActivity,mHotUserGongGuoList,i);
+			return true;
+		}
+	};
+
+	public class GridAdapter extends BaseAdapter {
+
+		public int getCount() {
+			if(mHotUserGongGuoList == null)
+				return 0;
+			else
+				return mHotUserGongGuoList.size();
+		}
+
+		public Object getItem(int i) {
+			return null;
+		}
+
+		public long getItemId(int i) {
+			return 0;
+		}
+
+		public View getView(int i, View view, ViewGroup viewGroup) {
+			ViewHolder holder;
+			if(view == null){
+				holder = new ViewHolder();
+				view = View.inflate(mActivity,R.layout.main_userdefine_hotbutton, null);
+				holder.textView = (TextView) view.findViewById(R.id.textView);
+				holder.imageViewCalendar = (ImageView) view.findViewById(R.id.buttonCalendar);
+				holder.imageViewCalendar.setOnClickListener(calendarClick);
+				holder.imageViewCalendar.setTag(holder);
+
+				view.setTag(holder);
+			}
+			else{
+				holder = (ViewHolder) view.getTag();
+			}
+			holder.gongguo = mHotUserGongGuoList.get(i);
+			holder.textView.setText(holder.gongguo.name);
+			setTextViewColor(holder.textView,holder.gongguo.count);
+			return view;
+		}
+
+		OnClickListener calendarClick = new OnClickListener() {
+			public void onClick(View view) {
+				ViewHolder holder = (ViewHolder) view.getTag();
+
+				if(holder != null && holder.gongguo != null){
+					GongGuoBase base = new GongGuoBase();
+					base.name = holder.gongguo.parent_name;
+					base.count = holder.gongguo.count;
+
+					GongGuoDetail detail = new GongGuoDetail();
+					detail.name = holder.gongguo.name;
+					detail.id = COM.parseInt(holder.gongguo.parent_id);
+					detail.count = holder.gongguo.count;
+
+					CalendarActivity.startActvitiyForGongGuoDate(mActivity,base,detail,true,detail.count>0?true:false);
+				}
+			}
+		};
+
+		public class ViewHolder{
+			UserGongGuo gongguo;
+			TextView textView;
+			ImageView imageViewCalendar;
+		}
+	}
     
 //    BroadcastReceiver mBroadCast = new BroadcastReceiver(){
 //
@@ -266,6 +410,7 @@ public class MainActivity extends Activity implements OnClickListener
 	protected void onResume() {
     	TEXT_SIZE = Settings.getFontSize(this);
     	COLOR_SWAP = Settings.getIsColorSwap(this);
+		mHotUserGongGuoList = Settings.getHomeHotGongGuoList(this);
     	setFontSizeAndColor();
     	
     	boolean isEnablePassword = Settings.getIsEnablePassword(this);
@@ -349,6 +494,30 @@ public class MainActivity extends Activity implements OnClickListener
 			view.setTextColor(Color.WHITE);
 		}
 	}
+
+	public void setTextViewColor(TextView view,int count){
+		if(view == null)
+			return;
+
+		int gongColor = COM.COLOR_GONG;
+		int guoColor = COM.COLOR_GUO;
+
+		if(COLOR_SWAP){
+			gongColor = COM.COLOR_GUO;
+			guoColor = COM.COLOR_GONG;
+		}
+
+
+		if(count > 0){
+			view.setTextColor(gongColor);
+		}
+		else if(count < 0){
+			view.setTextColor(guoColor);
+		}
+		else {
+			view.setTextColor(Color.WHITE);
+		}
+	}
     
     public static void gotoGongGuoActivity(Context context, boolean bGong){
     	Intent intent = new Intent(context,GongGuoListActivity.class);
@@ -389,6 +558,10 @@ public class MainActivity extends Activity implements OnClickListener
 		}
 		else
 			CalendarActivity.startActvitiyForGongGuoDate(this, null, null, false, true, true);
+	}
+
+	public void addHotGongGuoClick(View v){
+		GongGuoListActivity.gotoHotGongGuoActivity(this,mHotUserGongGuoList,true);
 	}
     
 	public void onClick(View v) {

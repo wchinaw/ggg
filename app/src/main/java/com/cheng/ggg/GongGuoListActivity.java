@@ -6,6 +6,7 @@ import java.util.TimeZone;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -54,8 +55,14 @@ public class GongGuoListActivity  extends Activity {
 	public BaseExpandableListAdapter mAdapter;
     SQLiteHelper mSQLiteHelper;
     boolean mbGong = false;
-    /**用户自定义模式*/
-    boolean mbUserDefine = false;
+    /**普通模式*/
+	public final static int TYPE_GONGGUO_NORMAL = 0;
+	/**用户自定义模式*/
+	public final static int TYPE_USER_DEFINE = 1;
+	/**首页热门功过选择*/
+	public final static int TYPE_HOT_GONG_GUO_SELECT = 2;
+	int mType = TYPE_GONGGUO_NORMAL;
+//    boolean mbUserDefine = false;
     public ArrayList<GongGuoBase> mGongGuoBaseList;
     GongGuoListActivity mThis;
     public ExpandableListView mListView;
@@ -68,7 +75,10 @@ public class GongGuoListActivity  extends Activity {
     
     /**用户可修改当前时间，并将其作为 功过时间保存 在添加确认功过对话框中进行修改。*/
 //    Calendar mCalendarSave;
-    
+
+	//热门功过选择时,需要保存已添加的列表
+	ArrayList<UserGongGuo> mHotUserGongGuoList;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +102,10 @@ public class GongGuoListActivity  extends Activity {
 //        mListView.setGroupIndicator(getResources().getDrawable(R.drawable.list_expand_btn));
 		mListView.setGroupIndicator(null);
 
-        if(mbUserDefine){
+		if(mType == TYPE_HOT_GONG_GUO_SELECT){
+			mListView.setOnCreateContextMenuListener(mContextMenuListener);
+		}
+		else if(mType == TYPE_USER_DEFINE){
         	mListView.setOnCreateContextMenuListener(mContextMenuListener);
         	buttonGraphic.setVisibility(View.GONE);
         }
@@ -117,16 +130,21 @@ public class GongGuoListActivity  extends Activity {
         
         if(mbGong){
         	mGongGuoBaseList = mSQLiteHelper.getGongBase(db);
-        	
-        	if(mbUserDefine)
+
+			if(mType == TYPE_HOT_GONG_GUO_SELECT){
+				recordButton.setText(R.string.hotguo);
+			}
+			else if(mType == TYPE_USER_DEFINE)
         		recordButton.setText(R.string.userdefine_guo);
         	else
         		recordButton.setText(R.string.record_guo);
         }
         else{ 
         	mGongGuoBaseList = mSQLiteHelper.getGuoBase(db);
-        	
-        	if(mbUserDefine)
+			if(mType == TYPE_HOT_GONG_GUO_SELECT){
+				recordButton.setText(R.string.hotgong);
+			}
+			else if(mType == TYPE_USER_DEFINE)
         		recordButton.setText(R.string.userdefine_gong);
         	else
         		recordButton.setText(R.string.record_gong);
@@ -214,30 +232,45 @@ public class GongGuoListActivity  extends Activity {
     	Intent intent = getIntent();
     	if(intent != null){
     		mbGong = intent.getBooleanExtra(COM.INTENT_GONG, false);
-    		mbUserDefine = intent.getBooleanExtra(COM.INTENT_USERDEFINE, false);
+    		mType = intent.getIntExtra(COM.INTENT_TYPE, TYPE_GONGGUO_NORMAL);
+			if(mType == TYPE_HOT_GONG_GUO_SELECT){
+				mHotUserGongGuoList = (ArrayList<UserGongGuo>) intent.getSerializableExtra(COM.INTENT_LIST);
+			}
     	}
     	
     	String strTitle;
-    	if(mbUserDefine){
-    		String strGongGuo;
-    		if(mbGong){
-    			strGongGuo = getResources().getString(R.string.gong);
-    		}
-    		else{
-    			strGongGuo = getResources().getString(R.string.guo);
-    		}
-    		strTitle = getResources().getString(R.string.user_define);
-    		strTitle = strTitle+strGongGuo;
-    	}
-    	else{
-    		if(mbGong){
-    			strTitle = getResources().getString(R.string.record_gong);
-    		}
-    		else{
-    			strTitle = getResources().getString(R.string.record_guo);
-    		}
-    	}
-    	
+		switch(mType){
+			case TYPE_HOT_GONG_GUO_SELECT:
+				String strGongGuo;
+				if(mbGong){
+					strGongGuo = getResources().getString(R.string.gong);
+				}
+				else{
+					strGongGuo = getResources().getString(R.string.guo);
+				}
+				strTitle = getResources().getString(R.string.addhotgongguo);
+				strTitle = strTitle+strGongGuo;
+				break;
+			case TYPE_USER_DEFINE:
+				if(mbGong){
+					strGongGuo = getResources().getString(R.string.gong);
+				}
+				else{
+					strGongGuo = getResources().getString(R.string.guo);
+				}
+				strTitle = getResources().getString(R.string.user_define);
+				strTitle = strTitle+strGongGuo;
+				break;
+			default:
+				if(mbGong){
+					strTitle = getResources().getString(R.string.record_gong);
+				}
+				else{
+					strTitle = getResources().getString(R.string.record_guo);
+				}
+				break;
+		}
+
     	setTitle(strTitle);
     	
     	
@@ -604,7 +637,7 @@ public class GongGuoListActivity  extends Activity {
 		}
 		
 		public View getGenericChildView(GongGuoDetail detail,int groupPosition, int childPosition){
-			return getGenericViewByStyle(detail,groupPosition, childPosition,R.style.listItem18dp);
+			return getGenericViewByStyle(detail, groupPosition, childPosition, R.style.listItem18dp);
 		}
 		
 		public View getGroupViewByStyle(final GongGuoBase base, int styleId){
@@ -615,6 +648,7 @@ public class GongGuoListActivity  extends Activity {
 			holder.button = (Button) view.findViewById(R.id.btnRight);
             holder.txtName.setTextAppearance(mThis, styleId);
             holder.txtCount.setTextAppearance(mThis, styleId);
+			holder.imageViewCalendar = (ImageView)view.findViewById(R.id.imageViewCalendar);
             
             holder.txtName.setTextSize(MainActivity.TEXT_SIZE);
             holder.txtCount.setTextSize(MainActivity.TEXT_SIZE);
@@ -622,7 +656,10 @@ public class GongGuoListActivity  extends Activity {
 			holder.countClickArea = view.findViewById(R.id.frame01);
 			holder.indicatorView = (ImageView)view.findViewById(R.id.indicator);
 
-            if(mbUserDefine){
+			if(mType == TYPE_HOT_GONG_GUO_SELECT){
+				holder.countClickArea.setVisibility(View.GONE);
+			}
+			else if(mType == TYPE_USER_DEFINE){
             	holder.button.setVisibility(View.VISIBLE);
             	holder.button.setText(R.string.add);
             	holder.button.setOnClickListener(new OnClickListener(){
@@ -634,6 +671,7 @@ public class GongGuoListActivity  extends Activity {
             	holder.txtCount.setVisibility(View.GONE);
             }
             else{
+				holder.imageViewCalendar.setVisibility(View.VISIBLE);
             	holder.button.setVisibility(View.GONE);
             	holder.txtCount.setVisibility(View.VISIBLE);
             	holder.txtCount.setTextAppearance(mThis, styleId);
@@ -690,12 +728,26 @@ public class GongGuoListActivity  extends Activity {
 			holder.button = (Button) view.findViewById(R.id.btnRight);
 			holder.countClickArea = view.findViewById(R.id.frame01);
             holder.txtName.setTextAppearance(mThis, styleId);
+			holder.imageViewCalendar = (ImageView) view.findViewById(R.id.imageViewCalendar);
             
             holder.txtName.setTextSize(MainActivity.TEXT_SIZE);
             holder.txtCount.setTextSize(MainActivity.TEXT_SIZE);
             holder.button.setTextSize(MainActivity.TEXT_SIZE);
 
-            if(mbUserDefine){
+			if(mType == TYPE_HOT_GONG_GUO_SELECT){
+				holder.button.setVisibility(View.VISIBLE);
+				holder.button.setText(R.string.add);
+				holder.button.setOnClickListener(new OnClickListener(){
+
+					public void onClick(View arg0) {
+						//// FIXME: 16-1-20 添加功过
+						GongGuoBase base = mGongGuoBaseList.get(groupPosition);
+						Settings.addHomeHotGongGuo(mActivity,mHotUserGongGuoList,base,detail);
+					}
+				});
+				holder.txtCount.setVisibility(View.GONE);
+			}
+			else if(mType == TYPE_USER_DEFINE){
             	holder.button.setVisibility(View.VISIBLE);
             	holder.button.setText(R.string.delete);
             	holder.button.setOnClickListener(new OnClickListener(){
@@ -707,6 +759,7 @@ public class GongGuoListActivity  extends Activity {
             	holder.txtCount.setVisibility(View.GONE);
             }
             else{
+				holder.imageViewCalendar.setVisibility(View.VISIBLE);
             	holder.button.setVisibility(View.GONE);
             	holder.txtCount.setVisibility(View.VISIBLE);
             	holder.txtCount.setTextAppearance(mThis, styleId);
@@ -764,6 +817,7 @@ public class GongGuoListActivity  extends Activity {
 		TextView txtCount;
 		Button button;//删除按钮
 		View countClickArea;//记功记过界面,右侧数字按钮区域,点击之后可以进入日历统计界面
+		ImageView imageViewCalendar;
 		
 		public GroupChildHolder(){
 			
@@ -782,6 +836,7 @@ public class GongGuoListActivity  extends Activity {
 		TextView txtCount;
 		Button button;
 		ImageView indicatorView;
+		ImageView imageViewCalendar;
 
 		public GroupHolder(){
 			
@@ -797,10 +852,12 @@ public class GongGuoListActivity  extends Activity {
 		finish();
 	}
 	
-	public void recordClick(View view)
-	{
-		if(mbUserDefine){
-			AboutActivity.gotoUserDefineGongGuoActivity(this,!mbGong);
+	public void recordClick(View view) {
+		if(mType == TYPE_HOT_GONG_GUO_SELECT){
+			gotoHotGongGuoActivity(this,mHotUserGongGuoList,!mbGong);
+		}
+		else if(mType == TYPE_USER_DEFINE){
+			gotoUserDefineGongGuoActivity(this,!mbGong);
 		}
 		else{
 			MainActivity.gotoGongGuoActivity(this, !mbGong);
@@ -814,5 +871,23 @@ public class GongGuoListActivity  extends Activity {
 		MainActivity.gotoUserGongGuoListActivity(this, UserGongGuoListActivity.TYPE_ALL);
 		finish();
 	}
-			
+
+	public static void gotoUserDefineGongGuoActivity(Context context, boolean bGong){
+		startActivity(context, GongGuoListActivity.TYPE_USER_DEFINE,null,bGong);
+	}
+
+	public static void gotoHotGongGuoActivity(Context context,ArrayList<UserGongGuo> list,  boolean bGong){
+		startActivity(context,GongGuoListActivity.TYPE_HOT_GONG_GUO_SELECT,list,bGong);
+	}
+
+	public static void startActivity(Context context, int type,ArrayList<UserGongGuo> list, boolean bGong){
+		Intent intent = new Intent(context,GongGuoListActivity.class);
+		intent.putExtra(COM.INTENT_GONG, bGong);
+		intent.putExtra(COM.INTENT_TYPE, type);
+		if(type == GongGuoListActivity.TYPE_HOT_GONG_GUO_SELECT){
+			intent.putExtra(COM.INTENT_LIST,list);
+		}
+		context.startActivity(intent);
+	}
+
 }

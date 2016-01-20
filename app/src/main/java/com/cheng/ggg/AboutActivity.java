@@ -77,10 +77,10 @@ public class AboutActivity extends Activity implements OnClickListener {
 //			UMFeedbackService.openUmengFeedbackSDK(this);
 			break;
 		case R.id.buttonUserDefineGong:
-			gotoUserDefineGongGuoActivity(this,true);
+			GongGuoListActivity.gotoUserDefineGongGuoActivity(this, true);
 			break;
 		case R.id.buttonUserDefineGuo:
-			gotoUserDefineGongGuoActivity(this,false);
+			GongGuoListActivity.gotoUserDefineGongGuoActivity(this, false);
 			break;
 		case R.id.buttonBackup:
 			backUp();
@@ -114,7 +114,7 @@ public class AboutActivity extends Activity implements OnClickListener {
 		int rc = COM.copyFile(srcPath,destPath);
 		if(rc == 0){ //备份成功
 			//Toast.makeText(mActivity,R.string.backupok, Toast.LENGTH_SHORT).show();
-			createBackupOKDialog(srcPath,destPath);
+			createBackupOKDialog(srcPath, destPath);
 		}
 		else{//备份失败
 			createBackupFailDialog(srcPath,destPath);
@@ -130,7 +130,7 @@ public class AboutActivity extends Activity implements OnClickListener {
 		
 		File file = new File(destPath);
 		if(file.exists()){
-			createBackupConfirmDialog(srcPath, destPath,backUpLisenter);
+			createBackupConfirmDialog(srcPath, destPath, backUpLisenter);
 		}
 		else{
 			dobackUp(srcPath, destPath);
@@ -164,7 +164,7 @@ public class AboutActivity extends Activity implements OnClickListener {
 	
 	public void createBackupConfirmDialog(String srcPath,String destPath,DialogClickListener clickLisenter){
 		String msg = mRs.getString(R.string.backupfile_path_info)+destPath;
-		createConfirmDialog(R.string.backupfile_exists,msg,srcPath,destPath,clickLisenter);
+		createConfirmDialog(R.string.backupfile_exists, msg, srcPath, destPath, clickLisenter);
 	}
 		
 	public void createConfirmDialog(int title,String msg,final String srcPath,final String destPath,final DialogClickListener clickLisenter){
@@ -193,7 +193,7 @@ public class AboutActivity extends Activity implements OnClickListener {
 	
 	public void createBackupFailDialog(final String srcPath,final String destPath){
 		String msg = mRs.getString(R.string.backupfail_info)+destPath;
-		DialogAPI.creatInfoDialog(mActivity,R.string.backupfail,msg);
+		DialogAPI.creatInfoDialog(mActivity, R.string.backupfail, msg);
 	}
 	
 	
@@ -241,14 +241,7 @@ public class AboutActivity extends Activity implements OnClickListener {
 		dialog.show();
 	}
 	
-	
-	public static void gotoUserDefineGongGuoActivity(Context context, boolean bGong){
-    	Intent intent = new Intent(context,GongGuoListActivity.class);
-    	intent.putExtra(COM.INTENT_GONG, bGong);
-    	intent.putExtra(COM.INTENT_USERDEFINE, true);
-    	context.startActivity(intent);
-    }
-	
+
 	public void gotoSettingsActivity(){
     	Intent intent = new Intent(this,SettingsActivity.class);
     	startActivity(intent);

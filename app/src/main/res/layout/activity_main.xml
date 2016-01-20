@@ -13,6 +13,13 @@
         android:layout_alignParentLeft="false"
         android:layout_marginBottom="10dp" >
         <!-- android:textColor="#777777" -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/scrollView2"
+            android:layout_toLeftOf="@+id/layoutgongguo"
+            android:layout_above="@+id/gridView">
+
         <TextView
             android:id="@+id/textViewTips"
             android:layout_width="fill_parent"
@@ -21,10 +28,11 @@
             android:layout_marginLeft="6dp"
             android:layout_marginRight="6dp"
             android:layout_marginTop="12dp"
-            android:layout_toLeftOf="@+id/layoutgongguo"
+
             android:text="Medium Text"
             android:textColor="#FF777777"
             android:textSize="16dp" />
+        </ScrollView>
 
         <RelativeLayout
             android:id="@+id/layoutgongguo"
@@ -103,7 +111,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/guoTitleLayout"
-                android:onClick="totalTitleClick">
+                android:onClick="totalTitleClick"
+                android:id="@+id/layoutTotal">
 
                 <TextView
             android:id="@+id/TextViewTotalTitle"
@@ -127,7 +136,33 @@
                     android:layout_gravity="center_horizontal" />
             </LinearLayout>
 
+            <ImageButton
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_below="@+id/layoutTotal"
+                android:text="New Button"
+                android:id="@+id/button"
+                android:background="@drawable/increase_p"
+                android:layout_alignParentRight="false"
+                android:layout_alignParentBottom="false"
+                android:layout_marginBottom="3dp"
+                android:layout_marginTop="3dp"
+                android:onClick="addHotGongGuoClick"
+                android:layout_centerHorizontal="true" />
+
         </RelativeLayout>
+
+        <GridView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/gridView"
+            android:numColumns="3"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:listSelector="@drawable/grid_item_selector"
+            android:layout_marginTop="3dp"
+            android:layout_alignParentBottom="true"
+            android:stackFromBottom="false" />
     </RelativeLayout>
 
     <LinearLayout
@@ -185,6 +220,5 @@
 
     </LinearLayout>
 
-    
 
 </RelativeLayout>

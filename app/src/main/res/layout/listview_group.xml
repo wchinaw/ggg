@@ -57,9 +57,10 @@
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:id="@+id/imageView"
+                android:id="@+id/imageViewCalendar"
                 android:background="@drawable/calendar_date_ggg"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                android:visibility="gone" />
         </LinearLayout>
 
         <Button

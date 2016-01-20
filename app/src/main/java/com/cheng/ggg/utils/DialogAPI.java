@@ -1,5 +1,6 @@
 package com.cheng.ggg.utils;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -27,6 +28,7 @@ import com.cheng.ggg.R;
 import com.cheng.ggg.database.SQLiteHelper;
 import com.cheng.ggg.types.GongGuoBase;
 import com.cheng.ggg.types.GongGuoDetail;
+import com.cheng.ggg.types.UserGongGuo;
 import com.umeng.analytics.MobclickAgent;
 
 public class DialogAPI {
@@ -37,6 +39,49 @@ public class DialogAPI {
 //		public void onFemaleSelect();
 //		public void onCancel();//按back键
 //	}
+
+	//删除首页自定义快捷键
+	public static void showDeleteHotGongGuoItemDialog(final MainActivity activity,final ArrayList<UserGongGuo> list ,final int i){
+
+		if(activity == null ||list == null){
+			COM.LOGE("alertDialog", "ERR activity ="+activity+" detail ="+list);
+			return;//(new Dialog(activity,R.style.CustomDialogStyle));
+		}
+//			String strAdd = activity.getResources().getString(R.string.delete);
+		if(i>=0 && i<list.size()){
+			final UserGongGuo gongguo = list.get(i);
+
+			View loadingDialog = View.inflate(activity,R.layout.dialog_delete_item, null);
+			TextView txt = (TextView)loadingDialog.findViewById(R.id.textViewGongTitle);
+			txt.setText(gongguo.name);
+
+			Dialog alert = new AlertDialog.Builder(activity)
+					.setPositiveButton(R.string.delete, new OnClickListener() {
+
+						public void onClick(DialogInterface dialog, int which) {
+							UserGongGuo gongguo = list.get(i);
+							String info = gongguo.name + " " + activity.getString(R.string.delete_ok);
+							list.remove(i);
+							Settings.setHomeHotGongGuo(activity, list);
+
+							Toast.makeText(activity, info, Toast.LENGTH_SHORT).show();
+							activity.mGridAdapter.notifyDataSetChanged();
+						}
+					})
+					.setNegativeButton(R.string.cancel, new OnClickListener() {
+
+						public void onClick(DialogInterface arg0, int arg1) {
+
+						}
+
+					})
+					.setView(loadingDialog)
+					.setTitle(gongguo.parent_name+" "+activity.getString(R.string.hotgongguo))
+					.create();
+
+			alert.show();
+		}
+	}
 	
 	//删除功过
 		public static void showDeleteItemDialog(final GongGuoListActivity activity,final GongGuoDetail detail,final int groupPos, final int childPos, final boolean bGong

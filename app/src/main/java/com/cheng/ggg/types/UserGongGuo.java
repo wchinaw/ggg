@@ -2,10 +2,15 @@ package com.cheng.ggg.types;
 
 import android.database.Cursor;
 
-public class UserGongGuo{
+import java.io.Serializable;
+
+public class UserGongGuo implements Serializable{
+	/**gongguoDetail表中的id*/
 	public String parent_id;
+	/**gongguoBase表中的名字*/
 	public String parent_name;
 	public int id;       //id
+	/**gongguoDetail表中的名字*/
 	public String name; //名称
 	public int count; //功过数量
 	public int time;  //时间
@@ -17,6 +22,9 @@ public class UserGongGuo{
 	public int todayGong = 0; //用于图表当天功总数。
 	public int todayGuo = 0; //用于图表当天过总数。
 	public String todayInfo; //
+
+	//
+	public boolean isUserDefine;//是否是用户自定义的功过 用于首页自定义快捷键使用
 	
 	//是列表中当天第一个
 	public void setFirstDay()

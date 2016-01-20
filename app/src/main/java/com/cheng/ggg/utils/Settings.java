@@ -1,5 +1,6 @@
 package com.cheng.ggg.utils;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import android.content.Context;
@@ -9,6 +10,12 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
+import android.widget.Toast;
+
+import com.cheng.ggg.R;
+import com.cheng.ggg.types.GongGuoBase;
+import com.cheng.ggg.types.GongGuoDetail;
+import com.cheng.ggg.types.UserGongGuo;
 
 
 public class Settings {
@@ -30,6 +37,8 @@ public class Settings {
 	
 	public static final String time_range_index = "time_range_index";//明细明显的时间范围 对应到arrays.xml list_date_range
 	public static final String home_text_color = "home_text_color";//首页文字颜色
+
+	public static final String hot_gongguo_list = "hot_gongguo_list";//首页的功过列表 格式如下 功过之间用 "|" 分隔,功过自己内容之间用 "~" 分隔
 	
 	public static void changeLauguage(Context context, int lang){
 //		  在代码中切换语言：
@@ -107,12 +116,12 @@ public class Settings {
 	
 	public static long getAlarmTime(Context context){
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
-		return sp.getLong(alarm_time,0);
+		return sp.getLong(alarm_time, 0);
 	}
 	
 	public static String getPassword(Context context){
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
-		return sp.getString(password,"");
+		return sp.getString(password, "");
 	}
 	
 	public static void setPassword(Context context, String pwd){
@@ -130,6 +139,83 @@ public class Settings {
 	public static String getUserdefineTips(Context context){
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context); 
 		return sp.getString(tips,"");
+	}
+
+	/**首页功过快捷键*/
+	public static ArrayList<UserGongGuo> getHomeHotGongGuoList(Context context){
+
+		ArrayList<UserGongGuo> list = new ArrayList<UserGongGuo>();
+
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+		String oriValue = sp.getString(hot_gongguo_list, "");
+		if(oriValue != null){
+			String[] arrays = oriValue.split("\\|");
+			if(arrays != null){
+				UserGongGuo gongguo;
+				for(String item : arrays){
+					if(item != null){
+						String []subArray = item.split("\\~");
+						if(subArray != null && subArray.length == 5){
+							gongguo = new UserGongGuo();
+							gongguo.parent_id = subArray[0];
+							gongguo.parent_name = subArray[1];
+							gongguo.name = subArray[2];
+							gongguo.count = COM.parseInt(subArray[3]);
+							gongguo.isUserDefine = COM.parseInt(subArray[4])==1?true:false;
+							list.add(gongguo);
+						}
+					}
+				}
+			}
+		}
+		return list;
+	}
+
+	public static void setHomeHotGongGuo(Context context,ArrayList<UserGongGuo> list){
+		if(list == null)
+			return;
+
+		String  newString = "";
+		String item;
+		for(UserGongGuo gongguo : list){
+			if(gongguo != null){
+				item = gongguo.parent_id+"~"+gongguo.parent_name+"~"+gongguo.name+"~"+gongguo.count+"~"+(gongguo.isUserDefine?1:0);
+				if("".equals(newString)){
+					newString=item;
+				}
+				else{
+					newString+="|"+item;
+				}
+			}
+		}
+		setString(context, hot_gongguo_list, newString);
+	}
+
+	public static void addHomeHotGongGuo(Context context,ArrayList<UserGongGuo> list, GongGuoBase base,GongGuoDetail detail){
+		if(list == null || base == null || detail == null || context == null)
+			return;
+
+		for(UserGongGuo gongguo : list){
+			if(gongguo != null){
+				if(COM.parseInt(gongguo.parent_id) == detail.id && gongguo.name.equals(detail.name) && gongguo.count == detail.count){
+					Toast.makeText(context, R.string.exists_hot,Toast.LENGTH_SHORT).show();
+					return;
+				}
+			}
+		}
+
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+		String oriValue = sp.getString(hot_gongguo_list, "");
+		int isUserDefine = detail.bUserdefine ? 1: 0;
+		String addString = detail.id+"~"+base.name+"~"+detail.name+"~"+detail.count+"~"+isUserDefine;
+
+		if(oriValue != null && !"".equals(oriValue)){
+			setString(context, hot_gongguo_list, oriValue+"|"+addString);
+		}
+		else{
+			setString(context, hot_gongguo_list, addString);
+		}
+		Toast.makeText(context, R.string.addok,Toast.LENGTH_SHORT).show();
 	}
 	
 	public static int getFontSize(Context context){
@@ -175,4 +261,5 @@ public class Settings {
         editor.putInt(key, value);
         editor.commit();
     }
+
 }

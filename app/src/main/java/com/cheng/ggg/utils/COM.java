@@ -29,7 +29,7 @@ public class COM {
 	public static final String DBNAME = "ggg";//"/sdcard/ggg";
 	public static final String INTENT_GONG = "INTENT_GONG";
 	public static final String INTENT_TYPE = "INTENT_TYPE";
-	public static final String INTENT_USERDEFINE = "INTENT_USERDEFINE";//用户自定义标志
+	public static final String INTENT_LIST = "INTENT_LIST";
 
 	public static final String INTENT_GONGGUOBASE = "INTENT_GONGGUOBASE";
 	public static final String INTENT_GONGGUODETAIL = "INTENT_GONGGUODETAIL";
@@ -55,7 +55,7 @@ public class COM {
 	public static final int COLOR_GONG = Color.RED;
 	public static final int COLOR_GUO = Color.GREEN;
 	
-	public static final String DEFAULT_FONT_SIZE = "20";
+	public static final String DEFAULT_FONT_SIZE = "19";
 	
 	/**闹钟重复时间*/
 	public static final long ALRAM_REPEAT_TIME_MS = 24*60*60*1000;//1天
