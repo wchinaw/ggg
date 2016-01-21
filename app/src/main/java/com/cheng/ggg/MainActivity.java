@@ -19,6 +19,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -130,14 +131,7 @@ public class MainActivity extends Activity implements OnClickListener
         TEXT_SIZE = Settings.getFontSize(this);
         COLOR_SWAP = Settings.getIsColorSwap(this);
         
-        ((RelativeLayout)findViewById(R.id.layoutContent)).setOnLongClickListener(new OnLongClickListener(){
-
-			public boolean onLongClick(View arg0) {
-				showDialog();
-				return false;
-			}
-        	
-        });
+        ((RelativeLayout)findViewById(R.id.layoutBackground)).setOnLongClickListener(mHomeOnLongClickListener);
         
         for(int i=0; i<BUTTON_COUNTS; i++){
         	mButtons[i] = ((Button)findViewById(buttonIds[i]));
@@ -203,6 +197,14 @@ public class MainActivity extends Activity implements OnClickListener
 		mGridView.setOnItemLongClickListener(mGridItemLongClickListener);
 		mGridView.setOnItemClickListener(mGridItemClickListener);
     }
+
+	OnLongClickListener mHomeOnLongClickListener = new OnLongClickListener(){
+
+		public boolean onLongClick(View arg0) {
+			showDialog();
+			return true;
+		}
+	};
 
 	InsertGongGuoListener mInsertGongGuoListener = new InsertGongGuoListener(){
 
@@ -372,18 +374,8 @@ public class MainActivity extends Activity implements OnClickListener
     	textTips.setOnLongClickListener(new OnLongClickListener() {
 
 			public boolean onLongClick(View arg0) {
-				final AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-				builder.setTitle(R.string.date_range);
-				builder.setItems(R.array.list_colors, new DialogInterface.OnClickListener() {
-
-					public void onClick(DialogInterface dialog, int which) {
-						int color = colors[which];
-						Settings.setHomeTextColorIndex(mActivity, color);
-						textTips.setTextColor(color);
-					}
-				});
-				builder.create().show();
-				return false;
+				DialogAPI.DialogHozTwoButton(mActivity,null,mDialogHorTwoDialogLisenter,R.string.font_color_select,R.string.homepage_background_setting);
+				return true;
 			}
 
 		});
@@ -392,6 +384,35 @@ public class MainActivity extends Activity implements OnClickListener
     		startAlphaAnimation(textTips);
     	}
     }
+
+	DialogAPI.ConfirmDialog3ItemsListener mDialogHorTwoDialogLisenter = new DialogAPI.ConfirmDialog3ItemsListener(){
+
+		public void onItem1(Object obj) {
+			DialogSelectTextFontColor();
+		}
+
+		public void onItem2(Object obj) {
+			showDialog();
+		}
+
+		public void onItem3(Object obj) {
+
+		}
+	};
+
+	public void DialogSelectTextFontColor(){
+		final AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+		builder.setTitle(R.string.font_color_select);
+		builder.setItems(R.array.list_colors, new DialogInterface.OnClickListener() {
+
+			public void onClick(DialogInterface dialog, int which) {
+				int color = colors[which];
+				Settings.setHomeTextColorIndex(mActivity, color);
+				textTips.setTextColor(color);
+			}
+		});
+		builder.create().show();
+	}
     
     public void startAlphaAnimation(View view){
     	if(view == null)
@@ -612,17 +633,20 @@ public class MainActivity extends Activity implements OnClickListener
 //		}
 		switch (requestCode) {
         case PHOTO_REQUEST_TAKEPHOTO:
-            startPhotoZoom(Uri.fromFile(tempFile), 200);
+            startPhotoZoom(Uri.fromFile(tempFile),Uri.fromFile(new File(mHomeImagePath)), 200);
             break;
 
         case PHOTO_REQUEST_GALLERY:
             if (data != null)
-                startPhotoZoom(data.getData(), 200);
+                startPhotoZoom(data.getData(),Uri.fromFile(new File(mHomeImagePath)), 200);
             break;
 
         case PHOTO_REQUEST_CUT:
-            if (data != null) 
-                setPicToView(data);
+			Drawable drawable = Drawable.createFromPath(mHomeImagePath);
+			if(drawable != null)
+				mLayoutBackground.setBackgroundDrawable(drawable);
+//            if (data != null)
+//                setPicToView(data);
             break;
         }
 		super.onActivityResult(requestCode, resultCode, data);
@@ -682,42 +706,62 @@ public class MainActivity extends Activity implements OnClickListener
                 .show();
     }
     
-    private void startPhotoZoom(Uri uri, int size) {
+    private void startPhotoZoom(Uri uri,Uri filePath, int size) {
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
         // crop为true是设置在开启的intent中设置显示的view可以剪裁
         intent.putExtra("crop", "true");
 
         // aspectX aspectY 是宽高的比例
-//        intent.putExtra("aspectX", 1);
-//        intent.putExtra("aspectY", 1.5);
+        intent.putExtra("aspectX", 3);
+        intent.putExtra("aspectY", 4);
 //
 //        // outputX,outputY 是剪裁图片的宽高
-        intent.putExtra("outputX", 320);
-        intent.putExtra("outputY", 480);
-        intent.putExtra("noFaceDetection", true); 
+//        intent.putExtra("outputX", 320);
+//        intent.putExtra("outputY", 480);
+//        intent.putExtra("noFaceDetection", true);
         intent.putExtra("return-data", true);
 
-        startActivityForResult(intent, PHOTO_REQUEST_CUT);
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, filePath);
+
+		startActivityForResult(intent, PHOTO_REQUEST_CUT);
     }
 
     //将进行剪裁后的图片显示到UI界面上
-    private void setPicToView(Intent picdata) {
-        Bundle bundle = picdata.getExtras();
-        if (bundle != null) {
-            Bitmap photo = bundle.getParcelable("data");
-            Drawable drawable = new BitmapDrawable(photo);
-            mLayoutBackground.setBackgroundDrawable(drawable);
-            
-            try {
-                FileOutputStream out = new FileOutputStream(mHomeImagePath);
-                photo.compress(Bitmap.CompressFormat.PNG, 90, out);
-                out.close();
-         } catch (Exception e) {
-                e.printStackTrace();
-         }
-        }
-    }
+	private void setPicToView(Intent picdata) {
+		if (picdata != null) {
+			String path = picdata.getDataString();
+			String bitmapName = COM.GGG_DIRECTORY_PATH + "/" + path.substring(path.lastIndexOf("/") + 1);
+
+			Bitmap photo = BitmapFactory.decodeFile(bitmapName);
+			Drawable drawable = new BitmapDrawable(photo);
+			mLayoutBackground.setBackgroundDrawable(drawable);
+
+			try {
+				FileOutputStream out = new FileOutputStream(mHomeImagePath);
+				photo.compress(Bitmap.CompressFormat.PNG, 90, out);
+				out.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+//    private void setPicToView(Intent picdata) {
+//        Bundle bundle = picdata.getExtras();
+//        if (bundle != null) {
+//            Bitmap photo = bundle.getParcelable("data");
+//            Drawable drawable = new BitmapDrawable(photo);
+//            mLayoutBackground.setBackgroundDrawable(drawable);
+//
+//            try {
+//                FileOutputStream out = new FileOutputStream(mHomeImagePath);
+//                photo.compress(Bitmap.CompressFormat.PNG, 90, out);
+//                out.close();
+//         } catch (Exception e) {
+//                e.printStackTrace();
+//         }
+//        }
+//    }
 
     // 使用系统当前日期加以调整作为照片的名称
     private String getPhotoFileName() {

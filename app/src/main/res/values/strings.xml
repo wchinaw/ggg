@@ -12,7 +12,8 @@
     <string name="defaultpic">恢复默认</string>
     <string name="read_lfsx">阅读了凡四训(推荐用云中书城或QQ阅读)</string>
     <string name="read_lfsxbhw">阅读了凡四训白话文</string>
-    
+
+    <string name="font_color_select">字体颜色选择</string>
     <string name="save_ok">保存成功</string>
     <string name="save_fail">保存失败</string>
     

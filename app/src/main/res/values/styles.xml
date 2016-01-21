@@ -16,6 +16,17 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <style name="PauseDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/fade_in</item>
+        <item name="android:windowExitAnimation">@anim/fade_out</item>
+    </style>
+
+    <style name="ThemeActivity" mce_bogus="1">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@style/PauseDialogAnimation</item>
+        <item name="android:windowBackground">@color/share_transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
 
     <style name="listItem20dp">
         <item name="android:textColor">#FFFFFF</item>

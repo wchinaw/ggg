@@ -13,12 +13,17 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.InputType;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -395,21 +400,20 @@ public class DialogAPI {
 		final EditText edit = (EditText)loadingDialog.findViewById(R.id.editPassword);
 		final EditText edit2 = (EditText)loadingDialog.findViewById(R.id.editPassword2);
 		final CheckBox checkbox1 = (CheckBox)loadingDialog.findViewById(R.id.checkBox1);
-		checkbox1.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+		checkbox1.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 			public void onCheckedChanged(CompoundButton arg0, boolean bNewChecked) {
-				if (bNewChecked) {    
-				    // 显示密码    
-					edit.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);   
-					edit2.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);  
-				    }   
-				else {    
-				    // 隐藏密码    
-					edit.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);   
-					edit2.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD); 
-				}   
+				if (bNewChecked) {
+					// 显示密码
+					edit.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+					edit2.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+				} else {
+					// 隐藏密码
+					edit.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+					edit2.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+				}
 			}
-			
+
 		});
 		
 		Dialog alert = new AlertDialog.Builder(activity)
@@ -486,19 +490,19 @@ public class DialogAPI {
 					}
 				}
 				})
-				.setNegativeButton(R.string.cancel, new OnClickListener(){
+				.setNegativeButton(R.string.cancel, new OnClickListener() {
 
 					public void onClick(DialogInterface arg0, int arg1) {
 						activity.finish();
 					}
-					
+
 				})
-				.setOnCancelListener(new OnCancelListener(){
+				.setOnCancelListener(new OnCancelListener() {
 
 					public void onCancel(DialogInterface arg0) {
 						activity.finish();
 					}
-					
+
 				})
 				.setView(loadingDialog)
 				.setTitle(R.string.login_password)
@@ -515,12 +519,118 @@ public class DialogAPI {
 
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-                            imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+				@Override
+				public void run() {
+					InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
 
-                    }
-            }, 800);
+				}
+			}, 800);
     }
+
+	public interface ConfirmDialog3ItemsListener{
+		public void onItem1(Object obj);
+		public void onItem2(Object obj);
+		public void onItem3(Object obj);
+	}
+
+	public static Dialog mDialogHozTwoButton;
+	public static void hideDialogHozTwoButton()
+	{
+		if(mDialogHozTwoButton != null){
+			mDialogHozTwoButton.dismiss();
+			mDialogHozTwoButton = null;
+		}
+	}
+
+	public static Dialog DialogHozTwoButton(final Activity activity,final Object obj, final ConfirmDialog3ItemsListener listener,
+											int one ,int two){
+
+		if(activity == null){
+			COM.LOGE("alertDialog", "ERR activity == null!");
+			return null;//(new Dialog(activity,R.style.CustomDialogStyle));
+		}
+
+		mDialogHozTwoButton = new Dialog(activity,R.style.ThemeActivity);
+		mDialogHozTwoButton.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+// 		View loadingDialog = View.inflate(activity,R.layout.confirm_dialog, null);
+		View loadingDialog = View.inflate(activity,R.layout.mydiary_more, null);
+
+		TextView topText = (TextView) loadingDialog.findViewById(R.id.mydiary_more_share);
+		LinearLayout lout_1 = (LinearLayout) loadingDialog.findViewById(R.id.lout_1);
+
+		TextView bottomText = (TextView) loadingDialog.findViewById(R.id.mydiary_more_change);
+		RelativeLayout rl = (RelativeLayout) loadingDialog.findViewById(R.id.dialog_twobtn);
+
+				lout_1.setBackgroundResource(R.color.chat_bg);
+				topText.setBackgroundResource(R.drawable.dialogtopclick_selector);
+				bottomText.setBackgroundResource(R.drawable.dialogtopclick_selector);
+//			int	color = activity.getResources().getColor(R.color.yellow);
+//		topText.setTextColor(color);
+//		bottomText.setTextColor(color);
+		topText.setText(one);
+		bottomText.setText(two);
+
+// 		ImageView imgTop = (ImageView) loadingDialog.findViewById(R.id.imageView1);
+// 		ImageView imgBottom = (ImageView) loadingDialog.findViewById(R.id.imageView2);
+
+
+
+
+
+
+		topText.setOnClickListener(new View.OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				listener.onItem1(obj);
+				hideDialogHozTwoButton();
+			}
+
+		});
+
+
+		bottomText.setOnClickListener(new View.OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				listener.onItem2(obj);
+				hideDialogHozTwoButton();
+			}
+
+		});
+
+		rl.setOnClickListener(new View.OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+//				listener.onItem3(obj);
+				hideDialogHozTwoButton();
+
+			}
+
+		});
+
+
+		Window window = mDialogHozTwoButton.getWindow();
+
+		DisplayMetrics dm = new DisplayMetrics();
+		activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+		int screenWidth = (int) (dm.widthPixels);
+
+
+
+//		Log.i("test", "弹出dialog的长宽"+screenWidth);
+
+		WindowManager.LayoutParams params0 = window.getAttributes();
+		params0.width = screenWidth;
+
+
+		window.setAttributes(params0);
+		mDialogHozTwoButton.setContentView(loadingDialog);
+		mDialogHozTwoButton.show();
+		return mDialogHozTwoButton;
+	}
 }

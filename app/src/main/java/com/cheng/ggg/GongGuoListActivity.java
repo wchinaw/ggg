@@ -535,45 +535,6 @@ public class GongGuoListActivity  extends Activity {
 		LayoutInflater mInflater; 
     	Activity mActivity;
 
-		private final int[] EMPTY_STATE_SET = {};
-		/** State indicating the group is expanded. */
-		private final int[] GROUP_EXPANDED_STATE_SET = { android.R.attr.state_expanded };
-		/** State indicating the group is empty (has no children). */
-		private final int[] GROUP_EMPTY_STATE_SET = { android.R.attr.state_empty };
-		/** State indicating the group is expanded and empty (has no children). */
-		private final int[] GROUP_EXPANDED_EMPTY_STATE_SET = { android.R.attr.state_expanded,
-				android.R.attr.state_empty };
-		/** States for the group where the 0th bit is expanded and 1st bit is empty. */
-		private final int[][] GROUP_STATE_SETS = { EMPTY_STATE_SET, // 00
-				GROUP_EXPANDED_STATE_SET, // 01
-				GROUP_EMPTY_STATE_SET, // 10
-				GROUP_EXPANDED_EMPTY_STATE_SET // 11
-		};
-
-//		protected void setIndicatorState(Drawable indicator, int groupPosition, boolean isExpanded) 	{
-//			final int stateSetIndex = (isExpanded ? 1 : 0) | // Expanded?
-//					(getChildrenCount(groupPosition) == 0 ? 2 : 0); // Empty?
-//			indicator.setState(GROUP_STATE_SETS[stateSetIndex]);
-//		}
-
-		@Override
-		public final void onGroupCollapsed(int groupPosition) {
-			onGroupCollapsedEx(groupPosition);
-			notifyDataSetChanged();
-		}
-
-		@Override
-		public final void onGroupExpanded(int groupPosition) {
-			onGroupExpandedEx(groupPosition);
-			notifyDataSetChanged();
-		}
-
-		protected void onGroupCollapsedEx(int groupPosition) {
-		}
-
-		protected void onGroupExpandedEx(int groupPosition) {
-		}
-    	
     	public MyExpandableListAdapter(Activity activity){
     		mActivity = activity;
     		mInflater = LayoutInflater.from(mActivity);
