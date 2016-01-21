@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources tools:ignore="MissingTranslation" xmlns:tools="http://schemas.android.com/tools">
 
     <string name="umeng_fb_contact_info_hint">Email, msn, gtalk, or whatever we can find you.</string>
     <string name="umeng_fb_contact_update_at">Updated at </string>

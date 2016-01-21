@@ -25,6 +25,7 @@ public class UserGongGuo implements Serializable{
 
 	//
 	public boolean isUserDefine;//是否是用户自定义的功过 用于首页自定义快捷键使用
+	public boolean isFinded = false;//用于在添加首页快捷键功过列表中,对功过列表在首页的状态进行标注.
 	
 	//是列表中当天第一个
 	public void setFirstDay()

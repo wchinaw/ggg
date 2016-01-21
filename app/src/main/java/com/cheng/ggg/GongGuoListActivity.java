@@ -133,6 +133,7 @@ public class GongGuoListActivity  extends Activity {
 
 			if(mType == TYPE_HOT_GONG_GUO_SELECT){
 				recordButton.setText(R.string.hotguo);
+				filterHotGongGuo();
 			}
 			else if(mType == TYPE_USER_DEFINE)
         		recordButton.setText(R.string.userdefine_guo);
@@ -143,6 +144,7 @@ public class GongGuoListActivity  extends Activity {
         	mGongGuoBaseList = mSQLiteHelper.getGuoBase(db);
 			if(mType == TYPE_HOT_GONG_GUO_SELECT){
 				recordButton.setText(R.string.hotgong);
+				filterHotGongGuo();
 			}
 			else if(mType == TYPE_USER_DEFINE)
         		recordButton.setText(R.string.userdefine_gong);
@@ -159,6 +161,27 @@ public class GongGuoListActivity  extends Activity {
 //        }
         
     }
+
+	public void filterHotGongGuo(){
+		//过滤已经在首页快捷键列表中的选项
+		for(GongGuoBase base : mGongGuoBaseList){
+			for(GongGuoDetail detail : base.mList){
+				for(UserGongGuo gongguo : mHotUserGongGuoList){
+					if(gongguo.isFinded == false && gongguo.isUserDefine == detail.bUserdefine){
+						if(detail.name.equals(gongguo.name) && detail.count == gongguo.count && base.name.equals(gongguo.parent_name)
+								&& detail.id == COM.parseInt(gongguo.parent_id)){
+							detail.status = GongGuoDetail.TYPE_HOTKEY;
+							gongguo.isFinded = true;
+						}
+					}
+				}
+			}
+		}
+
+		for(UserGongGuo gongguo : mHotUserGongGuoList){
+			gongguo.isFinded = false;
+		}
+	}
     
 //    public void removeItem(int groupPos, int childPos){
 //    	if(mGongGuoBaseList != null){
@@ -736,13 +759,25 @@ public class GongGuoListActivity  extends Activity {
 
 			if(mType == TYPE_HOT_GONG_GUO_SELECT){
 				holder.button.setVisibility(View.VISIBLE);
-				holder.button.setText(R.string.add);
-				holder.button.setOnClickListener(new OnClickListener(){
+				if(detail.status == GongGuoDetail.TYPE_HOTKEY){
+					holder.button.setText(R.string.added);
+					holder.button.setEnabled(false);
+				}
+				else{
+					holder.button.setText(R.string.add);
+					holder.button.setEnabled(true);
+				}
+
+				holder.button.setOnClickListener(new OnClickListener() {
 
 					public void onClick(View arg0) {
 						//// FIXME: 16-1-20 添加功过
 						GongGuoBase base = mGongGuoBaseList.get(groupPosition);
-						Settings.addHomeHotGongGuo(mActivity,mHotUserGongGuoList,base,detail);
+						Settings.addHomeHotGongGuo(mActivity, mHotUserGongGuoList, base, detail);
+						arg0.setEnabled(false);
+						detail.status = GongGuoDetail.TYPE_HOTKEY;
+								((Button) arg0).setText(R.string.added);
+
 					}
 				});
 				holder.txtCount.setVisibility(View.GONE);

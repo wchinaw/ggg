@@ -16,7 +16,13 @@ public class GongGuoDetail implements Serializable {
 	/**用户自定义功过*/
 	public boolean bUserdefine = false;
 	public int userCount;//用户在此功过上的累计个数
-	
+
+	//用于首页快捷键/////////////////////////////////////////////
+	public static int TYPE_NORMAL = 0;
+	/**用于首页快捷键*/
+	public static int TYPE_HOTKEY = 1;
+	public int status = TYPE_NORMAL;
+
 	public void dump(){
 		COM.LOGE(TAG, "id: "+id);
 		COM.LOGE(TAG, "name: "+name);
