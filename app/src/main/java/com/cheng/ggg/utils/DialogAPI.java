@@ -558,12 +558,12 @@ public class DialogAPI {
 		View loadingDialog = View.inflate(activity,R.layout.mydiary_more, null);
 
 		TextView topText = (TextView) loadingDialog.findViewById(R.id.mydiary_more_share);
-		LinearLayout lout_1 = (LinearLayout) loadingDialog.findViewById(R.id.lout_1);
+//		LinearLayout lout_1 = (LinearLayout) loadingDialog.findViewById(R.id.lout_1);
 
 		TextView bottomText = (TextView) loadingDialog.findViewById(R.id.mydiary_more_change);
 		RelativeLayout rl = (RelativeLayout) loadingDialog.findViewById(R.id.dialog_twobtn);
 
-				lout_1.setBackgroundResource(R.color.chat_bg);
+//				lout_1.setBackgroundResource(R.color.chat_bg);
 				topText.setBackgroundResource(R.drawable.dialogtopclick_selector);
 				bottomText.setBackgroundResource(R.drawable.dialogtopclick_selector);
 //			int	color = activity.getResources().getColor(R.color.yellow);

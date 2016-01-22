@@ -24,7 +24,7 @@
 	<item>重复周期：7天</item>
 </string-array>
 
-<string-array name="list_days_value">
+<integer-array name="list_days_value">
     <item>1</item>
 	<item>2</item>
 	<item>3</item>
@@ -32,7 +32,7 @@
 	<item>5</item>
 	<item>6</item>
 	<item>7</item>
-</string-array>
+</integer-array>
 
 <string-array name="list_colors">
     <item>默认色</item>

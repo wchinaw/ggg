@@ -13,6 +13,7 @@ import com.cheng.ggg.types.GongGuoDetail;
 import com.cheng.ggg.types.UserGongGuo;
 import com.cheng.ggg.utils.COM;
 import com.cheng.ggg.utils.TimeDate;
+import com.cheng.ggg.views.CalendarIcon;
 import com.cheng.ggg.views.calendar.CalendarActivity;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class UserGongGuoAdapter extends BaseAdapter {
     ArrayList<UserGongGuo> mUserGongGuoList;
     String strTotal,strGong,strGuo;
     String strTimes = "";
+    int day = TimeDate.getToday();
 
     public UserGongGuoAdapter(Activity activity){
         mActivity = activity;
@@ -76,6 +78,10 @@ public class UserGongGuoAdapter extends BaseAdapter {
             holder.layoutTimesCalendar = view.findViewById(R.id.layoutTimesCalendar);
             holder.layoutTimesCalendar.setOnClickListener(mCalendarClickListener);
             holder.layoutTimesCalendar.setTag(holder);
+
+            CalendarIcon icon = (CalendarIcon) view.findViewById(R.id.imageViewCalendar);
+            icon.setDay(day);
+
             holder.titleDate = (TextView) view.findViewById(R.id.titleDate);
             holder.titleCount = (TextView) view.findViewById(R.id.titleCount);
             holder.name = (TextView) view.findViewById(R.id.TextItemName);

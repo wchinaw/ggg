@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" 
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/list_item_selector">
 
     <RelativeLayout
         android:id="@+id/layoutDayInfo"
@@ -22,7 +23,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:text="日期"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/font_color_normal" />
 
         <TextView
             android:id="@+id/titleCount"
@@ -30,7 +32,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:text="数量"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/font_color_normal" />
 
     </RelativeLayout>
 
@@ -76,9 +79,10 @@
             android:layout_toLeftOf="@+id/imageViewCalendar"
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
-            android:layout_marginTop="5dp" />
+            android:layout_marginTop="5dp"
+            android:textColor="#777777" />
 
-        <ImageView
+        <com.cheng.ggg.views.CalendarIcon
             android:layout_alignParentRight="false"
             android:layout_width="35dp"
             android:layout_height="35dp"

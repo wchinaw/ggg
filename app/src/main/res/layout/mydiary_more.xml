@@ -24,11 +24,11 @@
   <LinearLayout
       android:id="@+id/lout_1"
       android:layout_width="match_parent"
-      android:layout_height="1dp"
+      android:layout_height="1px"
       android:layout_below="@+id/mydiary_more_share"
       android:layout_marginLeft="@dimen/dialog_leftright_margin"
       android:layout_marginRight="@dimen/dialog_leftright_margin"
-      android:background="#eeeeee"
+      android:background="#aaaaaa"
       android:orientation="vertical" >
 
     </LinearLayout>

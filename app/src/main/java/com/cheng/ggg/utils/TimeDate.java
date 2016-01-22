@@ -134,7 +134,13 @@ public class TimeDate {
         
         return date;
     }
-	
+
+	public static int getToday() {
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeZone(TimeZone.getDefault());
+		return calendar.get(Calendar.DAY_OF_MONTH);
+	}
 	
 	//////////////////////////////////////////////////////////////////////////
 	//用于明细和统计

@@ -29,12 +29,12 @@
     </style>
 
     <style name="listItem20dp">
-        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textColor">@color/font_color_normal</item>
         <item name="android:textSize">20dp</item>
     </style>
     
     <style name="listItem18dp">
-        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textColor">@color/font_color_normal</item>
         <item name="android:textSize">18dp</item>
     </style>
     <style name="main_bar_text_style">

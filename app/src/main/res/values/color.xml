@@ -2,13 +2,16 @@
 <resources>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
-    <color name="list_select_n">#222222</color>
+    <color name="list_select_n">#FFFFFF</color>
     <color name="transparent">#00000000</color>
     <color name="share_transparent">#34000000</color>
     <color name="list_item_pressed">#f9efe2</color>
     <color name="calendar_top_bg">#EEEEEE</color>
     <color name="dialog_bg_transparent">#CC000000</color>
     <color name="yellow">#c6a578</color>
-    <color name="chat_bg">#eeeeee</color>
+    <color name="chat_bg">#FFFFFF</color>
+    <color name="font_color_normal">#222222</color>
+    <color name="font_color_comment">#888888</color>
 
+    <color name="listview_divider">#dddddd</color>
 </resources>

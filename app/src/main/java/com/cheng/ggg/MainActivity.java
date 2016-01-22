@@ -55,10 +55,13 @@ import com.cheng.ggg.utils.COM;
 import com.cheng.ggg.utils.DialogAPI;
 import com.cheng.ggg.utils.Settings;
 import com.cheng.ggg.utils.TimeDate;
+import com.cheng.ggg.views.CalendarIcon;
 import com.cheng.ggg.views.Layoutr;
 import com.cheng.ggg.views.calendar.CalendarActivity;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends Activity implements OnClickListener
   ,OnSharedPreferenceChangeListener{
@@ -255,6 +258,7 @@ public class MainActivity extends Activity implements OnClickListener
 	};
 
 	public class GridAdapter extends BaseAdapter {
+		int day = TimeDate.getToday();
 
 		public int getCount() {
 			if(mHotUserGongGuoList == null)
@@ -277,9 +281,10 @@ public class MainActivity extends Activity implements OnClickListener
 				holder = new ViewHolder();
 				view = View.inflate(mActivity,R.layout.main_userdefine_hotbutton, null);
 				holder.textView = (TextView) view.findViewById(R.id.textView);
-				holder.imageViewCalendar = (ImageView) view.findViewById(R.id.buttonCalendar);
+				holder.imageViewCalendar = (CalendarIcon) view.findViewById(R.id.buttonCalendar);
 				holder.imageViewCalendar.setOnClickListener(calendarClick);
 				holder.imageViewCalendar.setTag(holder);
+				holder.imageViewCalendar.setDay(day);
 
 				view.setTag(holder);
 			}
@@ -314,7 +319,7 @@ public class MainActivity extends Activity implements OnClickListener
 		public class ViewHolder{
 			UserGongGuo gongguo;
 			TextView textView;
-			ImageView imageViewCalendar;
+			CalendarIcon imageViewCalendar;
 		}
 	}
     

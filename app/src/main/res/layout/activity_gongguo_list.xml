@@ -1,14 +1,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    android:background="@color/chat_bg">
 
     <RelativeLayout
         android:id="@+id/layoutBottom"
         android:layout_width="fill_parent"
-        android:layout_height="62dp"
+        android:layout_height="52dp"
         android:layout_alignParentBottom="true"
-        android:background="#88333333" >
+        android:background="#CCCCCC" >
 
         <Button
             android:id="@+id/button1"
@@ -65,9 +66,10 @@
         android:cacheColorHint="#00000000"
         android:listSelector="@drawable/list_item_selector"
         android:scrollingCache="false"
-        android:background="#222222"
-        android:divider="@android:drawable/divider_horizontal_dark"
-        android:childDivider="@android:drawable/divider_horizontal_dark">
+        android:background="@color/chat_bg"
+        android:divider="@color/listview_divider"
+        android:childDivider="@color/listview_divider"
+        android:dividerHeight="1dp">
 
     </ExpandableListView>
 

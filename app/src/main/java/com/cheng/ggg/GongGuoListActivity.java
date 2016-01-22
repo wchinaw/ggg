@@ -46,6 +46,7 @@ import com.cheng.ggg.utils.COM;
 import com.cheng.ggg.utils.DialogAPI;
 import com.cheng.ggg.utils.Settings;
 import com.cheng.ggg.utils.TimeDate;
+import com.cheng.ggg.views.CalendarIcon;
 import com.cheng.ggg.views.calendar.CalendarActivity;
 import com.umeng.analytics.MobclickAgent;
 
@@ -534,6 +535,7 @@ public class GongGuoListActivity  extends Activity {
 
 		LayoutInflater mInflater; 
     	Activity mActivity;
+		int day = TimeDate.getToday();
 
     	public MyExpandableListAdapter(Activity activity){
     		mActivity = activity;
@@ -632,7 +634,8 @@ public class GongGuoListActivity  extends Activity {
 			holder.button = (Button) view.findViewById(R.id.btnRight);
             holder.txtName.setTextAppearance(mThis, styleId);
             holder.txtCount.setTextAppearance(mThis, styleId);
-			holder.imageViewCalendar = (ImageView)view.findViewById(R.id.imageViewCalendar);
+			holder.imageViewCalendar = (CalendarIcon) view.findViewById(R.id.imageViewCalendar);
+			holder.imageViewCalendar.setDay(day);
             
             holder.txtName.setTextSize(MainActivity.TEXT_SIZE);
             holder.txtCount.setTextSize(MainActivity.TEXT_SIZE);
@@ -712,7 +715,8 @@ public class GongGuoListActivity  extends Activity {
 			holder.button = (Button) view.findViewById(R.id.btnRight);
 			holder.countClickArea = view.findViewById(R.id.frame01);
             holder.txtName.setTextAppearance(mThis, styleId);
-			holder.imageViewCalendar = (ImageView) view.findViewById(R.id.imageViewCalendar);
+			holder.imageViewCalendar = (CalendarIcon) view.findViewById(R.id.imageViewCalendar);
+			holder.imageViewCalendar.setDay(day);
             
             holder.txtName.setTextSize(MainActivity.TEXT_SIZE);
             holder.txtCount.setTextSize(MainActivity.TEXT_SIZE);
@@ -813,7 +817,7 @@ public class GongGuoListActivity  extends Activity {
 		TextView txtCount;
 		Button button;//删除按钮
 		View countClickArea;//记功记过界面,右侧数字按钮区域,点击之后可以进入日历统计界面
-		ImageView imageViewCalendar;
+		CalendarIcon imageViewCalendar;
 		
 		public GroupChildHolder(){
 			
@@ -832,7 +836,7 @@ public class GongGuoListActivity  extends Activity {
 		TextView txtCount;
 		Button button;
 		ImageView indicatorView;
-		ImageView imageViewCalendar;
+		CalendarIcon imageViewCalendar;
 
 		public GroupHolder(){
 			

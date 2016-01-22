@@ -35,6 +35,7 @@ public class TimePreference extends DialogPreference {
 	int mListDaysValues[];
 	String mListDays[];
 	final int ONE_DAY_MS = 24*60*60*1000;
+//	final int ONE_DAY_MS = 10*1000; //10秒提醒一次测试
 	final int EIGHT_HOURS_MS = 8*60*60*1000;
 	final int TW_HOURS_MS = 12*60*60*1000;
 		
@@ -59,7 +60,6 @@ public class TimePreference extends DialogPreference {
 	@Override
 	protected void onBindDialogView(View view) {
 		super.onBindDialogView(view);
-		
 		mListDaysValues = mContext.getResources().getIntArray(R.array.list_days_value);
 		mListDays = mContext.getResources().getStringArray(R.array.list_days);
 		

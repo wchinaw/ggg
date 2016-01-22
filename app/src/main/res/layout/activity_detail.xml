@@ -7,7 +7,7 @@
         android:id="@+id/layoutDetailTop"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#88333333"
+        android:background="#EEEEEE"
         android:orientation="horizontal" >
 
         <TextView
@@ -19,7 +19,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_margin="6dp"
             android:text="2014年01月"
-             />
+            android:textColor="@color/font_color_normal" />
 
         <Button
             android:id="@+id/btnLeft"
@@ -39,12 +39,37 @@
 
     </RelativeLayout>
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/listview_divider"
+        android:id="@+id/line0"
+        android:layout_below="@+id/layoutDetailTop"></LinearLayout>
+
+    <ListView
+        android:id="@+id/listView1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/line1"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_below="@+id/line0"
+        android:cacheColorHint="#00000000"
+        android:divider="@color/listview_divider"
+        android:listSelector="@drawable/list_item_selector"
+        android:scrollingCache="false"
+        android:background="@color/chat_bg"
+        android:dividerHeight="1dp">
+
+    </ListView>
+
     <RelativeLayout
         android:id="@+id/layoutBottom"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#88333333" >
+        android:background="#CCCCCC" >
 
         <Button
             android:id="@+id/button1"
@@ -91,14 +116,13 @@
             android:text="Medium Text"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <Button
+        <com.cheng.ggg.views.CalendarIcon
             android:id="@+id/buttonCalendar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_centerVertical="true"
             android:layout_marginRight="6dp"
             android:layout_toLeftOf="@+id/buttonGraphicWave"
-            android:background="@drawable/calendar_date_ggg"
             android:onClick="calendarClick" />
 
         <Button
@@ -132,21 +156,12 @@
             android:onClick="chartBarClick" />
 
     </RelativeLayout>
-
-    <ListView
-        android:id="@+id/listView1"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@+id/layoutBottom"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentTop="false"
-        android:layout_below="@+id/layoutDetailTop"
-        android:cacheColorHint="#00000000"
-        android:divider="@android:drawable/divider_horizontal_dark"
-        android:listSelector="@drawable/list_item_selector"
-        android:scrollingCache="false"
-        android:background="#222222">
-
-    </ListView>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/listview_divider"
+        android:id="@+id/line1"
+        android:layout_above="@+id/layoutBottom"></LinearLayout>
 
 </RelativeLayout>

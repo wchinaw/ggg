@@ -1,7 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    android:background="@drawable/list_item_selector">
 
     <TextView
         android:id="@+id/TextItemName"
@@ -14,7 +15,8 @@
         android:layout_toLeftOf="@+id/frame01"
         android:padding="8dp"
         android:text="Medium Text"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/font_color_normal" />
 
     <FrameLayout
         android:id="@+id/frame01"
@@ -38,13 +40,13 @@
                 android:text="Medium Text"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp" />
+                android:layout_marginRight="10dp"
+                android:textColor="@color/font_color_normal" />
 
-            <ImageView
+            <com.cheng.ggg.views.CalendarIcon
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:id="@+id/imageViewCalendar"
-                android:background="@drawable/calendar_date_ggg"
                 android:layout_gravity="center_vertical"
                 android:visibility="gone" />
         </LinearLayout>
@@ -59,7 +61,8 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:text="@string/add"
-            android:textSize="16dp" />
+            android:textSize="16dp"
+            android:textColor="@color/font_color_normal" />
 
     </FrameLayout>
 

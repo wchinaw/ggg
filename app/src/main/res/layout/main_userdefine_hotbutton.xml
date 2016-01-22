@@ -31,7 +31,7 @@
         android:maxWidth="70dp"
         android:minWidth="70dp"
         android:gravity="center" />
-    <ImageView
+    <com.cheng.ggg.views.CalendarIcon
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:text="New Button"
