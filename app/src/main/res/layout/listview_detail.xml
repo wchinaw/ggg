@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/imageViewCalendar"
-            android:visibility="visible"
+            android:visibility="invisible"
             android:layout_centerVertical="true" />
 
         <LinearLayout

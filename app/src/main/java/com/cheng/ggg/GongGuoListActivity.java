@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -52,7 +53,7 @@ import com.cheng.ggg.views.calendar.CalendarActivity;
 import com.umeng.analytics.MobclickAgent;
 
 public class GongGuoListActivity  extends Activity {
-	
+
 	final String TAG = "GongGuoListActivity";
 	public BaseExpandableListAdapter mAdapter;
     SQLiteHelper mSQLiteHelper;
@@ -71,13 +72,13 @@ public class GongGuoListActivity  extends Activity {
     Resources mRs;
 //    boolean mbGongguoconfirm_dialog = false;
 //    SharedPreferences sp;
-    
+
     Button recordButton;//快速记录按钮。记过或记功
     Button buttonGraphic;
 
 //	/**如果数据有修改，需要更新widget内容*/
 //	boolean isUpdateWdiget = false;
-    
+
     /**用户可修改当前时间，并将其作为 功过时间保存 在添加确认功过对话框中进行修改。*/
 //    Calendar mCalendarSave;
 
@@ -95,13 +96,13 @@ public class GongGuoListActivity  extends Activity {
         getBundles();
 //        sp = PreferenceManager.getDefaultSharedPreferences(this); 
         mRs = getResources();
-        
+
         recordButton = (Button)findViewById(R.id.recordButton);
         recordButton.setTextSize(MainActivity.TEXT_SIZE-2);
-        
+
         buttonGraphic = (Button)findViewById(R.id.buttonGraphic);
         buttonGraphic.setTextSize(MainActivity.TEXT_SIZE-2);
-        
+
         mListView = (ExpandableListView) findViewById(R.id.list);
 //        mListView.setOnItemClickListener(mOnItemClickListener);
 //        mListView.setOnChildClickListener(mOnChildClickListener);
@@ -110,31 +111,34 @@ public class GongGuoListActivity  extends Activity {
 		mListView.setGroupIndicator(null);
 
 		if(mType == TYPE_HOT_GONG_GUO_SELECT){
-			mListView.setOnCreateContextMenuListener(mContextMenuListener);
+//			mListView.setOnCreateContextMenuListener(mContextMenuListener);
+			mListView.setOnItemLongClickListener(onItemLongClickListener);
 		}
 		else if(mType == TYPE_USER_DEFINE){
-        	mListView.setOnCreateContextMenuListener(mContextMenuListener);
+//        	mListView.setOnCreateContextMenuListener(mContextMenuListener);
+			mListView.setOnItemLongClickListener(onItemLongClickListener);
         	buttonGraphic.setVisibility(View.GONE);
         }
         else{
         	mListView.setOnChildClickListener(mOnChildClickListener);
-        	mListView.setOnCreateContextMenuListener(mContextMenuListener);
+			mListView.setOnItemLongClickListener(onItemLongClickListener);
+//        	mListView.setOnCreateContextMenuListener(mContextMenuListener);
         }
-        
+
 //        mListView.setBackgroundResource(R.drawable.c);
 //        mListView.setCacheColorHint(0xFFFFFFFF);
         // Set up our adapter
         mAdapter = new MyExpandableListAdapter(this);
 //        mListView.setListAdapter(mAdapter);
         mListView.setAdapter(mAdapter);
-                
+
 //        registerForContextMenu(getExpandableListView());
         mSQLiteHelper = SQLiteHelper.getInstance(this);
-        
+
         SQLiteDatabase db = mSQLiteHelper.getReadableDatabase();
-        
+
         getBundles();
-        
+
         if(mbGong){
         	mGongGuoBaseList = mSQLiteHelper.getGongBase(db);
 
@@ -147,7 +151,7 @@ public class GongGuoListActivity  extends Activity {
         	else
         		recordButton.setText(R.string.record_guo);
         }
-        else{ 
+        else{
         	mGongGuoBaseList = mSQLiteHelper.getGuoBase(db);
 			if(mType == TYPE_HOT_GONG_GUO_SELECT){
 				recordButton.setText(R.string.hotgong);
@@ -159,15 +163,32 @@ public class GongGuoListActivity  extends Activity {
         		recordButton.setText(R.string.record_gong);
         }
         db.close();
-        
+
 //        if(mGongGuoBaseList != null){
 //        	int len = mGongGuoBaseList.size();
 //        	for(int i=0; i<len; i++){
 //        		mGongGuoBaseList.get(i).dump();
 //        	}
 //        }
-        
+
     }
+
+	AdapterView.OnItemLongClickListener onItemLongClickListener = new AdapterView.OnItemLongClickListener() {
+		public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+			Object obj = view.getTag();
+			if(obj instanceof GroupHolder){
+				GroupHolder holder = (GroupHolder) obj;
+				GongGuoBase base = (GongGuoBase)mAdapter.getGroup(holder.groupPosition);
+				DialogAPI.showAddItemDialog(mThis, base.name, base,mbGong);
+			}
+			else{
+				GroupChildHolder holder = (GroupChildHolder) obj;
+				GongGuoDetail detail = (GongGuoDetail) mAdapter.getChild(holder.groupPosition,holder.childPosition);
+				DialogAPI.showDeleteItemDialog(mThis, detail,holder.groupPosition,holder.childPosition, mbGong,mHotUserGongGuoList);
+			}
+			return true;
+		}
+	};
 
 	@Override
 	protected void onStop() {
@@ -196,50 +217,50 @@ public class GongGuoListActivity  extends Activity {
 			gongguo.isFinded = false;
 		}
 	}
-    
+
 //    public void removeItem(int groupPos, int childPos){
 //    	if(mGongGuoBaseList != null){
 //    		GongGuoBase base
 //    	}
 //    }
-    
-    OnCreateContextMenuListener mContextMenuListener = new OnCreateContextMenuListener(){
 
-		public void onCreateContextMenu(ContextMenu menu, View v,
-				ContextMenuInfo menuInfo) {
-			ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListView.ExpandableListContextMenuInfo) menuInfo;
+//    OnCreateContextMenuListener mContextMenuListener = new OnCreateContextMenuListener(){
+//
+//		public void onCreateContextMenu(ContextMenu menu, View v,
+//				ContextMenuInfo menuInfo) {
+//			ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListView.ExpandableListContextMenuInfo) menuInfo;
+//
+//			 int type = ExpandableListView.getPackedPositionType(info.packedPosition);
+//		        //点击的是子列表
+//			 int groupPos = ExpandableListView.getPackedPositionGroup(info.packedPosition);
+//			 GongGuoBase base = (GongGuoBase)mAdapter.getGroup(groupPos);
+////			 base.dump();
+//
+//		        if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+//
+//		            int childPos = ExpandableListView.getPackedPositionChild(info.packedPosition);
+////		            Toast.makeText(mThis, "hahatest for child.", Toast.LENGTH_SHORT).show();
+//		            //相应显示dialog吧~
+//
+//		            GongGuoDetail detail = (GongGuoDetail) mAdapter.getChild(groupPos,childPos);
+////		            detail.dump();
+//
+////		            menu.add(0,0,0,"删除");
+//		            DialogAPI.showDeleteItemDialog(mThis, detail,groupPos, childPos, mbGong,mHotUserGongGuoList);
+//		        }
+//		        //点击的是组列表
+//		        else if (type == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
+////		            Toast.makeText(mThis, "hahatest for group.", Toast.LENGTH_SHORT).show();
+//		            //相应显示dialog吧~
+//
+//		            DialogAPI.showAddItemDialog(mThis, base.name, base,mbGong);
+//		        }
+//		}
+//
+//    };
 
-			 int type = ExpandableListView.getPackedPositionType(info.packedPosition);
-		        //点击的是子列表
-			 int groupPos = ExpandableListView.getPackedPositionGroup(info.packedPosition); 
-			 GongGuoBase base = (GongGuoBase)mAdapter.getGroup(groupPos);
-//			 base.dump();
-			 
-		        if (type == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {            
-		            
-		            int childPos = ExpandableListView.getPackedPositionChild(info.packedPosition); 
-//		            Toast.makeText(mThis, "hahatest for child.", Toast.LENGTH_SHORT).show();
-		            //相应显示dialog吧~
-		            
-		            GongGuoDetail detail = (GongGuoDetail) mAdapter.getChild(groupPos,childPos);
-//		            detail.dump();
-		            
-//		            menu.add(0,0,0,"删除"); 
-		            DialogAPI.showDeleteItemDialog(mThis, detail,groupPos, childPos, mbGong,mHotUserGongGuoList);
-		        } 
-		        //点击的是组列表
-		        else if (type == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
-//		            Toast.makeText(mThis, "hahatest for group.", Toast.LENGTH_SHORT).show();
-		            //相应显示dialog吧~
-		            
-		            DialogAPI.showAddItemDialog(mThis, base.name, base,mbGong);
-		        }
-		}
-    	
-    };
-    
-    
-    
+
+
     @Override
 	protected void onPause() {
 		super.onPause();
@@ -264,7 +285,7 @@ public class GongGuoListActivity  extends Activity {
 //		}
 //    	
 //    };
-    
+
     public void getBundles(){
     	Intent intent = getIntent();
     	if(intent != null){
@@ -274,7 +295,7 @@ public class GongGuoListActivity  extends Activity {
 				mHotUserGongGuoList = (ArrayList<UserGongGuo>) intent.getSerializableExtra(COM.INTENT_LIST);
 //			}
     	}
-    	
+
     	String strTitle;
 		switch(mType){
 			case TYPE_HOT_GONG_GUO_SELECT:
@@ -309,13 +330,13 @@ public class GongGuoListActivity  extends Activity {
 		}
 
     	setTitle(strTitle);
-    	
-    	
+
+
     }
-    
-    
+
+
     /**
-     * 
+     *
      * @param activity
      * @param bInsert
      * @param base
@@ -335,27 +356,27 @@ public class GongGuoListActivity  extends Activity {
 		View loadingDialog = View.inflate(activity,R.layout.dialog_add_confirm, null);
 		final EditText editTimes = (EditText)loadingDialog.findViewById(R.id.editText1);
 		final EditText editTextComment = (EditText)loadingDialog.findViewById(R.id.editTextComment);
-		
+
 		if(!mInsertClick.bInsert){
 			editTimes.setText(gongguo.times+"");
 			editTextComment.setText(gongguo.comment);
 		}
-		
+
 		//日期时间控件
 		final DatePicker datePicker = (DatePicker)loadingDialog.findViewById(R.id.datePicker1);
 		final TimePicker timePicker = (TimePicker)loadingDialog.findViewById(R.id.timePicker1);
 		datePicker.setVisibility(View.GONE);
 		timePicker.setVisibility(View.GONE);
-		
+
 		//日期时间显示字符
 		final TextView textViewDate = (TextView)loadingDialog.findViewById(R.id.textViewDate);
 		textViewDate.setText(TimeDate.intTime2Date1(activity, gongguo.time));
 		textViewDate.setOnClickListener(new OnClickListener() {
-			
+
 			public void onClick(View arg0) {
 				int year = calendar.get(Calendar.YEAR);
 				int monthOfYear = calendar.get(Calendar.MONTH);
-				int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH); 
+				int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 				datePicker.init(year, monthOfYear, dayOfMonth, new OnDateChangedListener(){
 
 					public void onDateChanged(DatePicker arg0, int year, int monthOfYear,
@@ -367,29 +388,29 @@ public class GongGuoListActivity  extends Activity {
 						textViewDate.setText(TimeDate.intTime2Date1(activity, calendar));
 					}
 				});
-				
+
 				datePicker.setVisibility(View.VISIBLE);
 				timePicker.setVisibility(View.GONE);
 			}
 		});
-		
+
 		final TextView textViewTime = (TextView)loadingDialog.findViewById(R.id.textViewTime);
 		textViewTime.setText(TimeDate.intTime2Date2(activity, gongguo.time));
 		textViewTime.setOnClickListener(new OnClickListener() {
-			
+
 			public void onClick(View arg0) {
 				timePicker.setIs24HourView(true);
 				int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
 				int currentMinute = calendar.get(Calendar.MINUTE);
 				timePicker.setCurrentHour(currentHour);
 				timePicker.setCurrentMinute(currentMinute);
-				
+
 				timePicker.setVisibility(View.VISIBLE);
 				datePicker.setVisibility(View.GONE);
 			}
 		});
-		
-		
+
+
 		timePicker.setOnTimeChangedListener(new OnTimeChangedListener(){
 
 			public void onTimeChanged(TimePicker arg0, int hourOfDay, int minute) {
@@ -400,14 +421,14 @@ public class GongGuoListActivity  extends Activity {
 				textViewTime.setText(TimeDate.intTime2Date2(activity, calendar));
 			}
 		});
-		
+
 		TextView textView = (TextView)loadingDialog.findViewById(R.id.textViewGongTitle);
 		textView.setText(gongguo.parent_name+" "+gongguo.name);
-		
+
 		int titleId = R.string.gonggongadd_confirm;
 		if(!mInsertClick.bInsert)
 			titleId = R.string.gonggongmodify_confirm;
-		
+
 		AlertDialog dialog =  new AlertDialog.Builder(activity)
         .setTitle(titleId)
 //        .setMessage(base.name+" "+detail.name)
@@ -439,10 +460,10 @@ public class GongGuoListActivity  extends Activity {
 		})
         .setView(loadingDialog)
         .create();
-		
+
 		dialog.show();
 	}
-    
+
 //    public void insertOneItem(GongGuoBase base,GongGuoDetail detail,int time, int times,String comment){
 //    	SQLiteDatabase db = mSQLiteHelper.getWritableDatabase();
 //		if(mbGong){
@@ -461,7 +482,7 @@ public class GongGuoListActivity  extends Activity {
 //		db.close();
 //			
 //    }
-	
+
 	InsertGongGuoListener mInsertGongGuoListener = new InsertGongGuoListener(){
 
 		@Override
@@ -498,7 +519,7 @@ public class GongGuoListActivity  extends Activity {
 		}
 	};
 
-	
+
   public static void insertOneItem(Context activity ,boolean bGong, SQLiteHelper sqliteHelper ,UserGongGuo gongguo){
 	SQLiteDatabase db = sqliteHelper.getWritableDatabase();
 	if(bGong){
@@ -511,18 +532,18 @@ public class GongGuoListActivity  extends Activity {
 	db.close();
 }
 
-    
+
     public OnChildClickListener mOnChildClickListener = new OnChildClickListener(){
 
 		public boolean onChildClick(ExpandableListView parent, View v,
 				int groupPosition, int childPosition, long id) {
 			GroupChildHolder g = (GroupChildHolder) v.getTag();
-			
+
 			if(g != null){
 				GongGuoBase base = (GongGuoBase)mAdapter.getGroup(g.groupPosition);
 				GongGuoDetail detail = (GongGuoDetail) mAdapter.getChild(g.groupPosition,g.childPosition);
-				
-				
+
+
 				UserGongGuo gongguo = new UserGongGuo();
 				gongguo.parent_id = detail.id+"";
 				gongguo.parent_name = base.name;
@@ -539,16 +560,16 @@ public class GongGuoListActivity  extends Activity {
 //					mInsertGongGuoListener.insert(gongguo);
 //				}
 			}
-			
-			
+
+
 			return true;
 		}
-		
+
 	};
-	
+
 	public class MyExpandableListAdapter extends BaseExpandableListAdapter {
 
-		LayoutInflater mInflater; 
+		LayoutInflater mInflater;
     	Activity mActivity;
 		int day = TimeDate.getToday();
 
@@ -556,7 +577,7 @@ public class GongGuoListActivity  extends Activity {
     		mActivity = activity;
     		mInflater = LayoutInflater.from(mActivity);
     	}
-		
+
 		public Object getChild(int groupPosition, int childPosition) {
 			GongGuoBase base = (GongGuoBase) getGroup(groupPosition);
 			if(base != null && base.mList != null){
@@ -567,33 +588,33 @@ public class GongGuoListActivity  extends Activity {
 			}
 			return null;
 		}
-		
+
 
 		public long getChildId(int groupPosition, int childPosition) {
 			// TODO Auto-generated method stub
 			return 0;
 		}
-		
-		
-		
+
+
+
 		public View getChildView(int groupPosition, int childPosition,
 				boolean isLastChild, View convertView, ViewGroup parent) {
-			
+
 			GongGuoDetail detail = (GongGuoDetail) getChild(groupPosition, childPosition);
 			if(detail == null)
 				return null;
-			
+
 			View textView = getGenericChildView(detail,groupPosition,childPosition);
-			
+
 			GroupChildHolder holder = (GroupChildHolder) textView.getTag();
-			
+
 			holder.txtName.setText(detail.name);
 //			holder.txtCount.setText(detail.userCount + "");
 			holder.imageViewCalendar.setDay(detail.userCount);
 
 			holder.txtName.setTextSize(MainActivity.TEXT_SIZE);
 			holder.txtCount.setTextSize(MainActivity.TEXT_SIZE);
-			
+
 			holder.childPosition = childPosition;
 			holder.groupPosition = groupPosition;
 //            textView.setOnClickListener(mChildClick);
@@ -602,13 +623,13 @@ public class GongGuoListActivity  extends Activity {
 		}
 
 		public int getChildrenCount(int groupPosition) {
-			
+
 			if(mGongGuoBaseList != null){
 				GongGuoBase base = mGongGuoBaseList.get(groupPosition);
 				if(base != null && base.mList != null)
 					return base.mList.size();
 			}
-			
+
 			return 0;
 		}
 
@@ -633,26 +654,26 @@ public class GongGuoListActivity  extends Activity {
 			// TODO Auto-generated method stub
 			return 0;
 		}
-		
+
 		public View getGenericGroupView(GongGuoBase base){
 			return getGroupViewByStyle(base, R.style.listItem20dp);
 		}
-		
+
 		public View getGenericChildView(GongGuoDetail detail,int groupPosition, int childPosition){
 			return getGenericViewByStyle(detail, groupPosition, childPosition, R.style.listItem18dp);
 		}
-		
+
 		public View getGroupViewByStyle(final GongGuoBase base, int styleId){
 			GroupHolder holder = new GroupHolder();
             View view = mInflater.inflate(R.layout.listview_group, null);
 			holder.txtName = (TextView) view.findViewById(R.id.TextItemName);
-			holder.txtCount = (TextView) view.findViewById(R.id.TextItemCount);	
+			holder.txtCount = (TextView) view.findViewById(R.id.TextItemCount);
 			holder.button = (Button) view.findViewById(R.id.btnRight);
             holder.txtName.setTextAppearance(mThis, styleId);
             holder.txtCount.setTextAppearance(mThis, styleId);
 			holder.imageViewCalendar = (CalendarIcon) view.findViewById(R.id.imageViewCalendar);
 //			holder.imageViewCalendar.setDay(day);
-            
+
             holder.txtName.setTextSize(MainActivity.TEXT_SIZE);
             holder.txtCount.setTextSize(MainActivity.TEXT_SIZE);
             holder.button.setTextSize(MainActivity.TEXT_SIZE);
@@ -666,7 +687,7 @@ public class GongGuoListActivity  extends Activity {
             	holder.button.setVisibility(View.VISIBLE);
             	holder.button.setText(R.string.add);
             	holder.button.setOnClickListener(new OnClickListener(){
-            		
+
 					public void onClick(View arg0) {
 						DialogAPI.showAddItemDialog(mThis, base.name, base, mbGong);
 					}
@@ -681,7 +702,7 @@ public class GongGuoListActivity  extends Activity {
 				holder.countClickArea.setOnClickListener(countClickAreaLisenter);
 				holder.countClickArea.setTag(holder);
             }
-            
+
             view.setTag(holder);
             return view;
 		}
@@ -722,7 +743,7 @@ public class GongGuoListActivity  extends Activity {
 				}
 			}
 		};
-		
+
 		public View getGenericViewByStyle(final GongGuoDetail detail,final int groupPosition, final int childPosition, int styleId) {
             GroupChildHolder holder = new GroupChildHolder();
             View view = mInflater.inflate(R.layout.listview_detail, null);
@@ -733,7 +754,7 @@ public class GongGuoListActivity  extends Activity {
             holder.txtName.setTextAppearance(mThis, styleId);
 			holder.imageViewCalendar = (CalendarIcon) view.findViewById(R.id.imageViewCalendar);
 //			holder.imageViewCalendar.setDay(day);
-            
+
             holder.txtName.setTextSize(MainActivity.TEXT_SIZE);
             holder.txtCount.setTextSize(MainActivity.TEXT_SIZE);
             holder.button.setTextSize(MainActivity.TEXT_SIZE);
@@ -768,7 +789,7 @@ public class GongGuoListActivity  extends Activity {
             	holder.button.setVisibility(View.VISIBLE);
             	holder.button.setText(R.string.delete);
             	holder.button.setOnClickListener(new OnClickListener(){
-            		
+
 					public void onClick(View arg0) {
 						DialogAPI.showDeleteItemDialog(mThis, detail, groupPosition, childPosition, mbGong,mHotUserGongGuoList);
 					}
@@ -783,25 +804,25 @@ public class GongGuoListActivity  extends Activity {
 				holder.countClickArea.setOnClickListener(countClickAreaLisenter);
 				holder.countClickArea.setTag(holder);
             }
-            
+
             view.setTag(holder);
             return view;
         }
 
 		public View getGroupView(int groupPosition, boolean isExpanded,
 				View convertView, ViewGroup parent) {
-			
+
 			 GongGuoBase base = (GongGuoBase)getGroup(groupPosition);
-			 
+
 			 View textView = getGenericGroupView(base);
-			 
+
 			 GroupHolder holder = (GroupHolder) textView.getTag();
-			 
+
 			 holder.txtName.setText(base.name);
 //			 holder.txtCount.setText(base.userCount+"");
 			 holder.imageViewCalendar.setDay(base.userCount);
 			 holder.groupPosition = groupPosition;
-			 
+
 			holder.txtCount.setTextSize(MainActivity.TEXT_SIZE);
 			holder.button.setTextSize(MainActivity.TEXT_SIZE);
 
@@ -824,9 +845,9 @@ public class GongGuoListActivity  extends Activity {
 			// TODO Auto-generated method stub
 			return true;
 		}
-		
+
 	}
-	
+
 	class GroupChildHolder{
 		int groupPosition;
 		int childPosition;
@@ -836,17 +857,17 @@ public class GongGuoListActivity  extends Activity {
 		Button button;//删除按钮
 		View countClickArea;//记功记过界面,右侧数字按钮区域,点击之后可以进入日历统计界面
 		CalendarIcon imageViewCalendar;
-		
+
 		public GroupChildHolder(){
-			
+
 		}
-		
+
 		public GroupChildHolder(int groupPos, int childPos){
 			groupPosition = groupPos;
 			childPosition = childPos;
 		}
 	}
-	
+
 	class GroupHolder{
 		View countClickArea;
 		int groupPosition;
@@ -857,19 +878,19 @@ public class GongGuoListActivity  extends Activity {
 		CalendarIcon imageViewCalendar;
 
 		public GroupHolder(){
-			
+
 		}
-		
+
 		public GroupHolder(int groupPos){
 			groupPosition = groupPos;
 		}
 	}
-	
+
 	public void backClick(View view)
 	{
 		finish();
 	}
-	
+
 	public void recordClick(View view) {
 		if(mType == TYPE_HOT_GONG_GUO_SELECT){
 			gotoHotGongGuoActivity(this,mHotUserGongGuoList,!mbGong);
@@ -880,10 +901,10 @@ public class GongGuoListActivity  extends Activity {
 		else{
 			MainActivity.gotoGongGuoActivity(this,mHotUserGongGuoList, !mbGong);
 		}
-		
+
 		finish();
 	}
-	
+
 	public void detailClick(View view)
 	{
 		MainActivity.gotoUserGongGuoListActivity(this, UserGongGuoListActivity.TYPE_ALL);
