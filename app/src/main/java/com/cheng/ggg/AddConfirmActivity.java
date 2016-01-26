@@ -23,6 +23,8 @@ import com.cheng.ggg.types.InsertGongGuoListener;
 import com.cheng.ggg.types.UserGongGuo;
 import com.cheng.ggg.utils.COM;
 import com.cheng.ggg.utils.TimeDate;
+import com.cheng.ggg.views.GWidget;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -166,6 +168,7 @@ public class AddConfirmActivity extends Activity{
 		public boolean insert(UserGongGuo gongguo) {
 			boolean mbGong = gongguo.count>0?true:false;
 			GongGuoListActivity.insertOneItem(mActivity,mbGong,SQLiteHelper.getInstance(mActivity),gongguo);
+			GWidget.updateBroadcast(mActivity);
 			return true;
 		}
 	};
@@ -317,5 +320,17 @@ public class AddConfirmActivity extends Activity{
 //
 //		dialog.show();
 //	}
-	
+
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
 }

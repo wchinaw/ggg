@@ -31,7 +31,8 @@
 
             android:text="Medium Text"
             android:textColor="#FF777777"
-            android:textSize="16dp" />
+            android:textSize="16dp"
+            android:paddingBottom="12dp" />
         </ScrollView>
 
         <RelativeLayout

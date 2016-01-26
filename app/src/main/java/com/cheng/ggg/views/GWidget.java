@@ -43,29 +43,26 @@ public class GWidget extends AppWidgetProvider {
     Context mContext;
     ArrayList<UserGongGuo> mHotUserGongGuoList;
     public static final String ACTION_GRID_ITEM_CLICK = "com.cheng.ggg.ACTION_GRID_ITEM_CLICK";
-    public static final String ACTION_GRID_ITEM_CALENDAR_CLICK = "com.cheng.ggg.ACTION_GRID_ITEM_CALENDAR_CLICK";
+    public static final String ACTION_WIDGET_UPDATE_BY_DATACHANGE = "com.cheng.ggg.ACTION_WIDGET_UPDATE_BY_DATACHANGE";
     @Override
     public void onReceive(Context context, Intent intent) {
         mContext = context;
-        Log.e("yao", "HelloWidgetProvider --> onReceive");
+
         int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
+        Log.e("yao", "HelloWidgetProvider --> onReceive appWidgetId:"+appWidgetId);
 
         if(intent != null){
             String action = intent.getAction();
-            if(ACTION_GRID_ITEM_CALENDAR_CLICK.equals(action)){//GridView item被点击
-//                UserGongGuo gongguo = (UserGongGuo) intent.getSerializableExtra(COM.INTENT_GONGGUO);
-//                gongguo.time = (int) (System.currentTimeMillis()/1000);
-                int pos = intent.getIntExtra(COM.INTENT_TYPE,0);
-                Log.e("","=========================1pos:"+pos);
-                mHotUserGongGuoList = Settings.getHomeHotGongGuoList(mContext);
-                if(mHotUserGongGuoList != null && pos>=0 && pos<mHotUserGongGuoList.size()){
-                    UserGongGuo gongguo = mHotUserGongGuoList.get(pos);
-                    if(gongguo != null){
-                        CalendarActivity.startActvitiyForGongGuoDate(mContext, gongguo, true);
-                    }
-                }
+            if(ACTION_WIDGET_UPDATE_BY_DATACHANGE.equals(action)){
+                AppWidgetManager manager = AppWidgetManager.getInstance(context);
+                int ids[]=manager.getAppWidgetIds(new ComponentName(mContext.getPackageName(), GWidget.class.getName()));
+                update(context, AppWidgetManager.getInstance(context), ids);
             }
+            else if(COM.BROADCAST_WIDGET_UPDATE.equals(action)){
+
+            }
+
             else if(ACTION_GRID_ITEM_CLICK.equals(action)){
                 int pos = intent.getIntExtra(COM.INTENT_TYPE,0);
                 Log.e("","=========================2pos:"+pos);
@@ -113,6 +110,13 @@ public class GWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
                          int[] appWidgetIds) {
+
+        update(context, appWidgetManager, appWidgetIds);
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
+    }
+
+    public void update(Context context, AppWidgetManager appWidgetManager,
+                       int[] appWidgetIds){
         Log.i("yao", "HelloWidgetProvider --> onUpdate");
         mContext = context;
         boolean COLOR_SWAP = Settings.getIsColorSwap(mContext);
@@ -124,11 +128,52 @@ public class GWidget extends AppWidgetProvider {
             RemoteViews remote = new RemoteViews(context.getPackageName(),
                     R.layout.widget);
 
-            Intent intent = new Intent(context, MainActivity.class);// 设置Activity
+//            Intent intent = new Intent(context, MainActivity.class);// 设置Activity
+//            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
+//                    intent, PendingIntent.FLAG_UPDATE_CURRENT);//
+//            remote.setOnClickPendingIntent(R.id.textView, pendingIntent);
+//            remote.setTextViewText(R.id.textView, "hello in update.");
+
+//            Intent fillInIntent = new Intent();
+//            fillInIntent.setAction(GWidget.ACTION_GRID_ITEM_CLICK);
+//            fillInIntent.putExtra(COM.INTENT_TYPE, position);
+//            fillInIntent1.putExtra(COM.INTENT_ISCALENDAR,true);
+//            remote.setOnClickFillInIntent(R.id.calendarView, fillInIntent);
+
+            Intent intent = new Intent(mContext, CalendarActivity.class);
+            intent.putExtra(COM.INTENT_ISDETAIL,false);
+            intent.putExtra(COM.INTENT_GONG, false);
+            intent.putExtra(COM.INTENT_ISTOTAL, true);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
                     intent, PendingIntent.FLAG_UPDATE_CURRENT);//
-            remote.setOnClickPendingIntent(R.id.textView, pendingIntent);
-            remote.setTextViewText(R.id.textView, "hello in update.");
+            remote.setOnClickPendingIntent(R.id.linearLayoutTotal, pendingIntent);
+
+            intent = new Intent(mContext, CalendarActivity.class);
+            intent.putExtra(COM.INTENT_ISDETAIL,false);
+            intent.putExtra(COM.INTENT_GONG,true);
+            intent.putExtra(COM.INTENT_ISTOTAL,false);
+            pendingIntent = PendingIntent.getActivity(context, 1,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT);//
+            remote.setOnClickPendingIntent(R.id.linearLayoutGong, pendingIntent);
+
+            intent = new Intent(mContext, CalendarActivity.class);
+            intent.putExtra(COM.INTENT_ISDETAIL,false);
+            intent.putExtra(COM.INTENT_GONG, false);
+            intent.putExtra(COM.INTENT_ISTOTAL,false);
+            pendingIntent = PendingIntent.getActivity(context, 2,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT);//
+            remote.setOnClickPendingIntent(R.id.linearLayoutGuo, pendingIntent);
+
+
+            intent = new Intent(context,GongGuoListActivity.class);
+            intent.putExtra(COM.INTENT_GONG, true);
+            intent.putExtra(COM.INTENT_TYPE, GongGuoListActivity.TYPE_HOT_GONG_GUO_SELECT);
+            intent.putExtra(COM.INTENT_LIST,mHotUserGongGuoList);
+            pendingIntent = PendingIntent.getActivity(context, 0,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT);//
+            remote.setOnClickPendingIntent(R.id.imageButtonHotSelect, pendingIntent);
+
+
             SQLiteHelper mSQLiteHelper = SQLiteHelper.getInstance(mContext);
             SQLiteDatabase db = mSQLiteHelper.getReadableDatabase();
             int mGongCount = mSQLiteHelper.getUserGongCount(db);
@@ -146,19 +191,20 @@ public class GWidget extends AppWidgetProvider {
 
             Intent serviceIntent = new Intent(context, GridWidgetService.class);
 //            serviceIntent.putExtra(COM.INTENT_LIST,mHotUserGongGuoList);
-            remote.setRemoteAdapter(R.id.gridView, serviceIntent);
+//            remote.setRemoteAdapter(R.id.gridView, serviceIntent);
+            serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
+            remote.setRemoteAdapter(appWidgetIds[i],R.id.gridView,serviceIntent);
 
             Intent gridIntent = new Intent();
             gridIntent.setAction(ACTION_GRID_ITEM_CLICK);
             gridIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, i);
-            pendingIntent = PendingIntent.getBroadcast(context, 0, gridIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            pendingIntent = PendingIntent.getBroadcast(context, i, gridIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             // 设置intent模板
             remote.setPendingIntentTemplate(R.id.gridView, pendingIntent);
 
             appWidgetManager.updateAppWidget(appWidgetIds[i], remote);
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds[i], R.id.gridView);
         }
-
-        super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     public void setTextViewColorAndCount(RemoteViews remote,int viewId,boolean COLOR_SWAP, int count){
@@ -187,7 +233,7 @@ public class GWidget extends AppWidgetProvider {
     }
 
     public void guoTitleClick(View v){
-        Log.i("","guoTitleClick");
+        Log.i("", "guoTitleClick");
 //        if(mGuoCount==0){
 //            Toast.makeText(this, R.string.empty_user_detaillist_guo, Toast.LENGTH_LONG).show();
 //        }
@@ -211,5 +257,12 @@ public class GWidget extends AppWidgetProvider {
 //        }
 //        else
 //            CalendarActivity.startActvitiyForGongGuoDate(this, null, null, false, true, true);
+    }
+
+    public static void updateBroadcast(Context context){
+        if(context == null)
+            return;
+        Intent intent = new Intent(GWidget.ACTION_WIDGET_UPDATE_BY_DATACHANGE);
+        context.sendBroadcast(intent);
     }
 }

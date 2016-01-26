@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 
 import com.cheng.ggg.database.SQLiteHelper;
 import com.cheng.ggg.types.DialogClickListener;
+import com.cheng.ggg.types.UserGongGuo;
 import com.cheng.ggg.utils.COM;
 import com.cheng.ggg.utils.DialogAPI;
 import com.umeng.analytics.MobclickAgent;
@@ -34,10 +36,14 @@ public class AboutActivity extends Activity implements OnClickListener {
 	SQLiteHelper mSQLiteHelper;
 	Activity mActivity;
 	Resources mRs;
+
+	//热门功过选择时,需要保存已添加的列表 如果删除时，需要删除首页热门列表项
+	ArrayList<UserGongGuo> mHotUserGongGuoList;
 	
 	//mode
 	final int MODE_BACKUP = 0;
 	final int MODE_RESTORE = 1;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +66,8 @@ public class AboutActivity extends Activity implements OnClickListener {
 		
 		String version = getResources().getString(R.string.about_version) + COM.getVersionName(this);
 		((TextView)findViewById(R.id.TextViewTotalTitle)).setText(version);
+
+		mHotUserGongGuoList = (ArrayList<UserGongGuo>) getIntent().getSerializableExtra(COM.INTENT_LIST);
 	}
 
 	public void onClick(View v) {
@@ -77,10 +85,10 @@ public class AboutActivity extends Activity implements OnClickListener {
 //			UMFeedbackService.openUmengFeedbackSDK(this);
 			break;
 		case R.id.buttonUserDefineGong:
-			GongGuoListActivity.gotoUserDefineGongGuoActivity(this, true);
+			GongGuoListActivity.gotoUserDefineGongGuoActivity(this, mHotUserGongGuoList,true);
 			break;
 		case R.id.buttonUserDefineGuo:
-			GongGuoListActivity.gotoUserDefineGongGuoActivity(this, false);
+			GongGuoListActivity.gotoUserDefineGongGuoActivity(this,mHotUserGongGuoList, false);
 			break;
 		case R.id.buttonBackup:
 			backUp();

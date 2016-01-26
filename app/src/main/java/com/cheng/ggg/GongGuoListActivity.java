@@ -47,6 +47,7 @@ import com.cheng.ggg.utils.DialogAPI;
 import com.cheng.ggg.utils.Settings;
 import com.cheng.ggg.utils.TimeDate;
 import com.cheng.ggg.views.CalendarIcon;
+import com.cheng.ggg.views.GWidget;
 import com.cheng.ggg.views.calendar.CalendarActivity;
 import com.umeng.analytics.MobclickAgent;
 
@@ -72,13 +73,18 @@ public class GongGuoListActivity  extends Activity {
 //    SharedPreferences sp;
     
     Button recordButton;//快速记录按钮。记过或记功
-    Button buttonGraphic; 
+    Button buttonGraphic;
+
+//	/**如果数据有修改，需要更新widget内容*/
+//	boolean isUpdateWdiget = false;
     
     /**用户可修改当前时间，并将其作为 功过时间保存 在添加确认功过对话框中进行修改。*/
 //    Calendar mCalendarSave;
 
 	//热门功过选择时,需要保存已添加的列表
 	ArrayList<UserGongGuo> mHotUserGongGuoList;
+
+	boolean isAppWidgetUpdate = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -163,6 +169,13 @@ public class GongGuoListActivity  extends Activity {
         
     }
 
+	@Override
+	protected void onStop() {
+		super.onStop();
+		if(isAppWidgetUpdate)
+			GWidget.updateBroadcast(this);
+	}
+
 	public void filterHotGongGuo(){
 		//过滤已经在首页快捷键列表中的选项
 		for(GongGuoBase base : mGongGuoBaseList){
@@ -212,7 +225,7 @@ public class GongGuoListActivity  extends Activity {
 //		            detail.dump();
 		            
 //		            menu.add(0,0,0,"删除"); 
-		            DialogAPI.showDeleteItemDialog(mThis, detail,groupPos, childPos, mbGong);
+		            DialogAPI.showDeleteItemDialog(mThis, detail,groupPos, childPos, mbGong,mHotUserGongGuoList);
 		        } 
 		        //点击的是组列表
 		        else if (type == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
@@ -257,9 +270,9 @@ public class GongGuoListActivity  extends Activity {
     	if(intent != null){
     		mbGong = intent.getBooleanExtra(COM.INTENT_GONG, false);
     		mType = intent.getIntExtra(COM.INTENT_TYPE, TYPE_GONGGUO_NORMAL);
-			if(mType == TYPE_HOT_GONG_GUO_SELECT){
+//			if(mType == TYPE_HOT_GONG_GUO_SELECT){
 				mHotUserGongGuoList = (ArrayList<UserGongGuo>) intent.getSerializableExtra(COM.INTENT_LIST);
-			}
+//			}
     	}
     	
     	String strTitle;
@@ -457,6 +470,7 @@ public class GongGuoListActivity  extends Activity {
 			detail.userCount+=gongguo.times;
 			base.userCount+=gongguo.times;
 			mListView.invalidateViews();
+//			isUpdateWdiget = true;
 			return true;
 		}
 
@@ -527,7 +541,7 @@ public class GongGuoListActivity  extends Activity {
 			}
 			
 			
-			return false;
+			return true;
 		}
 		
 	};
@@ -574,8 +588,9 @@ public class GongGuoListActivity  extends Activity {
 			GroupChildHolder holder = (GroupChildHolder) textView.getTag();
 			
 			holder.txtName.setText(detail.name);
-			holder.txtCount.setText(detail.userCount + "");
-			
+//			holder.txtCount.setText(detail.userCount + "");
+			holder.imageViewCalendar.setDay(detail.userCount);
+
 			holder.txtName.setTextSize(MainActivity.TEXT_SIZE);
 			holder.txtCount.setTextSize(MainActivity.TEXT_SIZE);
 			
@@ -636,7 +651,7 @@ public class GongGuoListActivity  extends Activity {
             holder.txtName.setTextAppearance(mThis, styleId);
             holder.txtCount.setTextAppearance(mThis, styleId);
 			holder.imageViewCalendar = (CalendarIcon) view.findViewById(R.id.imageViewCalendar);
-			holder.imageViewCalendar.setDay(day);
+//			holder.imageViewCalendar.setDay(day);
             
             holder.txtName.setTextSize(MainActivity.TEXT_SIZE);
             holder.txtCount.setTextSize(MainActivity.TEXT_SIZE);
@@ -717,7 +732,7 @@ public class GongGuoListActivity  extends Activity {
 			holder.countClickArea = view.findViewById(R.id.frame01);
             holder.txtName.setTextAppearance(mThis, styleId);
 			holder.imageViewCalendar = (CalendarIcon) view.findViewById(R.id.imageViewCalendar);
-			holder.imageViewCalendar.setDay(day);
+//			holder.imageViewCalendar.setDay(day);
             
             holder.txtName.setTextSize(MainActivity.TEXT_SIZE);
             holder.txtCount.setTextSize(MainActivity.TEXT_SIZE);
@@ -728,6 +743,7 @@ public class GongGuoListActivity  extends Activity {
 				if(detail.status == GongGuoDetail.TYPE_HOTKEY){
 					holder.button.setText(R.string.added);
 					holder.button.setEnabled(false);
+					isAppWidgetUpdate = true;
 				}
 				else{
 					holder.button.setText(R.string.add);
@@ -754,7 +770,7 @@ public class GongGuoListActivity  extends Activity {
             	holder.button.setOnClickListener(new OnClickListener(){
             		
 					public void onClick(View arg0) {
-						DialogAPI.showDeleteItemDialog(mThis, detail, groupPosition, childPosition, mbGong);
+						DialogAPI.showDeleteItemDialog(mThis, detail, groupPosition, childPosition, mbGong,mHotUserGongGuoList);
 					}
             	});
             	holder.txtCount.setVisibility(View.GONE);
@@ -782,7 +798,8 @@ public class GongGuoListActivity  extends Activity {
 			 GroupHolder holder = (GroupHolder) textView.getTag();
 			 
 			 holder.txtName.setText(base.name);
-			 holder.txtCount.setText(base.userCount+"");
+//			 holder.txtCount.setText(base.userCount+"");
+			 holder.imageViewCalendar.setDay(base.userCount);
 			 holder.groupPosition = groupPosition;
 			 
 			holder.txtCount.setTextSize(MainActivity.TEXT_SIZE);
@@ -858,10 +875,10 @@ public class GongGuoListActivity  extends Activity {
 			gotoHotGongGuoActivity(this,mHotUserGongGuoList,!mbGong);
 		}
 		else if(mType == TYPE_USER_DEFINE){
-			gotoUserDefineGongGuoActivity(this,!mbGong);
+			gotoUserDefineGongGuoActivity(this,mHotUserGongGuoList,!mbGong);
 		}
 		else{
-			MainActivity.gotoGongGuoActivity(this, !mbGong);
+			MainActivity.gotoGongGuoActivity(this,mHotUserGongGuoList, !mbGong);
 		}
 		
 		finish();
@@ -873,8 +890,13 @@ public class GongGuoListActivity  extends Activity {
 		finish();
 	}
 
-	public static void gotoUserDefineGongGuoActivity(Context context, boolean bGong){
-		startActivity(context, GongGuoListActivity.TYPE_USER_DEFINE,null,bGong);
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+	}
+
+	public static void gotoUserDefineGongGuoActivity(Context context,ArrayList<UserGongGuo> list, boolean bGong){
+		startActivity(context, GongGuoListActivity.TYPE_USER_DEFINE,list,bGong);
 	}
 
 	public static void gotoHotGongGuoActivity(Context context,ArrayList<UserGongGuo> list,  boolean bGong){
@@ -885,10 +907,11 @@ public class GongGuoListActivity  extends Activity {
 		Intent intent = new Intent(context,GongGuoListActivity.class);
 		intent.putExtra(COM.INTENT_GONG, bGong);
 		intent.putExtra(COM.INTENT_TYPE, type);
-		if(type == GongGuoListActivity.TYPE_HOT_GONG_GUO_SELECT){
+//		if(type == GongGuoListActivity.TYPE_HOT_GONG_GUO_SELECT){
 			intent.putExtra(COM.INTENT_LIST,list);
-		}
+//		}
 		context.startActivity(intent);
 	}
+
 
 }

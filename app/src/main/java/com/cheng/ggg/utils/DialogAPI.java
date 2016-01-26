@@ -90,7 +90,7 @@ public class DialogAPI {
 	
 	//删除功过
 		public static void showDeleteItemDialog(final GongGuoListActivity activity,final GongGuoDetail detail,final int groupPos, final int childPos, final boolean bGong
-				){
+				,final ArrayList<UserGongGuo> mHotUserGongGuoList){
 			
 			if(activity == null ||detail == null){
 				COM.LOGE("alertDialog", "ERR activity ="+activity+" detail ="+detail);
@@ -123,6 +123,18 @@ public class DialogAPI {
 									bOK = sqlite.deleteGuoDetailById(db,detail.id);
 							}
 							if(bOK){
+
+								//删除首页上的快捷方式
+								if(mHotUserGongGuoList != null) {
+									for (UserGongGuo gongguo : mHotUserGongGuoList) {
+										if(gongguo.isUserDefine == detail.bUserdefine && COM.parseInt(gongguo.parent_id) == detail.id &&
+												detail.count == gongguo.count && detail.name.equals(gongguo.name)){
+											mHotUserGongGuoList.remove(gongguo);
+											Settings.setHomeHotGongGuo(activity,mHotUserGongGuoList);
+											break;
+										}
+									}
+								}
 								
 								if(base.mList != null){
 									COM.LOGE("", "childPos:"+childPos);

@@ -75,20 +75,20 @@
 
             android:layout_marginBottom="6dp"
             android:layout_marginLeft="3dp"
-            android:text="Medium Text"
             android:layout_toLeftOf="@+id/imageViewCalendar"
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:layout_marginTop="5dp"
-            android:textColor="#777777" />
+            android:textColor="#777777"
+            android:visibility="gone" />
 
         <com.cheng.ggg.views.CalendarIcon
             android:layout_alignParentRight="false"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/imageViewCalendar"
-            android:background="@drawable/calendar_date_ggg"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true"
+            android:padding="5dp" />
     </LinearLayout>
 
 </RelativeLayout>

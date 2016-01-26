@@ -8,11 +8,13 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.widget.Toast;
 
 import com.cheng.ggg.R;
+import com.cheng.ggg.database.SQLiteHelper;
 import com.cheng.ggg.types.GongGuoBase;
 import com.cheng.ggg.types.GongGuoDetail;
 import com.cheng.ggg.types.UserGongGuo;
@@ -152,6 +154,8 @@ public class Settings {
 			String[] arrays = oriValue.split("\\|");
 			if(arrays != null){
 				UserGongGuo gongguo;
+				SQLiteHelper helper = SQLiteHelper.getInstance(context);
+				SQLiteDatabase db = helper.getReadableDatabase();
 				for(String item : arrays){
 					if(item != null){
 						String []subArray = item.split("\\~");
@@ -162,10 +166,13 @@ public class Settings {
 							gongguo.name = subArray[2];
 							gongguo.count = COM.parseInt(subArray[3]);
 							gongguo.isUserDefine = COM.parseInt(subArray[4])==1?true:false;
+							gongguo.times = helper.getUserGongGuoCountByName(db,gongguo);
 							list.add(gongguo);
 						}
 					}
 				}
+				if(db.isOpen())
+					db.close();
 			}
 		}
 		return list;

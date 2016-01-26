@@ -152,7 +152,7 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.cheng.ggg.ACTION_GRID_ITEM_CLICK" />
-                <action android:name="com.cheng.ggg.ACTION_GRID_ITEM_CALENDAR_CLICK" />
+                <action android:name="com.cheng.ggg.ACTION_WIDGET_UPDATE_BY_DATACHANGE" />
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/widget_provider"/>

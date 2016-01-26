@@ -51,15 +51,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center_vertical"
-                android:text="Medium Text"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:textColor="@color/font_color_normal" />
+                android:textColor="@color/font_color_normal"
+                android:visibility="gone" />
 
             <com.cheng.ggg.views.CalendarIcon
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/imageViewCalendar"
                 android:layout_gravity="center_vertical"
                 android:visibility="gone" />

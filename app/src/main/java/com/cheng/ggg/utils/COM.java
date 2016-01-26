@@ -27,6 +27,9 @@ public class COM {
 	
 	public static final String UMENG_APP_KEY = "50dc4a665270151896000017";
 	public static final String DBNAME = "ggg";//"/sdcard/ggg";
+
+	public static final String BROADCAST_WIDGET_UPDATE = "android.appwidget.action.APPWIDGET_UPDATE";
+
 	public static final String INTENT_GONG = "INTENT_GONG";
 	public static final String INTENT_TYPE = "INTENT_TYPE";
 	public static final String INTENT_LIST = "INTENT_LIST";
@@ -55,7 +58,7 @@ public class COM {
 	public static final String BACKUP_FOR_RESTORE_EXT = "_backup";
 	
 	public static final int COLOR_GONG = Color.RED;
-	public static final int COLOR_GUO = Color.GREEN;
+	public static final int COLOR_GUO = Color.rgb(0x00,190,0);//Color.GREEN;
 	
 	public static final String DEFAULT_FONT_SIZE = "19";
 	

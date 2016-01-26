@@ -2,15 +2,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/calendar_icon_bg">
+    android:background="@drawable/calendar_icon_bg"
+    android:minWidth="27dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="22"
+        android:text="88"
         android:id="@+id/textViewCalendarDay"
-        android:layout_centerInParent="true"
-        android:textSize="15sp"
+        android:textSize="12sp"
         android:textColor="#000000"
-        android:paddingTop="5dp" />
+        android:layout_centerInParent="true"
+        android:paddingTop="3dp" />
 </RelativeLayout>

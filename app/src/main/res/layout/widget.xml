@@ -15,8 +15,9 @@
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/linearLayout"
-            android:layout_centerVertical="true">
+            android:id="@+id/linearLayoutGong"
+            android:layout_centerVertical="true"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/textView4"
@@ -44,10 +45,11 @@
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/linearLayout2"
-            android:layout_toRightOf="@+id/linearLayout"
+            android:id="@+id/linearLayoutGuo"
+            android:layout_toRightOf="@+id/linearLayoutGong"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="3dp">
+            android:layout_marginLeft="3dp"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/textView6"
@@ -79,10 +81,11 @@
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/linearLayout3"
-            android:layout_toRightOf="@+id/linearLayout2"
+            android:id="@+id/linearLayoutTotal"
+            android:layout_toRightOf="@+id/linearLayoutGuo"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="3dp">
+            android:layout_marginLeft="3dp"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/textView8"
@@ -111,15 +114,17 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:text="New Button"
-            android:id="@+id/imageButton"
+            android:id="@+id/imageButtonHotSelect"
             android:background="@drawable/increase_p"
             android:layout_alignParentRight="false"
             android:layout_alignParentBottom="false"
             android:layout_marginBottom="3dp"
             android:layout_marginTop="3dp"
             android:layout_centerHorizontal="true"
-            android:layout_toRightOf="@+id/linearLayout3"
-            android:layout_marginLeft="3dp" />
+            android:layout_toRightOf="@+id/linearLayoutTotal"
+            android:layout_marginLeft="3dp"
+            android:clickable="true"
+            android:focusableInTouchMode="false" />
     </RelativeLayout>
 
     <GridView

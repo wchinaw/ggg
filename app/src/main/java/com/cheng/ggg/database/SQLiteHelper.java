@@ -574,8 +574,17 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 //        }
 //		return id;
 //	}
+
+	public int getUserGongGuoCountByName(SQLiteDatabase db,UserGongGuo gongguo){
+		if(db == null || gongguo ==null){
+			return 0;
+		}
+
+		String tableName = gongguo.count>0? user_gong_table : user_guo_table;
+		return getUserGongGuoCountByName(db,tableName,gongguo.name, COM.parseInt(gongguo.parent_id),gongguo.count);
+	}
 	
-	public int getUserGongGuoCountByName(SQLiteDatabase db, String tableName, String name,int parent_id, int count){
+	private int getUserGongGuoCountByName(SQLiteDatabase db, String tableName, String name,int parent_id, int count){
 		int total = 0;
 		String sql = "select SUM(times) from "+tableName +" where name = '"+name+"' and count = '"+count+"'"+" and parent_id = "+parent_id;
 		Cursor cursor = db.rawQuery( sql, null);
@@ -595,6 +604,27 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
 		return total;
 	}
+
+//	//获取每一项功过的合
+//	private int getUserGongGuoCountDetail(SQLiteDatabase db, String tableName, UserGongGuo gongguo){
+//		int count = 0;
+//		String sql = "select SUM(count*times) from "+tableName +" where times is not null and "+
+//				"parent_name='"+gongguo.parent_name+"' and parent_id="+gongguo.parent_id+" and "+
+//				"name='"+gongguo.name+"' and count="+gongguo.count ;
+//		Cursor cursor = db.rawQuery( sql, null);
+//
+////        if(cursor!=null && cursor.moveToFirst()) {
+////        	count = cursor.getInt(0);
+////        	cursor.close();
+////        }
+//		if(cursor!=null) {
+//			if(cursor.moveToFirst())
+//				count = cursor.getInt(0);
+//			cursor.close();
+//		}
+//
+//		return count;
+//	}
 	
 	public int getUserGongGuoCount(SQLiteDatabase db, String tableName){
 		int count = 0;
@@ -621,6 +651,24 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
 		return count;
 	}
+
+//	public int getUserGongCountDetail(SQLiteDatabase db,UserGongGuo gongguo){
+//		if(gongguo == null)
+//			return 0;
+//		int count;
+//		if(gongguo.count>0){
+//			count = getUserGongGuoCountDetail(db, user_gong_table,gongguo);
+//			if(count < 0)
+//				count = 0;
+//		}
+//		else{
+//			count = getUserGongGuoCountDetail(db, user_guo_table,gongguo);
+//
+//		}
+//
+//		return count;
+//	}
+
 	
 	public int getUserGongCount(SQLiteDatabase db){
 		int gongCount = getUserGongGuoCount(db,user_gong_table);

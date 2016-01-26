@@ -5,10 +5,12 @@ import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+import android.widget.TextView;
 
 import com.cheng.ggg.R;
 import com.cheng.ggg.types.UserGongGuo;
@@ -57,7 +59,7 @@ public class GridWidgetService  extends RemoteViewsService {
             mContext = context;
             mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                     AppWidgetManager.INVALID_APPWIDGET_ID);
-            Log.d(TAG, "GridRemoteViewsFactory mAppWidgetId:" + mAppWidgetId);
+            Log.i(TAG, "GridRemoteViewsFactory mAppWidgetId:" + mAppWidgetId);
 
         }
 
@@ -65,7 +67,7 @@ public class GridWidgetService  extends RemoteViewsService {
         public RemoteViews getViewAt(int position) {
             HashMap<String, Object> map;
 
-            Log.d(TAG, "GridRemoteViewsFactory getViewAt:"+position);
+
             // 获取 grid_view_item.xml 对应的RemoteViews
             RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.main_userdefine_hotbutton_widget);
 
@@ -73,8 +75,12 @@ public class GridWidgetService  extends RemoteViewsService {
 
             UserGongGuo gongguo= mHotUserGongGuoList.get(position);
 
+            Log.i(TAG, "GridRemoteViewsFactory getViewAt:"+position+" name:"+gongguo.name+" times:"+gongguo.times);
+
             rv.setTextViewText(R.id.textView, gongguo.name);
-            rv.setTextViewText(R.id.textViewCalendarDay,day+"");
+            setTextViewColorAndCount(rv, R.id.textView, gongguo.count);
+            rv.setTextViewText(R.id.textViewCalendarDay, gongguo.times + "");
+//            setTextViewColorAndCount(rv, R.id.textViewCalendarDay, gongguo.count);
             // 设置 第position位的“视图”对应的响应事件
             Intent fillInIntent = new Intent();
             fillInIntent.setAction(GWidget.ACTION_GRID_ITEM_CLICK);
@@ -94,11 +100,40 @@ public class GridWidgetService  extends RemoteViewsService {
             return rv;
         }
 
+        public void setTextViewColorAndCount(RemoteViews rv,int textViewId, int count){
+            if(textViewId == 0 || rv == null)
+                return;
+
+            int gongColor = COM.COLOR_GONG;
+            int guoColor = COM.COLOR_GUO;
+            boolean COLOR_SWAP = Settings.getIsColorSwap(mContext);
+            if(COLOR_SWAP){
+                gongColor = COM.COLOR_GUO;
+                guoColor = COM.COLOR_GONG;
+            }
+
+
+            if(count > 0){
+                rv.setTextColor(textViewId, gongColor);
+//                view.setTextColor(gongColor);
+            }
+            else if(count < 0){
+                rv.setTextColor(textViewId, guoColor);
+//                view.setTextColor(guoColor);
+            }
+            else {
+//                view.setTextColor(Color.WHITE);
+                rv.setTextColor(R.id.textViewCalendarDay, Color.WHITE);
+            }
+        }
+
         @Override
         public void onCreate() {
-            Log.d(TAG, "onCreate");
+            Log.i(TAG, "onCreate");
             // 初始化“集合视图”中的数据
             mHotUserGongGuoList = Settings.getHomeHotGongGuoList(mContext);
+            UserGongGuo gongguo = mHotUserGongGuoList.get(0);
+            Log.i(TAG,"0 name:"+gongguo.name+" times:"+gongguo.times);
         }
 
         @Override
@@ -134,6 +169,9 @@ public class GridWidgetService  extends RemoteViewsService {
 
         @Override
         public void onDataSetChanged() {
+            mHotUserGongGuoList = Settings.getHomeHotGongGuoList(mContext);
+            UserGongGuo gongguo = mHotUserGongGuoList.get(0);
+            Log.i(TAG,"onDataSetChanged 0 name:"+gongguo.name+" times:"+gongguo.times);
         }
 
         @Override

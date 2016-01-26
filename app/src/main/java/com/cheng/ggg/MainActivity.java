@@ -57,6 +57,7 @@ import com.cheng.ggg.utils.DialogAPI;
 import com.cheng.ggg.utils.Settings;
 import com.cheng.ggg.utils.TimeDate;
 import com.cheng.ggg.views.CalendarIcon;
+import com.cheng.ggg.views.GWidget;
 import com.cheng.ggg.views.Layoutr;
 import com.cheng.ggg.views.calendar.CalendarActivity;
 import com.umeng.analytics.MobclickAgent;
@@ -226,7 +227,7 @@ public class MainActivity extends Activity implements OnClickListener
 		@Override
 		public boolean insert(UserGongGuo gongguo) {
 			boolean mbGong = gongguo.count>0?true:false;
-			GongGuoListActivity.insertOneItem(mActivity,mbGong,mSQLiteHelper,gongguo);
+			GongGuoListActivity.insertOneItem(mActivity, mbGong, mSQLiteHelper, gongguo);
 			return true;
 		}
 	};
@@ -317,7 +318,6 @@ public class MainActivity extends Activity implements OnClickListener
 				holder.imageViewCalendar = (CalendarIcon) view.findViewById(R.id.buttonCalendar);
 				holder.imageViewCalendar.setOnClickListener(calendarClick);
 				holder.imageViewCalendar.setTag(holder);
-				holder.imageViewCalendar.setDay(day);
 
 				view.setTag(holder);
 			}
@@ -326,7 +326,8 @@ public class MainActivity extends Activity implements OnClickListener
 			}
 			holder.gongguo = mHotUserGongGuoList.get(i);
 			holder.textView.setText(holder.gongguo.name);
-			setTextViewColor(holder.textView,holder.gongguo.count);
+			setTextViewColor(holder.textView, holder.gongguo.count);
+			holder.imageViewCalendar.setDay(holder.gongguo.times);
 			return view;
 		}
 
@@ -490,7 +491,13 @@ public class MainActivity extends Activity implements OnClickListener
 		super.onPause();
 		MobclickAgent.onPause(this);
 	}
-	
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+
+	}
+
 	@Override
 	protected void onDestroy() {
 		logout();
@@ -519,7 +526,7 @@ public class MainActivity extends Activity implements OnClickListener
     	setTextViewColorAndCount(textTotal,monthTotal);
     }
 	
-	public void setTextViewColorAndCount(TextView view, int count){
+	public static void setTextViewColorAndCount(TextView view, int count){
 		if(view == null)
 			return;
 		
@@ -569,9 +576,10 @@ public class MainActivity extends Activity implements OnClickListener
 		}
 	}
     
-    public static void gotoGongGuoActivity(Context context, boolean bGong){
+    public static void gotoGongGuoActivity(Context context, ArrayList<UserGongGuo> list, boolean bGong){
     	Intent intent = new Intent(context,GongGuoListActivity.class);
     	intent.putExtra(COM.INTENT_GONG, bGong);
+		intent.putExtra(COM.INTENT_LIST,list);
     	context.startActivity(intent);
     }
     
@@ -583,6 +591,7 @@ public class MainActivity extends Activity implements OnClickListener
 
     private void gotoAboutActivity(){
     	Intent intent = new Intent(this,AboutActivity.class);
+		intent.putExtra(COM.INTENT_LIST,mHotUserGongGuoList);
     	startActivity(intent);
     }
 
@@ -617,10 +626,10 @@ public class MainActivity extends Activity implements OnClickListener
 	public void onClick(View v) {
 		switch(v.getId()){
 		case R.id.buttonGong: 
-			gotoGongGuoActivity(this,true);
+			gotoGongGuoActivity(this,mHotUserGongGuoList,true);
 			break;
 		case R.id.buttonGuo:
-			gotoGongGuoActivity(this,false);
+			gotoGongGuoActivity(this,mHotUserGongGuoList,false);
 			break;
 
 		case R.id.buttonCalendar:

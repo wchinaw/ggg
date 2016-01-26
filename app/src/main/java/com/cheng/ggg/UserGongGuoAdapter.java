@@ -79,8 +79,8 @@ public class UserGongGuoAdapter extends BaseAdapter {
             holder.layoutTimesCalendar.setOnClickListener(mCalendarClickListener);
             holder.layoutTimesCalendar.setTag(holder);
 
-            CalendarIcon icon = (CalendarIcon) view.findViewById(R.id.imageViewCalendar);
-            icon.setDay(day);
+            holder.calendarIcon = (CalendarIcon) view.findViewById(R.id.imageViewCalendar);
+//            icon.setDay(day);
 
             holder.titleDate = (TextView) view.findViewById(R.id.titleDate);
             holder.titleCount = (TextView) view.findViewById(R.id.titleCount);
@@ -112,10 +112,14 @@ public class UserGongGuoAdapter extends BaseAdapter {
 
         holder.name.setText(gongguo.parent_name+" "+gongguo.name);
         holder.date.setText(TimeDate.intTime2HourMinute(mActivity, gongguo.time));
-        if(gongguo.times>1)
-            holder.times.setText(gongguo.times+strTimes);
-        else
-            holder.times.setText("");
+        if(gongguo.times>1) {
+//            holder.times.setText(gongguo.times + strTimes);
+            holder.calendarIcon.setDay(gongguo.times);
+        }
+        else {
+            holder.calendarIcon.setDay(1);
+//            holder.times.setText("");
+        }
         if(gongguo.comment == null || gongguo.comment.equals("")){
             holder.comment.setVisibility(View.GONE);
         }
@@ -170,6 +174,7 @@ public class UserGongGuoAdapter extends BaseAdapter {
         TextView times;
         TextView comment;
         int position;
+        CalendarIcon calendarIcon;
     }
 
     View.OnClickListener mCalendarClickListener = new View.OnClickListener() {

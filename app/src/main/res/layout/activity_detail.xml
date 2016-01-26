@@ -118,12 +118,15 @@
 
         <com.cheng.ggg.views.CalendarIcon
             android:id="@+id/buttonCalendar"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginRight="6dp"
             android:layout_toLeftOf="@+id/buttonGraphicWave"
-            android:onClick="calendarClick" />
+            android:onClick="calendarClick"
+            android:padding="5dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp" />
 
         <Button
             android:id="@+id/buttonGraphicWave"
