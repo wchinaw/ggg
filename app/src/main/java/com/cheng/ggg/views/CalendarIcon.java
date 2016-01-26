@@ -37,7 +37,7 @@ public class CalendarIcon extends RelativeLayout {
   
         private void initView(){
                 view = View.inflate(mContext,R.layout.layout_calendar_icon, this);
-                dayTextView = (TextView) view.findViewById(R.id.textView);
+                dayTextView = (TextView) view.findViewById(R.id.textViewCalendarDay);
 
         }
 

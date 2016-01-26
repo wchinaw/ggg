@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="22"
-        android:id="@+id/textView"
+        android:id="@+id/textViewCalendarDay"
         android:layout_centerInParent="true"
         android:textSize="15sp"
         android:textColor="#000000"

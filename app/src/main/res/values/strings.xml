@@ -212,6 +212,8 @@
     <string name="hotguo">首页快捷键过</string>
     <string name="exists_hot">已存在相同快捷键</string>
     <string name="hotgongguo">首页快捷键</string>
+    <string name="top">置顶</string>
+    <string name="top_ok">置顶成功</string>
 	<string-array name="TIPS_STR">
 	    <!-- 太上感应篇解释 -->
 <!--         <item>\t太上曰：祸福无门，惟人自招;善恶之报，如影随形。\n是以天地有司过之神，依人所犯轻重，以夺人算。\n算减则贫耗， 多逢忧患，人皆恶之，刑祸随之，吉庆避之，恶星灾之，算尽则死。</item>

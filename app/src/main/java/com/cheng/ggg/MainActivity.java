@@ -29,6 +29,7 @@ import android.os.Environment;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -252,8 +253,40 @@ public class MainActivity extends Activity implements OnClickListener
 //				Toast.makeText(mActivity,info,Toast.LENGTH_SHORT).show();
 //				mGridAdapter.notifyDataSetChanged();
 //			}
-			DialogAPI.showDeleteHotGongGuoItemDialog(mActivity,mHotUserGongGuoList,i);
+			//增加置顶功能
+			DialogAPI.DialogHozTwoButton(mActivity, i, mDialogSetTopOrDeleteHotLisenter, R.string.top, R.string.delete);
+
 			return true;
+		}
+	};
+
+	DialogAPI.ConfirmDialog3ItemsListener mDialogSetTopOrDeleteHotLisenter = new DialogAPI.ConfirmDialog3ItemsListener(){
+
+		public void onItem1(Object obj) {
+			int i = (Integer) obj;
+			UserGongGuo gongguo = mHotUserGongGuoList.get(i);
+			String info = gongguo.parent_name+" "+gongguo.name + " " + getString(R.string.top_ok);
+			mHotUserGongGuoList.remove(i);
+			mHotUserGongGuoList.add(0, gongguo);
+			Settings.setHomeHotGongGuo(mActivity, mHotUserGongGuoList);
+			mGridAdapter.notifyDataSetChanged();
+			Toast.makeText(mActivity, info, Toast.LENGTH_SHORT).show();
+		}
+
+		public void onItem2(Object obj) {
+			int i = (Integer) obj;
+			UserGongGuo gongguo = mHotUserGongGuoList.get(i);
+			String info = gongguo.parent_name+" "+gongguo.name + " " + getString(R.string.delete_ok);
+			mHotUserGongGuoList.remove(i);
+			Settings.setHomeHotGongGuo(mActivity, mHotUserGongGuoList);
+
+			Toast.makeText(mActivity, info, Toast.LENGTH_SHORT).show();
+			mGridAdapter.notifyDataSetChanged();
+//			DialogAPI.showDeleteHotGongGuoItemDialog(mActivity, mHotUserGongGuoList, i);
+		}
+
+		public void onItem3(Object obj) {
+
 		}
 	};
 
@@ -302,16 +335,7 @@ public class MainActivity extends Activity implements OnClickListener
 				ViewHolder holder = (ViewHolder) view.getTag();
 
 				if(holder != null && holder.gongguo != null){
-					GongGuoBase base = new GongGuoBase();
-					base.name = holder.gongguo.parent_name;
-					base.count = holder.gongguo.count;
-
-					GongGuoDetail detail = new GongGuoDetail();
-					detail.name = holder.gongguo.name;
-					detail.id = COM.parseInt(holder.gongguo.parent_id);
-					detail.count = holder.gongguo.count;
-
-					CalendarActivity.startActvitiyForGongGuoDate(mActivity,base,detail,true,detail.count>0?true:false);
+					CalendarActivity.startActvitiyForGongGuoDate(mActivity,holder.gongguo,false);
 				}
 			}
 		};

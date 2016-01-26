@@ -30,12 +30,14 @@ public class COM {
 	public static final String INTENT_GONG = "INTENT_GONG";
 	public static final String INTENT_TYPE = "INTENT_TYPE";
 	public static final String INTENT_LIST = "INTENT_LIST";
-
+	public static final String INTENT_ISCALENDAR = "INTENT_ISCALENDAR";
+	
 	public static final String INTENT_GONGGUOBASE = "INTENT_GONGGUOBASE";
 	public static final String INTENT_GONGGUODETAIL = "INTENT_GONGGUODETAIL";
 	public static final String INTENT_ISDETAIL = "INTENT_ISDETAIL";
 	public static final String INTENT_ISTOTAL = "INTENT_ISTOTAL";
-	
+	public static final String INTENT_GONGGUO = "INTENT_GONGGUO";
+
 	public static final String INTENT_USERDEFINE_TIPS = "INTENT_USERDEFINE_TIPS";
 	
 	public static final String BACKUP_FILENAME = "ggg.db";

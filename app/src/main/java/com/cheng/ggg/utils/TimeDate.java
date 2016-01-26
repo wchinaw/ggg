@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 import com.cheng.ggg.R;
@@ -64,7 +65,7 @@ public class TimeDate {
 	 * @param value
 	 * @return
 	 */
-	public static String intTime2Date1(Activity activity, Calendar calendar){
+	public static String intTime2Date1(Context activity, Calendar calendar){
 		
 		String date = calendar.get(Calendar.YEAR)+activity.getString(R.string.year)
 				+twoZeroPre((calendar.get(Calendar.MONTH)+1))+activity.getString(R.string.month)
@@ -79,11 +80,10 @@ public class TimeDate {
 	 * @param value
 	 * @return
 	 */
-	public static String intTime2Date1(Activity activity, int value){
+	public static String intTime2Date1(Context activity, int value){
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeZone(TimeZone.getDefault());
 		calendar.setTimeInMillis(value*1000L);
-		
 		String date = calendar.get(Calendar.YEAR)+activity.getString(R.string.year)
 				+twoZeroPre((calendar.get(Calendar.MONTH)+1))+activity.getString(R.string.month)
 				+twoZeroPre(calendar.get(Calendar.DAY_OF_MONTH))+activity.getString(R.string.day);
@@ -97,7 +97,7 @@ public class TimeDate {
 	 * @param value
 	 * @return
 	 */
-	public static String intTime2Date2(Activity activity, Calendar calendar){
+	public static String intTime2Date2(Context activity, Calendar calendar){
 		
 		String date = twoZeroPre(calendar.get(Calendar.HOUR_OF_DAY))+activity.getString(R.string.hour)
 				+twoZeroPre(calendar.get(Calendar.MINUTE))+activity.getString(R.string.minute);
@@ -111,7 +111,7 @@ public class TimeDate {
 	 * @param value
 	 * @return
 	 */
-	public static String intTime2Date2(Activity activity, int value){
+	public static String intTime2Date2(Context activity, int value){
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeZone(TimeZone.getDefault());
 		calendar.setTimeInMillis(value*1000L);

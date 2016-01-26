@@ -311,10 +311,11 @@ public class GongGuoListActivity  extends Activity {
      * @param mInsertClick 里面的bInsert确定了是插入还是编辑模式
      * @param gongguo  编辑模式才有的值
      */
-	public static void createAddConfirmDialog(final Activity activity, final GongGuoBase base,
+	public static void createAddConfirmDialog(final Context activity, final GongGuoBase base,
 			final GongGuoDetail detail,
 			final UserGongGuo gongguo, final InsertGongGuoListener mInsertClick){
-		
+
+
 		final Calendar calendar = Calendar.getInstance();
 		calendar.setTimeZone(TimeZone.getDefault());
 		calendar.setTimeInMillis(gongguo.time*1000L);
@@ -484,7 +485,7 @@ public class GongGuoListActivity  extends Activity {
 	};
 
 	
-  public static void insertOneItem(Activity activity ,boolean bGong, SQLiteHelper sqliteHelper ,UserGongGuo gongguo){
+  public static void insertOneItem(Context activity ,boolean bGong, SQLiteHelper sqliteHelper ,UserGongGuo gongguo){
 	SQLiteDatabase db = sqliteHelper.getWritableDatabase();
 	if(bGong){
 		sqliteHelper.insertUserGONGTable(db, gongguo.parent_id,gongguo.parent_name, gongguo.name, gongguo.count,gongguo.time,gongguo.times,gongguo.comment);

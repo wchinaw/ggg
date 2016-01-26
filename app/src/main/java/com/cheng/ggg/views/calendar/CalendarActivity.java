@@ -1,6 +1,7 @@
 package com.cheng.ggg.views.calendar;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -367,13 +368,38 @@ public class CalendarActivity extends Activity {
 
 	/**
 	 *
+	 * @param UserGongGuo 功过记录
+	 */
+	public static void startActvitiyForGongGuoDate(Context activity, UserGongGuo gongguo, boolean isNewTask){
+		GongGuoBase base = new GongGuoBase();
+		base.name = gongguo.parent_name;
+		base.count = gongguo.count;
+
+		GongGuoDetail detail = new GongGuoDetail();
+		detail.name = gongguo.name;
+		detail.id = COM.parseInt(gongguo.parent_id);
+		detail.count = gongguo.count;
+
+		Intent intent = new Intent(activity, CalendarActivity.class);
+		intent.putExtra(COM.INTENT_GONGGUOBASE,base);
+		intent.putExtra(COM.INTENT_GONGGUODETAIL,detail);
+		intent.putExtra(COM.INTENT_ISDETAIL,true);
+		intent.putExtra(COM.INTENT_GONG,detail.count > 0 ? true : false);
+		intent.putExtra(COM.INTENT_ISTOTAL,false);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		activity.startActivity(intent);
+
+	}
+
+	/**
+	 *
 	 * @param base 功过Base
 	 * @param detail 功过Detail
 	 * @param isDetail TRUE: 是否只显示对应的Detail专用列表  FALSE: 显示一段时间所有功过列表
 	 * @param mbGong 是否是功
 	 * @param range 时间范围
 	 */
-	public static void startActvitiyForGongGuoDate(Activity activity, GongGuoBase base, GongGuoDetail detail,boolean isDetail, boolean mbGong){
+	public static void startActvitiyForGongGuoDate(Context activity, GongGuoBase base, GongGuoDetail detail,boolean isDetail, boolean mbGong){
 		startActvitiyForGongGuoDate(activity,base,detail,isDetail,mbGong,false);
 	}
 
@@ -385,7 +411,7 @@ public class CalendarActivity extends Activity {
 	 * @param mbGong 是否是功
 	 * @param range 时间范围
 	 */
-	public static void startActvitiyForGongGuoDate(Activity activity, GongGuoBase base, GongGuoDetail detail,boolean isDetail, boolean mbGong, boolean istotal){
+	public static void startActvitiyForGongGuoDate(Context activity, GongGuoBase base, GongGuoDetail detail,boolean isDetail, boolean mbGong, boolean istotal){
 		if(activity == null)
 			return;
 
