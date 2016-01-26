@@ -66,7 +66,8 @@ public class GridWidgetService  extends RemoteViewsService {
         @Override
         public RemoteViews getViewAt(int position) {
             HashMap<String, Object> map;
-
+            if(mHotUserGongGuoList == null || mHotUserGongGuoList.size() == 0)
+                return null;
 
             // 获取 grid_view_item.xml 对应的RemoteViews
             RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.main_userdefine_hotbutton_widget);
@@ -132,8 +133,6 @@ public class GridWidgetService  extends RemoteViewsService {
             Log.i(TAG, "onCreate");
             // 初始化“集合视图”中的数据
             mHotUserGongGuoList = Settings.getHomeHotGongGuoList(mContext);
-            UserGongGuo gongguo = mHotUserGongGuoList.get(0);
-            Log.i(TAG,"0 name:"+gongguo.name+" times:"+gongguo.times);
         }
 
         @Override
@@ -170,8 +169,6 @@ public class GridWidgetService  extends RemoteViewsService {
         @Override
         public void onDataSetChanged() {
             mHotUserGongGuoList = Settings.getHomeHotGongGuoList(mContext);
-            UserGongGuo gongguo = mHotUserGongGuoList.get(0);
-            Log.i(TAG,"onDataSetChanged 0 name:"+gongguo.name+" times:"+gongguo.times);
         }
 
         @Override

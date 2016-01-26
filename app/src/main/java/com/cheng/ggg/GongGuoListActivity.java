@@ -764,7 +764,6 @@ public class GongGuoListActivity  extends Activity {
 				if(detail.status == GongGuoDetail.TYPE_HOTKEY){
 					holder.button.setText(R.string.added);
 					holder.button.setEnabled(false);
-					isAppWidgetUpdate = true;
 				}
 				else{
 					holder.button.setText(R.string.add);
@@ -780,6 +779,7 @@ public class GongGuoListActivity  extends Activity {
 						arg0.setEnabled(false);
 						detail.status = GongGuoDetail.TYPE_HOTKEY;
 								((Button) arg0).setText(R.string.added);
+						isAppWidgetUpdate = true;
 
 					}
 				});

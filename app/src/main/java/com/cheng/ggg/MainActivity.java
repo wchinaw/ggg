@@ -495,7 +495,7 @@ public class MainActivity extends Activity implements OnClickListener
 	@Override
 	protected void onStop() {
 		super.onStop();
-
+		GWidget.updateBroadcast(this);
 	}
 
 	@Override
