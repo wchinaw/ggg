@@ -276,12 +276,12 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	}
 	
 	/**插入一条用户自定义功项*/
-	public int insertUserDefineGONGTable(SQLiteDatabase db,String value, int count){
+	public synchronized int insertUserDefineGONGTable(SQLiteDatabase db,String value, int count){
 		return insertUserDefineGONGGUOTable(db,userdefine_gong_detail_table,value,count);
 	}
 		
 	/**插入一条用户自定义过项*/
-	public int insertUserDefineGUOTable(SQLiteDatabase db,String value, int count){
+	public synchronized int insertUserDefineGUOTable(SQLiteDatabase db,String value, int count){
 		return insertUserDefineGONGGUOTable(db,userdefine_guo_detail_table,value,count);
 	}
 	
@@ -301,7 +301,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	}
 	
 	/**插入一条用户自定义功过项*/
-	public int insertUserDefineGONGGUOTable(SQLiteDatabase db,String tableName, String value, int count){
+	public synchronized int insertUserDefineGONGGUOTable(SQLiteDatabase db,String tableName, String value, int count){
 		ContentValues content = new ContentValues();
 		content.put("name", value);
 		content.put("count", count);
@@ -314,7 +314,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 //		}
 	}
 	
-	public void insertGONGGUOTable(SQLiteDatabase db,String tableName,int id, String value, String count){
+	public synchronized void insertGONGGUOTable(SQLiteDatabase db,String tableName,int id, String value, String count){
 //		int intCount = Integer.parseInt(count);
 //		db.insert(table, nullColumnHack, values)
 		String str = "insert into "+ tableName +" values('"+id+"','"+getReplacedString(value)+"','"+count+"')";
@@ -326,7 +326,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	}
 	
 	/**在用户功过表中插入数据*/
-	public void insertUserGONGGUOTable(SQLiteDatabase db,String table_name,String parent_id,String parent_name, String name, int count, int time, int times,String comment){
+	public synchronized void insertUserGONGGUOTable(SQLiteDatabase db,String table_name,String parent_id,String parent_name, String name, int count, int time, int times,String comment){
 //		int intCount = Integer.parseInt(count);
 //		db.insert(table, nullColumnHack, values)
 		String str = "insert into "+ table_name +" values(null,'"+parent_id+"','"+parent_name+"','"+name+"','"+count+"','"+time+"','"+times+"','"+getReplacedString(comment)+"')";
@@ -347,11 +347,11 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 //		insertUserGONGGUOTable(db,user_guo_table,parent_id,parent_name,name,count,time,1);
 //	}
 	
-	public int updateUserGONGTable(SQLiteDatabase db,UserGongGuo oldgongguo,UserGongGuo newgongguo){
+	public synchronized int updateUserGONGTable(SQLiteDatabase db,UserGongGuo oldgongguo,UserGongGuo newgongguo){
 		return updateUserGONGGUOTable(db,user_gong_table,oldgongguo,newgongguo);
 	}
 	
-	public int updateUserGUOTable(SQLiteDatabase db,UserGongGuo oldgongguo,UserGongGuo newgongguo){
+	public synchronized int updateUserGUOTable(SQLiteDatabase db,UserGongGuo oldgongguo,UserGongGuo newgongguo){
 		return updateUserGONGGUOTable(db,user_guo_table,oldgongguo,newgongguo);
 	}
 	
@@ -374,12 +374,12 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	}
 	
 	/**在用户功表中插入数据*/
-	public void insertUserGONGTable(SQLiteDatabase db,String parent_id,String base_name, String name, int count, int time, int times,String comment){
+	public synchronized void insertUserGONGTable(SQLiteDatabase db,String parent_id,String base_name, String name, int count, int time, int times,String comment){
 		insertUserGONGGUOTable(db,user_gong_table,parent_id,base_name,name,count,time,times,comment);
 	}
 	
 	/**在用户过表中插入数据*/
-	public void insertUserGUOTable(SQLiteDatabase db,String parent_id, String base_name, String name, int count, int time, int times,String comment){
+	public synchronized void insertUserGUOTable(SQLiteDatabase db,String parent_id, String base_name, String name, int count, int time, int times,String comment){
 		insertUserGONGGUOTable(db,user_guo_table,parent_id,base_name,name,count,time,times,comment);
 	}
 	
@@ -518,7 +518,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		return baseList;
 	}
 	
-	public ArrayList<GongGuoDetail> getGongGuoDetail(SQLiteDatabase db, String detailTableName, int count, boolean bUserDefine){
+	public synchronized ArrayList<GongGuoDetail> getGongGuoDetail(SQLiteDatabase db, String detailTableName, int count, boolean bUserDefine){
 		ArrayList<GongGuoDetail> detailList = new ArrayList<GongGuoDetail>();
 		
 		String sql="select * from "+detailTableName+" where count="+count;
@@ -584,16 +584,18 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 		return getUserGongGuoCountByName(db,tableName,gongguo.name, COM.parseInt(gongguo.parent_id),gongguo.count);
 	}
 	
-	private int getUserGongGuoCountByName(SQLiteDatabase db, String tableName, String name,int parent_id, int count){
+	private synchronized int getUserGongGuoCountByName(SQLiteDatabase db, String tableName, String name,int parent_id, int count){
 		int total = 0;
 		String sql = "select SUM(times) from "+tableName +" where name = '"+name+"' and count = '"+count+"'"+" and parent_id = "+parent_id;
+		if(db == null || !db.isOpen())
+			return 0;
 		Cursor cursor = db.rawQuery( sql, null);
 		
 //        if(cursor!=null && cursor.moveToFirst()) {
 //        	total = cursor.getCount();
 //        	cursor.close();
 //        }
-		if(cursor!=null){
+		if(cursor!=null && !cursor.isClosed()){
 			if(cursor.moveToFirst()) {
 				total = cursor.getInt(0);//cursor.getCount();
 //				if(total < 0)
@@ -626,28 +628,32 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 //		return count;
 //	}
 	
-	public int getUserGongGuoCount(SQLiteDatabase db, String tableName){
+	public synchronized int getUserGongGuoCount(SQLiteDatabase db, String tableName){
 		int count = 0;
 		String sql = "select SUM(count*times) from "+tableName +" where times is not null";
 		String sql2 = "select SUM(count) from "+tableName +" where times is null";
-		Cursor cursor = db.rawQuery( sql, null);
-		
+		if(db!=null && db.isOpen()){
+			Cursor cursor = db.rawQuery( sql, null);
+
 //        if(cursor!=null && cursor.moveToFirst()) {
 //        	count = cursor.getInt(0);
 //        	cursor.close();
 //        }
-		if(cursor!=null) {
-			if(cursor.moveToFirst())
-				count = cursor.getInt(0);
-        	cursor.close();
-        }
-		
-		cursor = db.rawQuery( sql2, null);
-		if(cursor!=null) {
-			if(cursor.moveToFirst())
-				count += cursor.getInt(0);
-      	cursor.close();
-      }
+			if(cursor!=null && !cursor.isClosed() ) {
+				if(cursor.moveToFirst())
+					count = cursor.getInt(0);
+				cursor.close();
+			}
+		}
+
+		if(db!=null && db.isOpen()){
+			Cursor cursor2 = db.rawQuery( sql2, null);
+			if(cursor2!=null && !cursor2.isClosed()) {
+				if(cursor2.moveToFirst())
+					count += cursor2.getInt(0);
+				cursor2.close();
+			}
+		}
 
 		return count;
 	}
@@ -670,14 +676,20 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 //	}
 
 	
-	public int getUserGongCount(SQLiteDatabase db){
+	public synchronized int getUserGongCount(SQLiteDatabase db){
+		if(db == null || !db.isOpen())
+			return 0;
+
 		int gongCount = getUserGongGuoCount(db,user_gong_table);
 		if(gongCount < 0)
 			gongCount = 0;
 		return gongCount;
 	}
 	
-	public int getUserGuoCount(SQLiteDatabase db){
+	public synchronized int getUserGuoCount(SQLiteDatabase db){
+		if(db == null || !db.isOpen())
+			return 0;
+
 		int guoCount =  getUserGongGuoCount(db,user_guo_table);
 //		if(guoCount > 0)
 //			guoCount = 0;

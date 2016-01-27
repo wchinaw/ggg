@@ -12,11 +12,15 @@ import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 import android.widget.TextView;
 
+import com.cheng.ggg.AddConfirmActivity;
 import com.cheng.ggg.R;
+import com.cheng.ggg.types.GongGuoBase;
+import com.cheng.ggg.types.GongGuoDetail;
 import com.cheng.ggg.types.UserGongGuo;
 import com.cheng.ggg.utils.COM;
 import com.cheng.ggg.utils.Settings;
 import com.cheng.ggg.utils.TimeDate;
+import com.cheng.ggg.views.calendar.CalendarActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,7 +75,7 @@ public class GridWidgetService  extends RemoteViewsService {
                 return null;
 
             // 获取 grid_view_item.xml 对应的RemoteViews
-            RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.main_userdefine_hotbutton_widget);
+            RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.main_userdefine_hotbutton_items);
 
             // 设置 第position位的“视图”的数据
 
@@ -84,15 +88,20 @@ public class GridWidgetService  extends RemoteViewsService {
             rv.setTextViewText(R.id.textViewCalendarDay, gongguo.times + "");
 //            setTextViewColorAndCount(rv, R.id.textViewCalendarDay, gongguo.count);
             // 设置 第position位的“视图”对应的响应事件
-            Intent fillInIntent = new Intent();
-            fillInIntent.setAction(GWidget.ACTION_GRID_ITEM_CLICK);
-            fillInIntent.putExtra(COM.INTENT_TYPE, position);
-            rv.setOnClickFillInIntent(R.id.layoutTextView, fillInIntent);
+//            Intent fillInIntent = new Intent();
+//            fillInIntent.setAction(GWidget.ACTION_GRID_ITEM_CLICK);
+//            fillInIntent.putExtra(COM.INTENT_TYPE, position);
+//            rv.setOnClickFillInIntent(R.id.layoutTextView, fillInIntent);
+            setOnClickLisenterTextView(rv,gongguo,R.id.layoutTextView,position);
 
-            Intent fillInIntent1 = new Intent();
-            fillInIntent1.putExtra(COM.INTENT_TYPE, position);
-            fillInIntent1.putExtra(COM.INTENT_ISCALENDAR,true);
-            rv.setOnClickFillInIntent(R.id.calendarView, fillInIntent1);
+
+
+//            Intent fillInIntent1 = new Intent();
+//            fillInIntent1.putExtra(COM.INTENT_TYPE, position);
+//            fillInIntent1.putExtra(COM.INTENT_ISCALENDAR,true);
+//            rv.setOnClickFillInIntent(R.id.calendarView, fillInIntent1);
+            setOnClickLisenterCalendar(rv,gongguo,R.id.calendarView,position);
+
 
 //            Intent btIntent = new Intent().setAction(GWidget.ACTION_GRID_ITEM_CALENDAR_CLICK);
 //            PendingIntent btPendingIntent = PendingIntent.getBroadcast(mContext, 0, btIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -100,6 +109,36 @@ public class GridWidgetService  extends RemoteViewsService {
 
 
             return rv;
+        }
+
+        public void setOnClickLisenterCalendar(RemoteViews remote,UserGongGuo gongguo, int id, int index){
+
+            Intent intent = new Intent(mContext,CalendarActivity.class);
+            GongGuoBase base = new GongGuoBase();
+            base.name = gongguo.parent_name;
+            base.count = gongguo.count;
+
+            GongGuoDetail detail = new GongGuoDetail();
+            detail.name = gongguo.name;
+            detail.id = COM.parseInt(gongguo.parent_id);
+            detail.count = gongguo.count;
+
+            intent.putExtra(COM.INTENT_GONGGUOBASE, base);
+            intent.putExtra(COM.INTENT_GONGGUODETAIL,detail);
+            intent.putExtra(COM.INTENT_ISDETAIL,true);
+            intent.putExtra(COM.INTENT_GONG, detail.count > 0 ? true : false);
+            intent.putExtra(COM.INTENT_ISTOTAL,false);
+            PendingIntent pendingIntent = PendingIntent.getActivity(mContext, index,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT);//
+            remote.setOnClickPendingIntent(id, pendingIntent);
+        }
+
+        public void setOnClickLisenterTextView(RemoteViews remote,UserGongGuo gongguo, int id, int index){
+            Intent intent = new Intent(mContext,AddConfirmActivity.class);
+            intent.putExtra(COM.INTENT_GONGGUO, gongguo);
+            PendingIntent pendingIntent = PendingIntent.getActivity(mContext, index,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT);//
+            remote.setOnClickPendingIntent(id, pendingIntent);
         }
 
         public void setTextViewColorAndCount(RemoteViews rv,int textViewId, int count){

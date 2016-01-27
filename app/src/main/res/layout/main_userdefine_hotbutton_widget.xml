@@ -1,74 +1,276 @@
 <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/layout01"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:gravity="center"
     android:clickable="true">
-
     <LinearLayout
+        android:id="@+id/layout0"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="2dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginRight="2dp"
-        android:layout_marginBottom="2dp"
-        android:background="#AAFFFFFF"
-        android:orientation="horizontal"
-        android:id="@+id/layoutAdd"
-        android:clickable="false">
+        android:gravity="center"
+        android:clickable="true"
+        android:paddingLeft="3dp"
+        android:paddingRight="3dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:visibility="visible">
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/layoutTextView"
-            android:clickable="true">
-
-            <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="讚一人善"
-            android:id="@+id/textView"
-            android:textSize="16sp"
-            android:textColor="#000000"
-            android:layout_gravity="center"
-                android:lines="1"
-            android:maxLength="4"
-            android:maxWidth="70dp"
-                android:gravity="center"
-                android:layout_centerInParent="true"
-                android:minWidth="65dp" />
-        </RelativeLayout>
-
-        <include layout="@layout/layout_calendar_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="27dp"
-            android:clickable="true"
-            android:id="@+id/calendarView"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="2dp"
             android:layout_marginTop="2dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginRight="3dp"
-            android:layout_marginLeft="2dp" />
-        <!--<RelativeLayout
-            android:layout_width="27dp"
-            android:layout_height="27dp"
-            android:background="@drawable/calendar_icon_bg"
-            android:id="@+id/calendarView"
-            android:clickable="true"
-            android:layout_margin="5dp">
+            android:layout_marginRight="2dp"
+            android:layout_marginBottom="2dp"
+            android:background="#AAFFFFFF"
+            android:orientation="horizontal"
+            android:clickable="false">
 
-            <TextView
+            <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="22"
-                android:id="@+id/textViewCalendarDay"
-                android:layout_centerInParent="true"
-                android:textSize="15sp"
-                android:textColor="#000000"
-                android:paddingTop="3dp" />
-        </RelativeLayout>-->
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:id="@+id/layoutText0">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="讚一人善"
+                    android:id="@+id/textView0"
+                    android:textSize="16sp"
+                    android:textColor="#000000"
+                    android:layout_gravity="center"
+                    android:lines="1"
+                    android:maxLength="4"
+                    android:maxWidth="70dp"
+                    android:gravity="center"
+                    android:layout_centerInParent="true"
+                    android:minWidth="65dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="27dp"
+                android:clickable="true"
+                android:id="@+id/calendarView0"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="3dp"
+                android:layout_marginLeft="2dp"
+                android:background="@drawable/calendar_icon_bg"
+                android:minWidth="27dp"
+                android:layout_marginBottom="5dp"
+                android:padding="2dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="88"
+                    android:id="@+id/textViewCalendarDay0"
+                    android:textSize="12sp"
+                    android:textColor="#000000"
+                    android:layout_centerInParent="true"
+                    android:paddingTop="3dp" />
+            </RelativeLayout>
+            <!--<RelativeLayout
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:background="@drawable/calendar_icon_bg"
+                android:id="@+id/calendarView"
+                android:clickable="true"
+                android:layout_margin="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="22"
+                    android:id="@+id/textViewCalendarDay"
+                    android:layout_centerInParent="true"
+                    android:textSize="15sp"
+                    android:textColor="#000000"
+                    android:paddingTop="3dp" />
+            </RelativeLayout>-->
+        </LinearLayout>
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:clickable="true"
+        android:paddingRight="3dp"
+        android:paddingLeft="3dp"
+        android:padding="3dp"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginBottom="2dp"
+            android:background="#AAFFFFFF"
+            android:orientation="horizontal"
+            android:clickable="false">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:id="@+id/layoutText1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="讚一人善"
+                    android:id="@+id/textView1"
+                    android:textSize="16sp"
+                    android:textColor="#000000"
+                    android:layout_gravity="center"
+                    android:lines="1"
+                    android:maxLength="4"
+                    android:maxWidth="70dp"
+                    android:gravity="center"
+                    android:layout_centerInParent="true"
+                    android:minWidth="65dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="27dp"
+                android:clickable="true"
+                android:id="@+id/calendarView1"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="3dp"
+                android:layout_marginLeft="2dp"
+                android:background="@drawable/calendar_icon_bg"
+                android:minWidth="27dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="88"
+                    android:id="@+id/textViewCalendarDay1"
+                    android:textSize="12sp"
+                    android:textColor="#000000"
+                    android:layout_centerInParent="true"
+                    android:paddingTop="3dp" />
+            </RelativeLayout>
+            <!--<RelativeLayout
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:background="@drawable/calendar_icon_bg"
+                android:id="@+id/calendarView"
+                android:clickable="true"
+                android:layout_margin="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="22"
+                    android:id="@+id/textViewCalendarDay"
+                    android:layout_centerInParent="true"
+                    android:textSize="15sp"
+                    android:textColor="#000000"
+                    android:paddingTop="3dp" />
+            </RelativeLayout>-->
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:clickable="true"
+        android:padding="3dp"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginBottom="2dp"
+            android:background="#AAFFFFFF"
+            android:orientation="horizontal"
+            android:clickable="false">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:id="@+id/layoutText2">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="讚一人善"
+                    android:id="@+id/textView2"
+                    android:textSize="16sp"
+                    android:textColor="#000000"
+                    android:layout_gravity="center"
+                    android:lines="1"
+                    android:maxLength="4"
+                    android:maxWidth="70dp"
+                    android:gravity="center"
+                    android:layout_centerInParent="true"
+                    android:minWidth="65dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="27dp"
+                android:clickable="true"
+                android:id="@+id/calendarView2"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="3dp"
+                android:layout_marginLeft="2dp"
+                android:background="@drawable/calendar_icon_bg"
+                android:minWidth="27dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="88"
+                    android:id="@+id/textViewCalendarDay2"
+                    android:textSize="12sp"
+                    android:textColor="#000000"
+                    android:layout_centerInParent="true"
+                    android:paddingTop="3dp" />
+            </RelativeLayout>
+
+            <!--<RelativeLayout
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:background="@drawable/calendar_icon_bg"
+                android:id="@+id/calendarView"
+                android:clickable="true"
+                android:layout_margin="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="22"
+                    android:id="@+id/textViewCalendarDay"
+                    android:layout_centerInParent="true"
+                    android:textSize="15sp"
+                    android:textColor="#000000"
+                    android:paddingTop="3dp" />
+            </RelativeLayout>-->
+        </LinearLayout>
+    </LinearLayout>
+
 </LinearLayout>
 

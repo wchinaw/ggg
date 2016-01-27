@@ -142,6 +142,8 @@ public class AddConfirmActivity extends Activity{
 	public void getBundles(){
 		Intent intent = getIntent();
 		gongguo = (UserGongGuo) intent.getSerializableExtra(COM.INTENT_GONGGUO);
+		if(gongguo != null)
+			gongguo.time = (int) (System.currentTimeMillis()/1000);
 	}
 
 	public static void startActivity(Context activity, UserGongGuo gongguo){
