@@ -216,6 +216,14 @@ public class Settings {
 		int isUserDefine = detail.bUserdefine ? 1: 0;
 		String addString = detail.id+"~"+base.name+"~"+detail.name+"~"+detail.count+"~"+isUserDefine;
 
+		UserGongGuo gongguo = new UserGongGuo();
+		gongguo.parent_name = base.name;
+		gongguo.parent_id = detail.id+"";
+		gongguo.name = detail.name;
+		gongguo.count = detail.count;
+		gongguo.isUserDefine = detail.bUserdefine;
+		list.add(0,gongguo);
+
 		if(oriValue != null && !"".equals(oriValue)){
 			setString(context, hot_gongguo_list, oriValue+"|"+addString);
 		}

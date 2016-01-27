@@ -763,24 +763,38 @@ public class GongGuoListActivity  extends Activity {
 				holder.button.setVisibility(View.VISIBLE);
 				if(detail.status == GongGuoDetail.TYPE_HOTKEY){
 					holder.button.setText(R.string.added);
-					holder.button.setEnabled(false);
+//					holder.button.setEnabled(false);
 				}
 				else{
 					holder.button.setText(R.string.add);
-					holder.button.setEnabled(true);
+//					holder.button.setEnabled(true);
 				}
 
 				holder.button.setOnClickListener(new OnClickListener() {
 
 					public void onClick(View arg0) {
 						//// FIXME: 16-1-20 添加功过
-						GongGuoBase base = mGongGuoBaseList.get(groupPosition);
-						Settings.addHomeHotGongGuo(mActivity, mHotUserGongGuoList, base, detail);
-						arg0.setEnabled(false);
-						detail.status = GongGuoDetail.TYPE_HOTKEY;
-								((Button) arg0).setText(R.string.added);
-						isAppWidgetUpdate = true;
+						if(detail.status == GongGuoDetail.TYPE_HOTKEY) {
+							for(UserGongGuo gongguo:mHotUserGongGuoList){
+								if(detail.id == COM.parseInt(gongguo.parent_id) && detail.name.equals(gongguo.name) && detail.count == gongguo.count){
+									mHotUserGongGuoList.remove(gongguo);
+									Settings.setHomeHotGongGuo(mActivity, mHotUserGongGuoList);
+									((Button) arg0).setText(R.string.add);
+									detail.status = GongGuoDetail.TYPE_NORMAL;
+									Toast.makeText(mActivity, R.string.deleteok,Toast.LENGTH_SHORT).show();
+									break;
+								}
+							}
 
+						}
+						else{
+							GongGuoBase base = mGongGuoBaseList.get(groupPosition);
+							Settings.addHomeHotGongGuo(mActivity, mHotUserGongGuoList, base, detail);
+//							arg0.setEnabled(false);
+							detail.status = GongGuoDetail.TYPE_HOTKEY;
+							((Button) arg0).setText(R.string.added);
+						}
+						isAppWidgetUpdate = true;
 					}
 				});
 				holder.txtCount.setVisibility(View.GONE);
