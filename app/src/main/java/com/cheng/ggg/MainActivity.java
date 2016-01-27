@@ -228,6 +228,9 @@ public class MainActivity extends Activity implements OnClickListener
 		public boolean insert(UserGongGuo gongguo) {
 			boolean mbGong = gongguo.count>0?true:false;
 			GongGuoListActivity.insertOneItem(mActivity, mbGong, mSQLiteHelper, gongguo);
+			gongguo.todayCount+=gongguo.times;
+			refreshGongGuoInfo();
+			mGridAdapter.notifyDataSetChanged();
 			return true;
 		}
 	};
@@ -327,7 +330,7 @@ public class MainActivity extends Activity implements OnClickListener
 			holder.gongguo = mHotUserGongGuoList.get(i);
 			holder.textView.setText(holder.gongguo.name);
 			setTextViewColor(holder.textView, holder.gongguo.count);
-			holder.imageViewCalendar.setDay(holder.gongguo.times);
+			holder.imageViewCalendar.setDay(holder.gongguo.todayCount);
 			return view;
 		}
 

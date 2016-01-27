@@ -166,7 +166,7 @@ public class Settings {
 							gongguo.name = subArray[2];
 							gongguo.count = COM.parseInt(subArray[3]);
 							gongguo.isUserDefine = COM.parseInt(subArray[4])==1?true:false;
-							gongguo.times = helper.getUserGongGuoCountByName(db,gongguo);
+							gongguo.todayCount = helper.getUserGongGuoCountByName(db,gongguo);
 							list.add(gongguo);
 						}
 					}
