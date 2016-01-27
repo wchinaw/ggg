@@ -148,7 +148,7 @@
         android:alwaysRetainTaskState="true"/>
 
         <receiver android:name=".views.GWidget"
-            android:label="@string/app_name">
+            android:label="@string/widget_name">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.cheng.ggg.ACTION_GRID_ITEM_CLICK" />
@@ -156,7 +156,17 @@
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/widget_provider"/>
+        </receiver>
 
+        <receiver android:name=".views.GWidget1"
+            android:label="@string/widget1_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.cheng.ggg.ACTION_GRID_ITEM_CLICK" />
+                <action android:name="com.cheng.ggg.ACTION_WIDGET_UPDATE_BY_DATACHANGE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/widget_provider1"/>
         </receiver>
 
         <service
