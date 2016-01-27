@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -44,6 +46,10 @@ public class GWidget extends AppWidgetProvider {
     ArrayList<UserGongGuo> mHotUserGongGuoList;
     public static final String ACTION_GRID_ITEM_CLICK = "com.cheng.ggg.ACTION_GRID_ITEM_CLICK";
     public static final String ACTION_WIDGET_UPDATE_BY_DATACHANGE = "com.cheng.ggg.ACTION_WIDGET_UPDATE_BY_DATACHANGE";
+
+    int request = 0;
+    public static int randomNumber = 0;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         mContext = context;
@@ -65,7 +71,7 @@ public class GWidget extends AppWidgetProvider {
 
             else if(ACTION_GRID_ITEM_CLICK.equals(action)){
                 int pos = intent.getIntExtra(COM.INTENT_TYPE,0);
-                Log.e("","=========================2pos:"+pos);
+                Log.e("","=====ACTION_GRID_ITEM_CLICK===2pos:"+pos);
                 mHotUserGongGuoList = Settings.getHomeHotGongGuoList(mContext);
                 if(mHotUserGongGuoList != null && pos>=0 && pos<mHotUserGongGuoList.size()){
                     UserGongGuo gongguo = mHotUserGongGuoList.get(pos);
@@ -134,17 +140,24 @@ public class GWidget extends AppWidgetProvider {
 //            remote.setOnClickPendingIntent(R.id.textView, pendingIntent);
 //            remote.setTextViewText(R.id.textView, "hello in update.");
 
-//            Intent fillInIntent = new Intent();
-//            fillInIntent.setAction(GWidget.ACTION_GRID_ITEM_CLICK);
-//            fillInIntent.putExtra(COM.INTENT_TYPE, position);
-//            fillInIntent1.putExtra(COM.INTENT_ISCALENDAR,true);
-//            remote.setOnClickFillInIntent(R.id.calendarView, fillInIntent);
+//            Intent intent = new Intent(mContext, CalendarActivity.class);
+//            intent.putExtra(COM.INTENT_ISDETAIL,false);
+//            intent.putExtra(COM.INTENT_GONG, false);
+//            intent.putExtra(COM.INTENT_ISTOTAL, true);
+//            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
+//                    intent, PendingIntent.FLAG_UPDATE_CURRENT);//
+//            remote.setOnClickPendingIntent(R.id.linearLayoutTotal, pendingIntent);
+            if(request >= 1000000){
+                request = 0;
+            }
 
-            Intent intent = new Intent(mContext, CalendarActivity.class);
-            intent.putExtra(COM.INTENT_ISDETAIL,false);
-            intent.putExtra(COM.INTENT_GONG, false);
-            intent.putExtra(COM.INTENT_ISTOTAL, true);
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
+            Intent intent = new Intent(mContext, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, request++,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT);//
+            remote.setOnClickPendingIntent(R.id.layoutall, pendingIntent);
+
+            intent = new Intent(mContext, MainActivity.class);
+            pendingIntent = PendingIntent.getActivity(context, request++,
                     intent, PendingIntent.FLAG_UPDATE_CURRENT);//
             remote.setOnClickPendingIntent(R.id.linearLayoutTotal, pendingIntent);
 
@@ -152,7 +165,7 @@ public class GWidget extends AppWidgetProvider {
             intent.putExtra(COM.INTENT_ISDETAIL,false);
             intent.putExtra(COM.INTENT_GONG,true);
             intent.putExtra(COM.INTENT_ISTOTAL,false);
-            pendingIntent = PendingIntent.getActivity(context, 1,
+            pendingIntent = PendingIntent.getActivity(context, request++,
                     intent, PendingIntent.FLAG_UPDATE_CURRENT);//
             remote.setOnClickPendingIntent(R.id.linearLayoutGong, pendingIntent);
 
@@ -160,7 +173,7 @@ public class GWidget extends AppWidgetProvider {
             intent.putExtra(COM.INTENT_ISDETAIL,false);
             intent.putExtra(COM.INTENT_GONG, false);
             intent.putExtra(COM.INTENT_ISTOTAL,false);
-            pendingIntent = PendingIntent.getActivity(context, 2,
+            pendingIntent = PendingIntent.getActivity(context, request++,
                     intent, PendingIntent.FLAG_UPDATE_CURRENT);//
             remote.setOnClickPendingIntent(R.id.linearLayoutGuo, pendingIntent);
 
@@ -169,7 +182,7 @@ public class GWidget extends AppWidgetProvider {
             intent.putExtra(COM.INTENT_GONG, true);
             intent.putExtra(COM.INTENT_TYPE, GongGuoListActivity.TYPE_HOT_GONG_GUO_SELECT);
             intent.putExtra(COM.INTENT_LIST,mHotUserGongGuoList);
-            pendingIntent = PendingIntent.getActivity(context, 0,
+            pendingIntent = PendingIntent.getActivity(context, request++,
                     intent, PendingIntent.FLAG_UPDATE_CURRENT);//
             remote.setOnClickPendingIntent(R.id.imageButtonHotSelect, pendingIntent);
 
@@ -192,15 +205,19 @@ public class GWidget extends AppWidgetProvider {
             Intent serviceIntent = new Intent(context, GridWidgetService.class);
 //            serviceIntent.putExtra(COM.INTENT_LIST,mHotUserGongGuoList);
 //            remote.setRemoteAdapter(R.id.gridView, serviceIntent);
+            intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
+
             serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
-            remote.setRemoteAdapter(appWidgetIds[i],R.id.gridView,serviceIntent);
+            remote.setRemoteAdapter(appWidgetIds[i], R.id.gridView, serviceIntent);
 
             Intent gridIntent = new Intent();
             gridIntent.setAction(ACTION_GRID_ITEM_CLICK);
             gridIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, i);
-            pendingIntent = PendingIntent.getBroadcast(context, i, gridIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            pendingIntent = PendingIntent.getBroadcast(context, request++, gridIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             // 设置intent模板
             remote.setPendingIntentTemplate(R.id.gridView, pendingIntent);
+
 
             appWidgetManager.updateAppWidget(appWidgetIds[i], remote);
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds[i], R.id.gridView);

@@ -33,6 +33,7 @@ import com.cheng.ggg.types.TimeRange;
 import com.cheng.ggg.types.UserGongGuo;
 import com.cheng.ggg.utils.COM;
 import com.cheng.ggg.utils.TimeDate;
+import com.cheng.ggg.views.GWidget;
 import com.umeng.analytics.MobclickAgent;
 
 import java.text.ParseException;
@@ -64,6 +65,7 @@ public class CalendarActivity extends Activity {
 	GongGuoDetail detail;
 
 	String strTotal,strGong,strGuo;
+	boolean isAppWidgetUpdate = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -254,6 +256,7 @@ public class CalendarActivity extends Activity {
 				bGong = false;
 			GongGuoListActivity.insertOneItem(mActivity, bGong, mSQLiteHelper, gongguo);
 			getList();
+			isAppWidgetUpdate = true;
 			return false;
 		}
 
@@ -326,6 +329,8 @@ public class CalendarActivity extends Activity {
 					mAdapter.notifyDataSetChanged();
 					db.close();
 
+					isAppWidgetUpdate = true;
+
 					if(rc == true){
 						Toast.makeText(mActivity, gongguo.parent_name+" "+gongguo.name+" "+getString(R.string.deleteok), Toast.LENGTH_LONG).show();
 					}
@@ -352,6 +357,14 @@ public class CalendarActivity extends Activity {
 	protected void onPause() {
 		super.onPause();
 		MobclickAgent.onPause(this);
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		if(isAppWidgetUpdate){
+			GWidget.updateBroadcast(this);
+		}
 	}
 
 	public void getBundles(){

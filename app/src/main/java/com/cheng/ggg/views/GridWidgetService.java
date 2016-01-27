@@ -57,9 +57,10 @@ public class GridWidgetService  extends RemoteViewsService {
          */
         public GridRemoteViewsFactory(Context context, Intent intent) {
             mContext = context;
+
             mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                     AppWidgetManager.INVALID_APPWIDGET_ID);
-            Log.i(TAG, "GridRemoteViewsFactory mAppWidgetId:" + mAppWidgetId);
+            Log.e(TAG, "GridRemoteViewsFactory mAppWidgetId:" + mAppWidgetId);
 
         }
 
@@ -76,7 +77,7 @@ public class GridWidgetService  extends RemoteViewsService {
 
             UserGongGuo gongguo= mHotUserGongGuoList.get(position);
 
-            Log.i(TAG, "GridRemoteViewsFactory getViewAt:"+position+" name:"+gongguo.name+" times:"+gongguo.times);
+            Log.e(TAG, "GridRemoteViewsFactory getViewAt:" + position + " name:" + gongguo.name + " times:" + gongguo.times);
 
             rv.setTextViewText(R.id.textView, gongguo.name);
             setTextViewColorAndCount(rv, R.id.textView, gongguo.count);
@@ -130,7 +131,7 @@ public class GridWidgetService  extends RemoteViewsService {
 
         @Override
         public void onCreate() {
-            Log.i(TAG, "onCreate");
+            Log.e(TAG, "onCreate");
             // 初始化“集合视图”中的数据
             mHotUserGongGuoList = Settings.getHomeHotGongGuoList(mContext);
         }
@@ -168,6 +169,7 @@ public class GridWidgetService  extends RemoteViewsService {
 
         @Override
         public void onDataSetChanged() {
+            Log.e(TAG,"onDataSetChanged");
             mHotUserGongGuoList = Settings.getHomeHotGongGuoList(mContext);
         }
 
