@@ -4,7 +4,7 @@
     android:minHeight="120dp"
     android:minWidth="320dp"
     android:initialLayout="@layout/widget"
-    android:previewImage="@drawable/calendar_icon_bg"
+    android:previewImage="@drawable/widget_preview"
     android:resizeMode="horizontal|vertical">
 
 </appwidget-provider>

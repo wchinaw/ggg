@@ -25,7 +25,7 @@
             android:layout_marginTop="2dp"
             android:layout_marginRight="2dp"
             android:layout_marginBottom="2dp"
-            android:background="#AAFFFFFF"
+            android:background="#CCFFFFFF"
             android:orientation="horizontal"
             android:clickable="false">
 
@@ -48,7 +48,8 @@
                     android:maxWidth="70dp"
                     android:gravity="center"
                     android:layout_centerInParent="true"
-                    android:minWidth="65dp" />
+                    android:minWidth="65dp"
+                    android:layout_marginLeft="1dp" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -104,7 +105,7 @@
         android:paddingRight="3dp"
         android:paddingLeft="3dp"
         android:padding="3dp"
-        android:visibility="visible">
+        android:visibility="invisible">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -138,7 +139,8 @@
                     android:maxWidth="70dp"
                     android:gravity="center"
                     android:layout_centerInParent="true"
-                    android:minWidth="65dp" />
+                    android:minWidth="65dp"
+                    android:layout_marginLeft="1dp" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -191,7 +193,7 @@
         android:gravity="center"
         android:clickable="true"
         android:padding="3dp"
-        android:visibility="visible">
+        android:visibility="invisible">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -225,7 +227,8 @@
                     android:maxWidth="70dp"
                     android:gravity="center"
                     android:layout_centerInParent="true"
-                    android:minWidth="65dp" />
+                    android:minWidth="65dp"
+                    android:layout_marginLeft="1dp" />
             </RelativeLayout>
 
             <RelativeLayout

@@ -203,12 +203,9 @@ public class GWidget extends AppWidgetProvider {
 //                    intent, PendingIntent.FLAG_UPDATE_CURRENT);//
 //            remote.setOnClickPendingIntent(R.id.textView, pendingIntent);
 
-            Intent serviceIntent = new Intent(context, GridWidgetService.class);
-//            serviceIntent.putExtra(COM.INTENT_LIST,mHotUserGongGuoList);
-//            remote.setRemoteAdapter(R.id.gridView, serviceIntent);
-
-            serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
-            remote.setRemoteAdapter(appWidgetIds[i], R.id.gridView, serviceIntent);
+//            Intent serviceIntent = new Intent(context, GridWidgetService.class);
+//            serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
+//            remote.setRemoteAdapter(appWidgetIds[i], R.id.gridView, serviceIntent);
 //
 //            Intent gridIntent = new Intent();
 //            gridIntent.setAction(ACTION_GRID_ITEM_CLICK);
@@ -218,9 +215,9 @@ public class GWidget extends AppWidgetProvider {
 //            // 设置intent模板
 //            remote.setPendingIntentTemplate(R.id.gridView, pendingIntent);
 
-//            addItems(remote,mHotUserGongGuoList,COLOR_SWAP);
+            addItems(remote, mHotUserGongGuoList, COLOR_SWAP);
             appWidgetManager.updateAppWidget(appWidgetIds[i], remote);
-            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds[i], R.id.gridView);
+//            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds[i], R.id.gridView);
         }
     }
 
@@ -233,8 +230,6 @@ public class GWidget extends AppWidgetProvider {
     public void addItems(RemoteViews remote, ArrayList<UserGongGuo> list,boolean COLOR_SWAP){
         if(list != null && list.size()>0){
             remote.removeAllViews(R.id.gridView);
-            RemoteViews r = new RemoteViews(mContext.getPackageName(),
-                    R.layout.main_userdefine_hotbutton_widget);
             int len = list.size();
             int lines = len/3;
             if(len%3>0){
@@ -242,6 +237,8 @@ public class GWidget extends AppWidgetProvider {
             }
             int index=0;
             for(int i=0; i<lines; i++){
+                RemoteViews r = new RemoteViews(mContext.getPackageName(),
+                        R.layout.main_userdefine_hotbutton_widget);
                 remote.addView(R.id.gridView,r);
                 for(int j=0; j<3; j++){
                     index = i*3+j;
