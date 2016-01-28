@@ -40,6 +40,7 @@ import com.cheng.ggg.types.UserGongGuo;
 import com.cheng.ggg.utils.COM;
 import com.cheng.ggg.utils.Settings;
 import com.cheng.ggg.utils.TimeDate;
+import com.cheng.ggg.views.CalendarIcon;
 import com.cheng.ggg.views.calendar.CalendarActivity;
 import com.cheng.ggg.views.chart.BarChart;
 import com.cheng.ggg.views.chart.SalesComparisonChartWave;
@@ -72,7 +73,7 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
 	String strTotal,strGong,strGuo;
 	int mGong,mGuo;
 	TextView mTextViewGong,mTextViewGuo,mTextViewTotal;
-	
+	CalendarIcon mButtonCalendar;
 //	boolean mbGongguoconfirm_dialog = false;
 	SharedPreferences sp;
     @Override
@@ -91,8 +92,9 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
         mTextViewGong = (TextView)findViewById(R.id.textView1);
         mTextViewGuo = (TextView)findViewById(R.id.textView2);
         mTextViewTotal = (TextView)findViewById(R.id.textView3);
-        
-        mTextViewGong.setTextSize(MainActivity.TEXT_SIZE-2);
+		mButtonCalendar = (CalendarIcon) findViewById(R.id.buttonCalendar);
+
+		mTextViewGong.setTextSize(MainActivity.TEXT_SIZE-2);
         mTextViewGuo.setTextSize(MainActivity.TEXT_SIZE-2);
         mTextViewTotal.setTextSize(MainActivity.TEXT_SIZE-2);
 //        ((Button)findViewById(R.id.buttonGraphic)).setTextSize(MainActivity.TEXT_SIZE-2);
@@ -239,6 +241,7 @@ public class UserGongGuoListActivity extends Activity implements OnClickListener
     	
     	int total = mGong+mGuo;
     	mTextViewTotal.setText(strTotal+" "+total);
+		mButtonCalendar.setDay(total);
     	
     	UserGongGuoAdapter.setGongGuoColor(mTextViewGong, mGong);
 		UserGongGuoAdapter.setGongGuoColor(mTextViewGuo, mGuo);

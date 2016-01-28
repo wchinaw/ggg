@@ -1,6 +1,17 @@
 package com.cheng.ggg.utils;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 import android.content.Context;
@@ -13,6 +24,7 @@ import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.widget.Toast;
 
+import com.cheng.ggg.AboutActivity;
 import com.cheng.ggg.R;
 import com.cheng.ggg.database.SQLiteHelper;
 import com.cheng.ggg.types.GongGuoBase;
@@ -276,5 +288,74 @@ public class Settings {
         editor.putInt(key, value);
         editor.commit();
     }
+
+	public static String getBackupFilePath(){
+//		return Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+BACKUP_FILENAME;
+		return COM.GGG_DIRECTORY_PATH+"/"+"hotkey.sp";
+	}
+
+	public static void restore(Context context){
+
+		File file = new File(getBackupFilePath());
+		if(file.exists()){
+			try {
+				InputStream fosfrom = new FileInputStream(file);
+				ByteArrayOutputStream fosto=new ByteArrayOutputStream();
+
+				byte bt[] = new byte[1024];
+				int c;
+				while ((c = fosfrom.read(bt)) > 0)
+				{
+					fosto.write(bt, 0, c);
+				}
+
+				String value = fosto.toString("GBK");
+				if(value != null && value.length()>5){
+					setString(context, hot_gongguo_list, value);
+				}
+
+				fosfrom.close();
+				fosto.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		}
+	}
+
+	public static boolean backUp(Context context) {
+		boolean rc = true;
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+		String hotKey = sp.getString(hot_gongguo_list, "");
+
+		File file = new File(getBackupFilePath());
+		if(!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				rc = false;
+				e.printStackTrace();
+			}
+		}
+		try {
+			OutputStream fosto = new FileOutputStream(file);
+			fosto.write(hotKey.getBytes("GBK"));
+			fosto.flush();
+			fosto.close();
+		} catch (FileNotFoundException e) {
+			rc = false;
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			rc = false;
+			e.printStackTrace();
+		} catch (IOException e) {
+			rc = false;
+			e.printStackTrace();
+		}
+
+		return rc;
+	}
 
 }

@@ -60,9 +60,10 @@ public class GWidget extends AppWidgetProvider {
 
         if(intent != null){
             String action = intent.getAction();
+            Log.e("yao", "action --> "+action);
             if(ACTION_WIDGET_UPDATE_BY_DATACHANGE.equals(action)){
                 AppWidgetManager manager = AppWidgetManager.getInstance(context);
-                int ids[]=manager.getAppWidgetIds(new ComponentName(mContext.getPackageName(), GWidget.class.getName()));
+                int ids[]=manager.getAppWidgetIds(new ComponentName(mContext.getPackageName(), this.getClass().getName()));
                 update(context, AppWidgetManager.getInstance(context), ids);
             }
             else if(COM.BROADCAST_WIDGET_UPDATE.equals(action)){
@@ -246,7 +247,7 @@ public class GWidget extends AppWidgetProvider {
                         UserGongGuo gongguo = list.get(index);
                         r.setTextViewText(textIds[j], gongguo.name);
                         setTextViewColor(r, textIds[j], COLOR_SWAP, gongguo.count);
-                        r.setTextViewText(calendarTextIds[j], gongguo.times + "");
+                        r.setTextViewText(calendarTextIds[j], gongguo.todayCount + "");
                         r.setViewVisibility(layoutIds[j], View.VISIBLE);
                         setOnClickLisenterTextView(r, gongguo, layoutTextIds[j]);
                         setOnClickLisenterCalendar(r, gongguo, calendarIds[j]);

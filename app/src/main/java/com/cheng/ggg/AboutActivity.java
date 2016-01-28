@@ -28,6 +28,7 @@ import com.cheng.ggg.types.DialogClickListener;
 import com.cheng.ggg.types.UserGongGuo;
 import com.cheng.ggg.utils.COM;
 import com.cheng.ggg.utils.DialogAPI;
+import com.cheng.ggg.utils.Settings;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.FeedbackAgent;
 
@@ -120,6 +121,7 @@ public class AboutActivity extends Activity implements OnClickListener {
 	
 	public void dobackUp(String srcPath, String destPath){
 		int rc = COM.copyFile(srcPath,destPath);
+		Settings.backUp(this);
 		if(rc == 0){ //备份成功
 			//Toast.makeText(mActivity,R.string.backupok, Toast.LENGTH_SHORT).show();
 			createBackupOKDialog(srcPath, destPath);
@@ -151,6 +153,8 @@ public class AboutActivity extends Activity implements OnClickListener {
 		SQLiteDatabase  db = mSQLiteHelper.getReadableDatabase();
 		destPath = db.getPath();
 		srcPath = COM.getBackupFilePath();
+
+		Settings.restore(this);
 		
 		File file = new File(srcPath);
 		if(file.exists()){

@@ -8,23 +8,35 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.net.Uri;
 import android.util.Log;
 import android.view.View;
+import android.widget.GridView;
 import android.widget.RemoteViews;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cheng.ggg.AddConfirmActivity;
 import com.cheng.ggg.GongGuoListActivity;
 import com.cheng.ggg.MainActivity;
+import com.cheng.ggg.MyApp;
 import com.cheng.ggg.R;
 import com.cheng.ggg.database.SQLiteHelper;
 import com.cheng.ggg.types.GongGuoBase;
 import com.cheng.ggg.types.GongGuoDetail;
+import com.cheng.ggg.types.InsertGongGuoListener;
 import com.cheng.ggg.types.UserGongGuo;
 import com.cheng.ggg.utils.COM;
 import com.cheng.ggg.utils.Settings;
 import com.cheng.ggg.views.calendar.CalendarActivity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by cg on 16-1-22.
@@ -48,9 +60,10 @@ public class GWidget1 extends AppWidgetProvider {
 
         if(intent != null){
             String action = intent.getAction();
+            Log.e("yao", "action --> "+action);
             if(ACTION_WIDGET_UPDATE_BY_DATACHANGE.equals(action)){
                 AppWidgetManager manager = AppWidgetManager.getInstance(context);
-                int ids[]=manager.getAppWidgetIds(new ComponentName(mContext.getPackageName(), GWidget1.class.getName()));
+                int ids[]=manager.getAppWidgetIds(new ComponentName(mContext.getPackageName(), this.getClass().getName()));
                 update(context, AppWidgetManager.getInstance(context), ids);
             }
             else if(COM.BROADCAST_WIDGET_UPDATE.equals(action)){
@@ -110,7 +123,7 @@ public class GWidget1 extends AppWidgetProvider {
     }
 
     public synchronized void update(Context context, AppWidgetManager appWidgetManager,
-                       int[] appWidgetIds){
+                                    int[] appWidgetIds){
         Log.i("yao", "HelloWidgetProvider --> onUpdate");
         mContext = context;
         boolean COLOR_SWAP = Settings.getIsColorSwap(mContext);
@@ -234,7 +247,7 @@ public class GWidget1 extends AppWidgetProvider {
                         UserGongGuo gongguo = list.get(index);
                         r.setTextViewText(textIds[j], gongguo.name);
                         setTextViewColor(r, textIds[j], COLOR_SWAP, gongguo.count);
-                        r.setTextViewText(calendarTextIds[j], gongguo.times + "");
+                        r.setTextViewText(calendarTextIds[j], gongguo.todayCount + "");
                         r.setViewVisibility(layoutIds[j], View.VISIBLE);
                         setOnClickLisenterTextView(r, gongguo, layoutTextIds[j]);
                         setOnClickLisenterCalendar(r, gongguo, calendarIds[j]);
@@ -361,7 +374,7 @@ public class GWidget1 extends AppWidgetProvider {
     public static void updateBroadcast(Context context){
         if(context == null)
             return;
-        Intent intent = new Intent(GWidget1.ACTION_WIDGET_UPDATE_BY_DATACHANGE);
+        Intent intent = new Intent(GWidget.ACTION_WIDGET_UPDATE_BY_DATACHANGE);
         context.sendBroadcast(intent);
     }
 }

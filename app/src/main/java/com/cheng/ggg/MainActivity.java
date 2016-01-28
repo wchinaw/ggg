@@ -465,6 +465,8 @@ public class MainActivity extends Activity implements OnClickListener
     	TEXT_SIZE = Settings.getFontSize(this);
     	COLOR_SWAP = Settings.getIsColorSwap(this);
 		mHotUserGongGuoList = Settings.getHomeHotGongGuoList(this);
+		if(mGridAdapter != null)
+			mGridAdapter.notifyDataSetChanged();
     	setFontSizeAndColor();
     	
     	boolean isEnablePassword = Settings.getIsEnablePassword(this);
