@@ -121,13 +121,13 @@ public class AboutActivity extends Activity implements OnClickListener {
 	
 	public void dobackUp(String srcPath, String destPath){
 		int rc = COM.copyFile(srcPath,destPath);
-		Settings.backUp(this);
+		String spFilePath = Settings.backUp(this);
 		if(rc == 0){ //备份成功
 			//Toast.makeText(mActivity,R.string.backupok, Toast.LENGTH_SHORT).show();
-			createBackupOKDialog(srcPath, destPath);
+			createBackupOKDialog(srcPath, destPath,spFilePath);
 		}
 		else{//备份失败
-			createBackupFailDialog(srcPath,destPath);
+			createBackupFailDialog(srcPath,destPath,spFilePath);
 			Toast.makeText(mActivity,R.string.backupfail, Toast.LENGTH_SHORT).show();
 		}
 	}
@@ -154,11 +154,11 @@ public class AboutActivity extends Activity implements OnClickListener {
 		destPath = db.getPath();
 		srcPath = COM.getBackupFilePath();
 
-		Settings.restore(this);
+		String spFilePath = Settings.restore(this);
 		
 		File file = new File(srcPath);
 		if(file.exists()){
-			createRestoreConfirmDialog(srcPath, destPath);
+			createRestoreConfirmDialog(srcPath, destPath,spFilePath);
 		}
 		else{
 			//createNoBackupFileDialog(srcPath, destPath);
@@ -175,7 +175,8 @@ public class AboutActivity extends Activity implements OnClickListener {
 	}
 	
 	public void createBackupConfirmDialog(String srcPath,String destPath,DialogClickListener clickLisenter){
-		String msg = mRs.getString(R.string.backupfile_path_info)+destPath;
+		String spFilePath = Settings.getBackupFilePath();
+		String msg = mRs.getString(R.string.backupfile_path_info)+destPath+"\n"+spFilePath;
 		createConfirmDialog(R.string.backupfile_exists, msg, srcPath, destPath, clickLisenter);
 	}
 		
@@ -198,19 +199,19 @@ public class AboutActivity extends Activity implements OnClickListener {
 		dialog.show();
 	}
 	
-	public void createBackupOKDialog(final String srcPath,final String destPath){
-		String msg = mRs.getString(R.string.backupfile_path_info)+destPath;
+	public void createBackupOKDialog(final String srcPath,final String destPath,final String spFilePath){
+		String msg = mRs.getString(R.string.backupfile_path_info)+destPath+"\n"+spFilePath;
 		DialogAPI.creatInfoDialog(mActivity,R.string.backupok,msg);
 	}
 	
-	public void createBackupFailDialog(final String srcPath,final String destPath){
-		String msg = mRs.getString(R.string.backupfail_info)+destPath;
+	public void createBackupFailDialog(final String srcPath,final String destPath,final String spFilePath){
+		String msg = mRs.getString(R.string.backupfail_info)+destPath+"\n"+spFilePath;;
 		DialogAPI.creatInfoDialog(mActivity, R.string.backupfail, msg);
 	}
 	
 	
-	public void createRestoreConfirmDialog(final String srcPath,final String destPath){
-		String msg = mRs.getString(R.string.backupfile_path_info)+srcPath;
+	public void createRestoreConfirmDialog(final String srcPath,final String destPath,final String spFilePath){
+		String msg = mRs.getString(R.string.backupfile_path_info)+srcPath+"\n"+spFilePath;
 		AlertDialog dialog =  new AlertDialog.Builder(this)
         .setTitle(R.string.restoreconfirm)
         .setMessage(msg)

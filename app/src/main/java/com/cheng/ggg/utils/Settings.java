@@ -291,12 +291,12 @@ public class Settings {
 
 	public static String getBackupFilePath(){
 //		return Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+BACKUP_FILENAME;
-		return COM.GGG_DIRECTORY_PATH+"/"+"hotkey.sp";
+		return COM.GGG_DIRECTORY_PATH+"/"+"ggg.sp";
 	}
 
-	public static void restore(Context context){
-
-		File file = new File(getBackupFilePath());
+	public static String restore(Context context){
+		String filePath = getBackupFilePath();
+		File file = new File(filePath);
 		if(file.exists()){
 			try {
 				InputStream fosfrom = new FileInputStream(file);
@@ -323,19 +323,20 @@ public class Settings {
 			}
 
 		}
+
+		return filePath;
 	}
 
-	public static boolean backUp(Context context) {
-		boolean rc = true;
+	public static String backUp(Context context) {
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
 		String hotKey = sp.getString(hot_gongguo_list, "");
-
-		File file = new File(getBackupFilePath());
+		String filePath = getBackupFilePath();
+		File file = new File(filePath);
 		if(!file.exists()) {
 			try {
 				file.createNewFile();
 			} catch (IOException e) {
-				rc = false;
+				filePath = "";
 				e.printStackTrace();
 			}
 		}
@@ -345,17 +346,17 @@ public class Settings {
 			fosto.flush();
 			fosto.close();
 		} catch (FileNotFoundException e) {
-			rc = false;
+			filePath = "";
 			e.printStackTrace();
 		} catch (UnsupportedEncodingException e) {
-			rc = false;
+			filePath = "";
 			e.printStackTrace();
 		} catch (IOException e) {
-			rc = false;
+			filePath = "";
 			e.printStackTrace();
 		}
 
-		return rc;
+		return filePath;
 	}
 
 }
