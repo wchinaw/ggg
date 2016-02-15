@@ -176,9 +176,9 @@ public class AddConfirmActivity extends Activity{
 	};
 
 	public void onOKClick(View v){
-		final Calendar calendar = Calendar.getInstance();
-		calendar.setTimeZone(TimeZone.getDefault());
-		calendar.setTimeInMillis(gongguo.time*1000L);
+//		final Calendar calendar = Calendar.getInstance();
+//		calendar.setTimeZone(TimeZone.getDefault());
+//		calendar.setTimeInMillis(gongguo.time*1000L);
 		int saveTime = (int) (calendar.getTimeInMillis() / 1000);
 		int times = COM.parseInt(editTimes.getText().toString());
 		if (mInsertClick.bInsert) {
