@@ -19,6 +19,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
 import android.os.Environment;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import com.cheng.ggg.R;
 import com.cheng.ggg.receiver.AlarmReceiver;
@@ -88,6 +90,22 @@ public class COM {
 		return versionName;
 
 
+	}
+
+	public static void showInputMethod(Context context){
+		if(context == null)
+			return;
+
+		InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_IMPLICIT_ONLY);
+	}
+
+	public static void hideInputMethod(EditText edit,Context context){
+		if(edit == null || context == null)
+			return;
+//		COM.LOGI("", "Hide input method");
+		InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(edit.getWindowToken(), 0);
 	}
 	
 	public static String getBackupFilePath(){

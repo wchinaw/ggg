@@ -1,30 +1,28 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
     android:clickable="true">
     <LinearLayout
         android:id="@+id/layout0"
         android:layout_width="wrap_content"
-        android:layout_height="43dp"
+        android:layout_height="40dp"
         android:gravity="center"
         android:clickable="true"
-        android:paddingLeft="3dp"
-        android:paddingRight="3dp"
-        android:paddingTop="3dp"
-        android:paddingBottom="3dp"
-        android:visibility="visible">
+        android:padding="1dp"
+        android:visibility="visible"
+        android:paddingRight="2dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="2dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginRight="1dp"
+            android:layout_marginBottom="1dp"
             android:background="#AAFFFFFF"
             android:orientation="horizontal"
             android:clickable="false">
@@ -63,8 +61,8 @@
                 android:background="@drawable/calendar_icon_bg"
                 android:minWidth="27dp"
                 android:padding="2dp"
-                android:paddingBottom="5dp"
-                android:layout_marginBottom="5dp">
+                android:layout_marginBottom="5dp"
+                android:paddingBottom="5dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -100,23 +98,22 @@
     <LinearLayout
         android:id="@+id/layout1"
         android:layout_width="wrap_content"
-        android:layout_height="43dp"
+        android:layout_height="40dp"
         android:gravity="center"
         android:clickable="true"
-        android:paddingRight="3dp"
-        android:paddingLeft="3dp"
-        android:padding="3dp"
-        android:visibility="invisible">
+        android:padding="1dp"
+        android:visibility="invisible"
+        android:paddingRight="2dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="2dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginRight="1dp"
+            android:layout_marginBottom="1dp"
             android:background="#AAFFFFFF"
             android:orientation="horizontal"
             android:clickable="false">
@@ -190,21 +187,22 @@
     <LinearLayout
         android:id="@+id/layout2"
         android:layout_width="wrap_content"
-        android:layout_height="43dp"
+        android:layout_height="40dp"
         android:gravity="center"
         android:clickable="true"
-        android:padding="3dp"
-        android:visibility="invisible">
+        android:padding="1dp"
+        android:visibility="invisible"
+        android:paddingRight="2dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="2dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginRight="1dp"
+            android:layout_marginBottom="1dp"
             android:background="#AAFFFFFF"
             android:orientation="horizontal"
             android:clickable="false">
